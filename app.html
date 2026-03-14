@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pillar Health Member Portal</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+                         'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+                         sans-serif;
+            background: #f8fafc;
+            color: #0f172a;
+        }
+
+        .app-container {
+            max-width: 430px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 70px;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 50;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            cursor: pointer;
+            color: #94a3b8;
+            transition: all 0.2s;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .nav-item.active {
+            color: #7c3aed;
+        }
+
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 24px;
+            border-radius: 0 0 24px 24px;
+            position: relative;
+        }
+
+        .badge-ai {
+            display: inline-block;
+            background: rgba(124, 58, 237, 0.2);
+            color: #7c3aed;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .welcome-text {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .plan-name {
+            font-size: 14px;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #7c3aed 0%, #a855f7 100%);
+            border-radius: 3px;
+        }
+
+        .progress-text {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 12px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+
+        .quick-action-btn {
+            flex: 1;
+            min-width: 110px;
+            padding: 12px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            color: #7c3aed;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .quick-action-btn:hover {
+            background: #f8f5ff;
+            border-color: #7c3aed;
+        }
+
+        .activity-item {
+            background: white;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            border-left: 4px solid #7c3aed;
+            font-size: 13px;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        .activity-meta {
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .activity-amount {
+            color: #16a34a;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            background: white;
+            color: #0f172a;
+            margin-bottom: 20px;
+        }
+
+        .search-bar::placeholder {
+            color: #cbd5e1;
+        }
+
+        .chip {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #0f172a;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+            margin-right: 8px;
+            margin-bottom: 8px;
+            transition: all 0.2s;
+        }
+
+        .chip:hover {
+            background: #7c3aed;
+            color: white;
+            border-color: #7c3aed;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .category-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .category-card:hover {
+            border-color: #7c3aed;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15);
+        }
+
+        .category-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .category-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .provider-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+        }
+
+        .provider-card:hover {
+            border-color: #7c3aed;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.1);
+        }
+
+        .provider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+        .provider-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .copay-badge {
+            background: #f0f9ff;
+            color: #0369a1;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .provider-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 10px;
+        }
+
+        .rating {
+            color: #f59e0b;
+            font-weight: 600;
+        }
+
+        .save-badge {
+            background: #dcfce7;
+            color: #16a34a;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .select-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .select-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: flex-end;
+            z-index: 100;
+        }
+
+        .modal {
+            background: white;
+            width: 100%;
+            max-width: 430px;
+            border-radius: 20px 20px 0 0;
+            padding: 24px;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .modal-close {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+            color: #64748b;
+            background: none;
+            border: none;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 20px;
+            clear: both;
+        }
+
+        .confirm-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 15px;
+            margin-top: 20px;
+            transition: all 0.2s;
+        }
+
+        .confirm-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+        }
+
+        .add-in-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            transition: all 0.2s;
+        }
+
+        .add-in-card:hover {
+            border-color: #7c3aed;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.1);
+        }
+
+        .add-in-info {
+            flex: 1;
+        }
+
+        .add-in-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+
+        .add-in-cost {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .add-in-duration {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .add-in-btn {
+            padding: 8px 16px;
+            background: #7c3aed;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .add-in-btn:hover {
+            background: #6d28d9;
+        }
+
+        .active-badge {
+            background: #dcfce7;
+            color: #16a34a;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .banner {
+            background: #f0f9ff;
+            border-left: 4px solid #0369a1;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #0f172a;
+            line-height: 1.5;
+        }
+
+        .success-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .success-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            animation: bounce 0.6s ease-out;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .success-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .success-message {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+
+        .back-btn {
+            padding: 12px 20px;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            color: #0f172a;
+            transition: all 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #e2e8f0;
+        }
+
+        .sort-filter {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .sort-option {
+            padding: 8px 14px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .sort-option.active {
+            background: #7c3aed;
+            color: white;
+            border-color: #7c3aed;
+        }
+
+        .sort-option:hover {
+            border-color: #7c3aed;
+        }
+
+        .confirmation-detail {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+
+        .confirmation-label {
+            color: #64748b;
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .confirmation-value {
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        .copay-highlight {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            padding: 16px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .copay-label {
+            font-size: 12px;
+            color: #92400e;
+            margin-bottom: 8px;
+        }
+
+        .copay-amount {
+            font-size: 36px;
+            font-weight: 700;
+            color: #f59e0b;
+        }
+
+        .transparency-message {
+            background: #dcfce7;
+            color: #166534;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 20px 0 12px 0;
+        }
+
+        .add-in-explanation {
+            background: #f0f9ff;
+            border-left: 4px solid #0369a1;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #0f172a;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .facility-type {
+            display: inline-block;
+            background: #f1f5f9;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #475569;
+            margin-top: 8px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 16px;
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 20px;
+        }
+
+        .spacing-horizontal {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 13px;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #64748b;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #0f172a;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        // Mock data
+        const mockProviders = {
+            'Knee MRI': [
+                {
+                    id: 1,
+                    name: 'Bay State Imaging',
+                    copay: 75,
+                    rating: 4.8,
+                    distance: '2.1 mi',
+                    facility: 'Imaging Center',
+                    savings: 125
+                },
+                {
+                    id: 2,
+                    name: 'New England Radiology',
+                    copay: 95,
+                    rating: 4.6,
+                    distance: '3.2 mi',
+                    facility: 'Imaging Center',
+                    savings: 105
+                },
+                {
+                    id: 3,
+                    name: 'Beth Israel Outpatient',
+                    copay: 150,
+                    rating: 4.7,
+                    distance: '4.5 mi',
+                    facility: 'Hospital Outpatient',
+                    savings: 50
+                },
+                {
+                    id: 4,
+                    name: 'Mass General Outpatient',
+                    copay: 200,
+                    rating: 4.9,
+                    distance: '5.1 mi',
+                    facility: 'Hospital Outpatient',
+                    savings: 0
+                }
+            ],
+            'Physical Therapy': [
+                {
+                    id: 5,
+                    name: 'Boston Physical Medicine',
+                    copay: 25,
+                    rating: 4.7,
+                    distance: '1.8 mi',
+                    facility: 'Physical Therapy Clinic',
+                    savings: 40
+                },
+                {
+                    id: 6,
+                    name: 'Back & Neck Specialists',
+                    copay: 35,
+                    rating: 4.6,
+                    distance: '2.3 mi',
+                    facility: 'Physical Therapy Clinic',
+                    savings: 30
+                },
+                {
+                    id: 7,
+                    name: 'Brigham Therapy Center',
+                    copay: 45,
+                    rating: 4.8,
+                    distance: '3.7 mi',
+                    facility: 'Hospital PT',
+                    savings: 20
+                },
+                {
+                    id: 8,
+                    name: 'Metro PT Group',
+                    copay: 65,
+                    rating: 4.5,
+                    distance: '4.2 mi',
+                    facility: 'Physical Therapy Clinic',
+                    savings: 0
+                }
+            ],
+            'Dermatologist': [
+                {
+                    id: 9,
+                    name: 'Dr. Sarah Chen Dermatology',
+                    copay: 35,
+                    rating: 4.9,
+                    distance: '1.5 mi',
+                    facility: 'Private Practice',
+                    savings: 50
+                },
+                {
+                    id: 10,
+                    name: 'Boston Skin Clinic',
+                    copay: 50,
+                    rating: 4.7,
+                    distance: '2.8 mi',
+                    facility: 'Specialty Clinic',
+                    savings: 35
+                },
+                {
+                    id: 11,
+                    name: 'Harvard Dermatology Associates',
+                    copay: 75,
+                    rating: 4.8,
+                    distance: '3.4 mi',
+                    facility: 'Academic Medical Center',
+                    savings: 10
+                }
+            ],
+            'Urgent Care': [
+                {
+                    id: 12,
+                    name: 'FastCare Boston Downtown',
+                    copay: 65,
+                    rating: 4.6,
+                    distance: '0.8 mi',
+                    facility: 'Urgent Care Center',
+                    savings: 85
+                },
+                {
+                    id: 13,
+                    name: 'QuickMed Clinic',
+                    copay: 75,
+                    rating: 4.5,
+                    distance: '1.2 mi',
+                    facility: 'Urgent Care Center',
+                    savings: 75
+                }
+            ]
+        };
+
+        const addInProducts = [
+            {
+                id: 1,
+                name: 'Knee/Hip Replacement',
+                costPerPaycheck: 45,
+                duration: 12,
+                description: 'Comprehensive coverage for knee or hip replacement surgery including pre/post-operative care'
+            },
+            {
+                id: 2,
+                name: 'Cataract Surgery',
+                costPerPaycheck: 22,
+                duration: 6,
+                description: 'Full coverage for cataract surgery and lens implants',
+                active: true,
+                activatedDate: 'Feb 15, 2025'
+            },
+            {
+                id: 3,
+                name: 'Back Surgery',
+                costPerPaycheck: 38,
+                duration: 12,
+                description: 'Coverage for spinal fusion and other back procedures'
+            },
+            {
+                id: 4,
+                name: 'Shoulder Surgery',
+                costPerPaycheck: 35,
+                duration: 12,
+                description: 'Rotator cuff repair and shoulder replacement coverage'
+            },
+            {
+                id: 5,
+                name: 'Hernia Repair',
+                costPerPaycheck: 18,
+                duration: 6,
+                description: 'Hernia repair and abdominal wall reconstruction'
+            },
+            {
+                id: 6,
+                name: 'Sleep Study + CPAP',
+                costPerPaycheck: 12,
+                duration: 6,
+                description: 'Sleep study, diagnosis, and CPAP equipment'
+            },
+            {
+                id: 7,
+                name: 'Bariatric Surgery',
+                costPerPaycheck: 55,
+                duration: 18,
+                description: 'Gastric bypass, sleeve gastrectomy, and related procedures'
+            },
+            {
+                id: 8,
+                name: 'Fertility Treatment',
+                costPerPaycheck: 65,
+                duration: 12,
+                description: 'IVF, fertility testing, and assisted reproductive technologies'
+            }
+        ];
+
+        const recentActivity = [
+            {
+                id: 1,
+                title: 'Knee MRI at Bay State Imaging',
+                copay: '$75',
+                date: 'Mar 2'
+            },
+            {
+                id: 2,
+                title: 'PCP Visit with Dr. Chen',
+                copay: '$15',
+                date: 'Feb 18'
+            },
+            {
+                id: 3,
+                title: 'Lab Work - Quest Diagnostics',
+                copay: '$0',
+                date: 'Feb 5'
+            }
+        ];
+
+        // Main App Component
+        function App() {
+            const [currentTab, setCurrentTab] = useState('dashboard');
+            const [searchQuery, setSearchQuery] = useState('');
+            const [selectedService, setSelectedService] = useState(null);
+            const [selectedProvider, setSelectedProvider] = useState(null);
+            const [showConfirmation, setShowConfirmation] = useState(false);
+            const [showSuccess, setShowSuccess] = useState(false);
+            const [showAddInModal, setShowAddInModal] = useState(false);
+            const [selectedAddIn, setSelectedAddIn] = useState(null);
+            const [activeAddIns, setActiveAddIns] = useState([2]);
+            const [sortBy, setSortBy] = useState('price');
+            const [upcomingVisits, setUpcomingVisits] = useState([]);
+
+            const handleServiceSelect = (service) => {
+                setSelectedService(service);
+                setSortBy('price');
+                setSelectedProvider(null);
+            };
+
+            const handleProviderSelect = (provider) => {
+                setSelectedProvider(provider);
+                setShowConfirmation(true);
+            };
+
+            const handleConfirmBooking = () => {
+                if (selectedProvider) {
+                    setUpcomingVisits([...upcomingVisits, {
+                        service: selectedService,
+                        provider: selectedProvider.name,
+                        copay: selectedProvider.copay,
+                        date: 'Mar 15, 2025'
+                    }]);
+                    setShowSuccess(true);
+                }
+            };
+
+            const handleActivateAddIn = (addIn) => {
+                setSelectedAddIn(addIn);
+                setShowAddInModal(true);
+            };
+
+            const handleConfirmAddIn = () => {
+                if (selectedAddIn && !activeAddIns.includes(selectedAddIn.id)) {
+                    setActiveAddIns([...activeAddIns, selectedAddIn.id]);
+                    setShowAddInModal(false);
+                    setSelectedAddIn(null);
+                }
+            };
+
+            const getSortedProviders = () => {
+                if (!selectedService) return [];
+                let providers = [...(mockProviders[selectedService] || [])];
+
+                if (sortBy === 'price') {
+                    providers.sort((a, b) => a.copay - b.copay);
+                } else if (sortBy === 'rating') {
+                    providers.sort((a, b) => b.rating - a.rating);
+                } else if (sortBy === 'distance') {
+                    providers.sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
+                }
+                return providers;
+            };
+
+            return (
+                <div className="app-container">
+                    <div className="content-area">
+                        {currentTab === 'dashboard' && (
+                            <DashboardView upcomingVisits={upcomingVisits} />
+                        )}
+
+                        {currentTab === 'care' && (
+                            selectedService ? (
+                                <CareSearchResults
+                                    service={selectedService}
+                                    providers={getSortedProviders()}
+                                    onSelectProvider={handleProviderSelect}
+                                    onBack={() => {
+                                        setSelectedService(null);
+                                        setSelectedProvider(null);
+                                    }}
+                                    sortBy={sortBy}
+                                    onSortChange={setSortBy}
+                                />
+                            ) : (
+                                <CareSearchView
+                                    onSelectService={handleServiceSelect}
+                                    searchQuery={searchQuery}
+                                    onSearchChange={setSearchQuery}
+                                />
+                            )
+                        )}
+
+                        {currentTab === 'addins' && (
+                            <AddInCoverageView
+                                products={addInProducts}
+                                activeAddIns={activeAddIns}
+                                onActivate={handleActivateAddIn}
+                            />
+                        )}
+                    </div>
+
+                    {showConfirmation && selectedProvider && (
+                        <ConfirmationModal
+                            service={selectedService}
+                            provider={selectedProvider}
+                            onConfirm={handleConfirmBooking}
+                            onClose={() => setShowConfirmation(false)}
+                        />
+                    )}
+
+                    {showSuccess && (
+                        <SuccessModal
+                            service={selectedService}
+                            onClose={() => {
+                                setShowSuccess(false);
+                                setSelectedService(null);
+                                setSelectedProvider(null);
+                            }}
+                        />
+                    )}
+
+                    {showAddInModal && selectedAddIn && (
+                        <AddInActivationModal
+                            addIn={selectedAddIn}
+                            onConfirm={handleConfirmAddIn}
+                            onClose={() => {
+                                setShowAddInModal(false);
+                                setSelectedAddIn(null);
+                            }}
+                        />
+                    )}
+
+                    <div className="bottom-nav">
+                        <div
+                            className={`nav-item ${currentTab === 'dashboard' ? 'active' : ''}`}
+                            onClick={() => setCurrentTab('dashboard')}
+                        >
+                            <div className="nav-icon">🏠</div>
+                            <div>Dashboard</div>
+                        </div>
+                        <div
+                            className={`nav-item ${currentTab === 'care' ? 'active' : ''}`}
+                            onClick={() => setCurrentTab('care')}
+                        >
+                            <div className="nav-icon">🔍</div>
+                            <div>Find Care</div>
+                        </div>
+                        <div
+                            className={`nav-item ${currentTab === 'addins' ? 'active' : ''}`}
+                            onClick={() => setCurrentTab('addins')}
+                        >
+                            <div className="nav-icon">⭐</div>
+                            <div>Add-ins</div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Dashboard View
+        function DashboardView({ upcomingVisits }) {
+            const oopSpent = 847;
+            const oopMax = 6000;
+            const progress = (oopSpent / oopMax) * 100;
+
+            return (
+                <>
+                    <div className="header">
+                        <div className="welcome-text">Welcome back, Sarah</div>
+                        <div className="plan-name">
+                            💜 Pillar Health — Bind-Style Plan
+                        </div>
+                        <div className="badge-ai">AI-Powered</div>
+                    </div>
+
+                    <div style={{ padding: '20px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
+                            <div className="stat-card">
+                                <div className="stat-label">OOP Spent</div>
+                                <div className="stat-value">${oopSpent}</div>
+                                <div className="progress-bar">
+                                    <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+                                </div>
+                                <div className="progress-text">of ${oopMax} max</div>
+                            </div>
+
+                            <div className="stat-card">
+                                <div className="stat-label">Claims YTD</div>
+                                <div className="stat-value">12</div>
+                                <div style={{ fontSize: '12px', color: '#64748b' }}>medical claims</div>
+                            </div>
+
+                            <div className="stat-card">
+                                <div className="stat-label">Active Add-ins</div>
+                                <div className="stat-value">2</div>
+                                <div style={{ fontSize: '12px', color: '#16a34a' }}>coverage activated</div>
+                            </div>
+
+                            <div className="stat-card">
+                                <div className="stat-label">Savings YTD</div>
+                                <div className="stat-value" style={{ color: '#16a34a' }}>$1,230</div>
+                                <div style={{ fontSize: '12px', color: '#64748b' }}>vs. traditional</div>
+                            </div>
+                        </div>
+
+                        <div style={{ marginBottom: '20px' }}>
+                            <div className="section-title">Quick Actions</div>
+                            <div className="quick-actions">
+                                <button className="quick-action-btn">🔍 Find Care</button>
+                                <button className="quick-action-btn">🆔 ID Card</button>
+                                <button className="quick-action-btn">❓ Get Help</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div className="section-title">Recent Activity</div>
+                            {recentActivity.map(activity => (
+                                <div key={activity.id} className="activity-item">
+                                    <div className="activity-title">{activity.title}</div>
+                                    <div className="activity-meta">
+                                        <span className="activity-amount">{activity.copay}</span>
+                                        <span>{activity.date}</span>
+                                    </div>
+                                </div>
+                            ))}
+                            {upcomingVisits.length > 0 && (
+                                <>
+                                    <div className="section-title" style={{ marginTop: '20px' }}>Upcoming Visits</div>
+                                    {upcomingVisits.map((visit, idx) => (
+                                        <div key={idx} className="activity-item">
+                                            <div className="activity-title">{visit.service} at {visit.provider}</div>
+                                            <div className="activity-meta">
+                                                <span className="activity-amount" style={{ color: '#16a34a' }}>{visit.copay} copay</span>
+                                                <span>{visit.date}</span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </>
+                            )}
+                        </div>
+
+                        <div className="footer">Powered by Pillar Health</div>
+                    </div>
+                </>
+            );
+        }
+
+        // Care Search View
+        function CareSearchView({ onSelectService, searchQuery, onSearchChange }) {
+            const popularSearches = ['Knee MRI', 'Physical Therapy', 'Dermatologist', 'Urgent Care', 'Lab Work'];
+
+            const categories = [
+                { name: 'Imaging', icon: '🖼️', key: 'imaging' },
+                { name: 'Primary Care', icon: '👨‍⚕️', key: 'primary' },
+                { name: 'Specialist', icon: '👩‍⚕️', key: 'specialist' },
+                { name: 'Therapy', icon: '💪', key: 'therapy' },
+                { name: 'Lab & Testing', icon: '🧪', key: 'lab' },
+                { name: 'Urgent/ER', icon: '🚑', key: 'urgent' }
+            ];
+
+            return (
+                <div style={{ padding: '20px' }}>
+                    <div className="header" style={{ margin: '-20px -20px 0 -20px', padding: '24px', marginBottom: '20px' }}>
+                        <div className="welcome-text">Find Care</div>
+                        <div className="plan-name">What do you need today?</div>
+                    </div>
+
+                    <input
+                        type="text"
+                        className="search-bar"
+                        placeholder="What care do you need?"
+                        value={searchQuery}
+                        onChange={(e) => onSearchChange(e.target.value)}
+                    />
+
+                    <div style={{ marginBottom: '20px' }}>
+                        <div style={{ fontSize: '12px', color: '#64748b', fontWeight: 600, marginBottom: '10px' }}>POPULAR SEARCHES</div>
+                        <div>
+                            {popularSearches.map(search => (
+                                <div
+                                    key={search}
+                                    className="chip"
+                                    onClick={() => onSelectService(search)}
+                                >
+                                    {search}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div>
+                        <div style={{ fontSize: '12px', color: '#64748b', fontWeight: 600, marginBottom: '10px' }}>BROWSE BY CATEGORY</div>
+                        <div className="category-grid">
+                            {categories.map(cat => (
+                                <div
+                                    key={cat.key}
+                                    className="category-card"
+                                    onClick={() => onSelectService(cat.name)}
+                                >
+                                    <div className="category-icon">{cat.icon}</div>
+                                    <div className="category-name">{cat.name}</div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="footer">Powered by Pillar Health</div>
+                </div>
+            );
+        }
+
+        // Care Search Results
+        function CareSearchResults({ service, providers, onSelectProvider, onBack, sortBy, onSortChange }) {
+            return (
+                <div style={{ padding: '20px' }}>
+                    <button className="back-btn" onClick={onBack} style={{ marginBottom: '20px' }}>← Back to Services</button>
+
+                    <div style={{ marginBottom: '20px' }}>
+                        <div style={{ fontSize: '18px', fontWeight: 700, color: '#0f172a', marginBottom: '4px' }}>{service}</div>
+                        <div style={{ fontSize: '13px', color: '#64748b' }}>📍 Boston, MA</div>
+                    </div>
+
+                    <div className="sort-filter">
+                        <div
+                            className={`sort-option ${sortBy === 'price' ? 'active' : ''}`}
+                            onClick={() => onSortChange('price')}
+                        >
+                            Price (Low to High)
+                        </div>
+                        <div
+                            className={`sort-option ${sortBy === 'rating' ? 'active' : ''}`}
+                            onClick={() => onSortChange('rating')}
+                        >
+                            Rating
+                        </div>
+                        <div
+                            className={`sort-option ${sortBy === 'distance' ? 'active' : ''}`}
+                            onClick={() => onSortChange('distance')}
+                        >
+                            Distance
+                        </div>
+                    </div>
+
+                    {providers.map(provider => (
+                        <div key={provider.id} className="provider-card">
+                            <div className="provider-header">
+                                <div className="provider-name">{provider.name}</div>
+                                <div className="copay-badge">${provider.copay}</div>
+                            </div>
+
+                            <div className="provider-meta">
+                                <span className="rating">⭐ {provider.rating}</span>
+                                <span>📍 {provider.distance}</span>
+                            </div>
+
+                            {provider.savings > 0 && (
+                                <div className="save-badge">💰 Save ${provider.savings}</div>
+                            )}
+
+                            <div className="facility-type">{provider.facility}</div>
+
+                            <button
+                                className="select-btn"
+                                onClick={() => onSelectProvider(provider)}
+                            >
+                                Select Provider
+                            </button>
+                        </div>
+                    ))}
+
+                    <div className="footer">Powered by Pillar Health</div>
+                </div>
+            );
+        }
+
+        // Confirmation Modal
+        function ConfirmationModal({ service, provider, onConfirm, onClose }) {
+            return (
+                <div className="modal-overlay" onClick={onClose}>
+                    <div className="modal" onClick={(e) => e.stopPropagation()}>
+                        <button className="modal-close" onClick={onClose}>✕</button>
+                        <div className="modal-title">Confirm Appointment</div>
+
+                        <div className="copay-highlight">
+                            <div className="copay-label">YOUR COST</div>
+                            <div className="copay-amount">${provider.copay}</div>
+                        </div>
+
+                        <div className="transparency-message">
+                            ✓ This is your total cost. No surprises.
+                        </div>
+
+                        <div className="confirmation-detail">
+                            <div className="confirmation-label">Service</div>
+                            <div className="confirmation-value">{service}</div>
+                        </div>
+
+                        <div className="confirmation-detail">
+                            <div className="confirmation-label">Provider</div>
+                            <div className="confirmation-value">{provider.name}</div>
+                        </div>
+
+                        <div className="confirmation-detail">
+                            <div className="confirmation-label">Location</div>
+                            <div className="confirmation-value">{provider.facility}</div>
+                        </div>
+
+                        <div className="confirmation-detail">
+                            <div className="confirmation-label">Scheduled Date</div>
+                            <div className="confirmation-value">Mar 15, 2025 at 2:00 PM</div>
+                        </div>
+
+                        <button className="confirm-btn" onClick={onConfirm}>
+                            Confirm Booking
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        // Success Modal
+        function SuccessModal({ service, onClose }) {
+            return (
+                <div className="modal-overlay" onClick={onClose}>
+                    <div className="modal" onClick={(e) => e.stopPropagation()}>
+                        <div className="success-container">
+                            <div className="success-icon">✅</div>
+                            <div className="success-title">Appointment Confirmed!</div>
+                            <div className="success-message">
+                                {service} has been added to your upcoming visits
+                            </div>
+                            <button className="back-btn" onClick={onClose}>
+                                Return to Dashboard
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        // Add-In Coverage View
+        function AddInCoverageView({ products, activeAddIns, onActivate }) {
+            return (
+                <div style={{ padding: '20px' }}>
+                    <div className="header" style={{ margin: '-20px -20px 0 -20px', padding: '24px', marginBottom: '20px' }}>
+                        <div className="welcome-text">Add-in Coverage</div>
+                        <div className="plan-name">Activate plannable procedures</div>
+                    </div>
+
+                    <div className="add-in-explanation">
+                        Add-in coverage lets you activate coverage for plannable procedures when you need them. You pay a small additional premium spread across your paychecks.
+                    </div>
+
+                    {products.map(product => (
+                        <div key={product.id} className="add-in-card">
+                            <div className="add-in-info">
+                                <div className="add-in-name">{product.name}</div>
+                                <div className="add-in-cost">${product.costPerPaycheck}/paycheck</div>
+                                <div className="add-in-duration">Coverage period: {product.duration} months</div>
+                                {product.active && (
+                                    <div style={{ marginTop: '8px' }}>
+                                        <div className="active-badge">Active since {product.activatedDate}</div>
+                                    </div>
+                                )}
+                            </div>
+                            {!activeAddIns.includes(product.id) ? (
+                                <button
+                                    className="add-in-btn"
+                                    onClick={() => onActivate(product)}
+                                >
+                                    Activate
+                                </button>
+                            ) : (
+                                <div className="active-badge">Active</div>
+                            )}
+                        </div>
+                    ))}
+
+                    <div className="footer">Powered by Pillar Health</div>
+                </div>
+            );
+        }
+
+        // Add-In Activation Modal
+        function AddInActivationModal({ addIn, onConfirm, onClose }) {
+            const totalCost = addIn.costPerPaycheck * addIn.duration;
+            const biweeklyPaychecks = 26; // 26 paychecks per year, roughly 2 per month
+            const startDate = new Date();
+            startDate.setDate(startDate.getDate() + 7);
+
+            return (
+                <div className="modal-overlay" onClick={onClose}>
+                    <div className="modal" onClick={(e) => e.stopPropagation()}>
+                        <button className="modal-close" onClick={onClose}>✕</button>
+                        <div className="modal-title">Activate {addIn.name}</div>
+
+                        <div style={{ background: '#f0f9ff', padding: '16px', borderRadius: '10px', marginBottom: '20px' }}>
+                            <div style={{ fontSize: '13px', color: '#0c4a6e', lineHeight: '1.6' }}>
+                                {addIn.description}
+                            </div>
+                        </div>
+
+                        <div style={{ borderTop: '1px solid #e2e8f0', borderBottom: '1px solid #e2e8f0', paddingY: '16px', marginBottom: '20px' }}>
+                            <div className="detail-row">
+                                <span className="detail-label">Cost per paycheck</span>
+                                <span className="detail-value">${addIn.costPerPaycheck}</span>
+                            </div>
+                            <div className="detail-row">
+                                <span className="detail-label">Coverage period</span>
+                                <span className="detail-value">{addIn.duration} months</span>
+                            </div>
+                            <div className="detail-row">
+                                <span className="detail-label">Total cost</span>
+                                <span className="detail-value" style={{ color: '#16a34a' }}>${totalCost}</span>
+                            </div>
+                            <div className="detail-row">
+                                <span className="detail-label">Coverage starts</span>
+                                <span className="detail-value">{startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                            </div>
+                        </div>
+
+                        <div style={{ background: '#f0fdf4', padding: '12px', borderRadius: '8px', marginBottom: '20px', fontSize: '13px', color: '#166534' }}>
+                            ✓ You can cancel anytime. Your deduction adjusts immediately.
+                        </div>
+
+                        <button className="confirm-btn" onClick={onConfirm}>
+                            Activate Coverage
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        // Render app
+        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+</body>
+</html>
