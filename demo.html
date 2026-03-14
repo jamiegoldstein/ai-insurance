@@ -788,6 +788,384 @@
         .hidden {
             display: none !important;
         }
+
+        /* Enrollment Engine Styles */
+        .enrollment-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .enrollment-actions {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            padding: 0.625rem 1.25rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .btn-action-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-action-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-action-secondary {
+            background: #f1f5f9;
+            color: #0f172a;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-action-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-action-danger {
+            background: transparent;
+            color: #dc2626;
+            border: 1px solid #dc2626;
+        }
+
+        .btn-action-danger:hover {
+            background: #fef2f2;
+        }
+
+        .search-filter-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-filter-bar input {
+            flex: 1;
+            min-width: 250px;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .search-filter-bar select {
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .enrollment-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .enrollment-table th {
+            background: #f8fafc;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #64748b;
+            border-bottom: 1px solid #e2e8f0;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .enrollment-table th:hover {
+            background: #f1f5f9;
+        }
+
+        .enrollment-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.875rem;
+        }
+
+        .enrollment-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .employee-detail-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .detail-section {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .detail-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .detail-value {
+            font-size: 0.875rem;
+            color: #0f172a;
+            font-weight: 500;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #2563eb;
+            cursor: pointer;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.375rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-cobra {
+            background: #fed7aa;
+            color: #92400e;
+        }
+
+        .status-terminated {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-pending {
+            background: #dbeafe;
+            color: #0c4a6e;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline-dot {
+            width: 12px;
+            height: 12px;
+            background: #7c3aed;
+            border-radius: 50%;
+            margin-top: 0.375rem;
+            flex-shrink: 0;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-label {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 0.875rem;
+        }
+
+        .timeline-date {
+            font-size: 0.8125rem;
+            color: #64748b;
+        }
+
+        .dependent-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .dependent-table th {
+            background: #f8fafc;
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.8125rem;
+            color: #64748b;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .dependent-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.8125rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .member-id-input {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .member-id-input input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .verification-result {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-top: 1.5rem;
+        }
+
+        .verification-status {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .verification-status.eligible {
+            color: #16a34a;
+        }
+
+        .verification-status.not-found {
+            color: #dc2626;
+        }
+
+        .copay-schedule {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .copay-schedule th {
+            background: #f8fafc;
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.8125rem;
+            color: #64748b;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .copay-schedule td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.8125rem;
+        }
     </style>
 </head>
 <body>
@@ -897,6 +1275,24 @@
             { id: 'bariatric', name: 'Bariatric Surgery', included: false, costPerPaycheck: 55, durationMonths: 18 },
         ];
 
+        const INITIAL_EMPLOYEES = [
+            { id: 'EMP001', firstName: 'Sarah', lastName: 'Chen', dob: '1988-03-15', ssn: '***-**-4521', hireDate: '2024-01-15', status: 'active', tier: 'EE+Family', department: 'Engineering', salary: 145000, dependents: [{ name: 'David Chen', relationship: 'Spouse', dob: '1987-07-22', status: 'active' }, { name: 'Emma Chen', relationship: 'Child', dob: '2018-11-03', status: 'active' }, { name: 'Lucas Chen', relationship: 'Child', dob: '2021-06-18', status: 'active' }], addIns: ['Cataract Surgery'], memberId: 'PLR-2024-00101' },
+            { id: 'EMP002', firstName: 'Michael', lastName: 'Rodriguez', dob: '1992-08-04', ssn: '***-**-7834', hireDate: '2024-01-15', status: 'active', tier: 'EE+Spouse', department: 'Sales', salary: 98000, dependents: [{ name: 'Ana Rodriguez', relationship: 'Spouse', dob: '1993-02-14', status: 'active' }], addIns: [], memberId: 'PLR-2024-00102' },
+            { id: 'EMP003', firstName: 'Jessica', lastName: 'Thompson', dob: '1985-12-20', ssn: '***-**-9156', hireDate: '2023-06-01', status: 'active', tier: 'EE Only', department: 'Marketing', salary: 112000, dependents: [], addIns: ['Knee/Hip Replacement'], memberId: 'PLR-2023-00089' },
+            { id: 'EMP004', firstName: 'David', lastName: 'Kim', dob: '1990-04-11', ssn: '***-**-2847', hireDate: '2024-03-01', status: 'active', tier: 'EE+Family', department: 'Engineering', salary: 155000, dependents: [{ name: 'Jennifer Kim', relationship: 'Spouse', dob: '1991-09-30', status: 'active' }, { name: 'Ryan Kim', relationship: 'Child', dob: '2019-01-25', status: 'active' }], addIns: [], memberId: 'PLR-2024-00115' },
+            { id: 'EMP005', firstName: 'Emily', lastName: 'Patel', dob: '1995-07-08', ssn: '***-**-6293', hireDate: '2024-06-15', status: 'active', tier: 'EE Only', department: 'Product', salary: 125000, dependents: [], addIns: [], memberId: 'PLR-2024-00134' },
+            { id: 'EMP006', firstName: 'James', lastName: 'O\'Brien', dob: '1982-01-30', ssn: '***-**-1478', hireDate: '2023-01-15', status: 'active', tier: 'EE+Spouse', department: 'Finance', salary: 135000, dependents: [{ name: 'Margaret O\'Brien', relationship: 'Spouse', dob: '1984-05-12', status: 'active' }], addIns: ['Back Surgery'], memberId: 'PLR-2023-00042' },
+            { id: 'EMP007', firstName: 'Maria', lastName: 'Garcia', dob: '1993-11-25', ssn: '***-**-5632', hireDate: '2024-09-01', status: 'active', tier: 'EE+Child', department: 'Engineering', salary: 140000, dependents: [{ name: 'Sofia Garcia', relationship: 'Child', dob: '2020-03-14', status: 'active' }], addIns: [], memberId: 'PLR-2024-00156' },
+            { id: 'EMP008', firstName: 'Robert', lastName: 'Wilson', dob: '1978-06-17', ssn: '***-**-8901', hireDate: '2022-01-15', status: 'cobra', tier: 'EE+Family', department: 'Operations', salary: 0, terminationDate: '2025-12-31', cobraEndDate: '2027-06-30', dependents: [{ name: 'Susan Wilson', relationship: 'Spouse', dob: '1980-02-28', status: 'active' }, { name: 'Jake Wilson', relationship: 'Child', dob: '2008-08-15', status: 'active' }], addIns: [], memberId: 'PLR-2022-00018' },
+            { id: 'EMP009', firstName: 'Amanda', lastName: 'Foster', dob: '1997-02-14', ssn: '***-**-3456', hireDate: '2025-01-06', status: 'active', tier: 'EE Only', department: 'Design', salary: 95000, dependents: [], addIns: [], memberId: 'PLR-2025-00003' },
+            { id: 'EMP010', firstName: 'Christopher', lastName: 'Nguyen', dob: '1986-09-03', ssn: '***-**-7189', hireDate: '2023-04-01', status: 'active', tier: 'EE+Spouse', department: 'Engineering', salary: 160000, dependents: [{ name: 'Lisa Nguyen', relationship: 'Spouse', dob: '1988-12-07', status: 'active' }], addIns: ['Sleep Study + CPAP'], memberId: 'PLR-2023-00067' },
+            { id: 'EMP011', firstName: 'Rachel', lastName: 'Morgan', dob: '1991-05-22', ssn: '***-**-4823', hireDate: '2024-02-15', status: 'terminated', tier: 'EE Only', department: 'Sales', salary: 0, terminationDate: '2025-11-30', dependents: [], addIns: [], memberId: 'PLR-2024-00108' },
+            { id: 'EMP012', firstName: 'Daniel', lastName: 'Brooks', dob: '1983-10-08', ssn: '***-**-6547', hireDate: '2023-01-15', status: 'active', tier: 'EE+Family', department: 'Executive', salary: 195000, dependents: [{ name: 'Katherine Brooks', relationship: 'Spouse', dob: '1985-03-19', status: 'active' }, { name: 'Oliver Brooks', relationship: 'Child', dob: '2015-07-04', status: 'active' }, { name: 'Charlotte Brooks', relationship: 'Child', dob: '2017-12-22', status: 'active' }, { name: 'Henry Brooks', relationship: 'Child', dob: '2020-09-11', status: 'active' }], addIns: ['Knee/Hip Replacement', 'Cataract Surgery'], memberId: 'PLR-2023-00045' },
+            { id: 'EMP013', firstName: 'Stephanie', lastName: 'Lee', dob: '1994-08-17', ssn: '***-**-2190', hireDate: '2026-03-01', status: 'pending', tier: 'EE+Spouse', department: 'Marketing', salary: 105000, dependents: [{ name: 'Brian Lee', relationship: 'Spouse', dob: '1993-04-06', status: 'pending' }], addIns: [], memberId: 'PLR-2026-00001' },
+            { id: 'EMP014', firstName: 'Kevin', lastName: 'Martinez', dob: '1989-01-29', ssn: '***-**-8374', hireDate: '2024-07-01', status: 'active', tier: 'EE+Child', department: 'Product', salary: 130000, dependents: [{ name: 'Isabella Martinez', relationship: 'Child', dob: '2022-05-20', status: 'active' }], addIns: [], memberId: 'PLR-2024-00142' },
+            { id: 'EMP015', firstName: 'Lauren', lastName: 'Taylor', dob: '1996-04-05', ssn: '***-**-5016', hireDate: '2025-02-01', status: 'active', tier: 'EE Only', department: 'Finance', salary: 88000, dependents: [], addIns: [], memberId: 'PLR-2025-00008' },
+        ];
+
         // Real Boston provider data
         const MOCK_PROVIDERS = {
             'Knee MRI': [
@@ -961,6 +1357,16 @@
             const [memberTab, setMemberTab] = useState('dashboard');
             const [searchQuery, setSearchQuery] = useState('');
             const [selectedCategory, setSelectedCategory] = useState(null);
+
+            // Enrollment Engine state
+            const [employees, setEmployees] = useState(INITIAL_EMPLOYEES);
+            const [enrollmentView, setEnrollmentView] = useState('roster');
+            const [selectedEmployee, setSelectedEmployee] = useState(null);
+            const [searchTerm, setSearchTerm] = useState('');
+            const [statusFilter, setStatusFilter] = useState('all');
+            const [showLifeEventModal, setShowLifeEventModal] = useState(false);
+            const [verifyMemberId, setVerifyMemberId] = useState('');
+            const [verifyResult, setVerifyResult] = useState(null);
 
             // ============ EMPLOYER HANDLERS ============
 
@@ -1407,47 +1813,493 @@
                 </div>
             );
 
-            const renderEnrollmentSection = () => (
-                <div className="fade-in">
-                    <h2 className="section-header">Employee Enrollment</h2>
-                    <div className="card" style={{ background: '#fef3c7', border: '1px solid #f59e0b', marginBottom: '1.5rem' }}>
-                        <p style={{ color: '#92400e', fontWeight: 600, margin: 0 }}>✨ Eligibility engine coming soon</p>
-                        <p style={{ color: '#92400e', fontSize: '0.875rem', margin: '0.5rem 0 0 0' }}>Full enrollment management, life events, and COBRA administration will be available in Q2 2026.</p>
-                    </div>
-                    <table className="enrollment-table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Employee ID</th>
-                                <th>Status</th>
-                                <th>Plan Tier</th>
-                                <th>Enrolled Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {[
-                                { name: 'Sarah Johnson', id: 'EMP001', status: 'Active', tier: 'Gold', date: '2025-01-15' },
-                                { name: 'Michael Chen', id: 'EMP002', status: 'Active', tier: 'Silver', date: '2025-01-15' },
-                                { name: 'Jessica Rodriguez', id: 'EMP003', status: 'Pending', tier: 'Gold', date: '2026-03-01' },
-                                { name: 'David Thompson', id: 'EMP004', status: 'COBRA', tier: 'Silver', date: '2025-06-01' },
-                                { name: 'Emily Wilson', id: 'EMP005', status: 'Active', tier: 'Gold', date: '2025-01-15' },
-                            ].map((emp, idx) => (
-                                <tr key={idx}>
-                                    <td>{emp.name}</td>
-                                    <td>{emp.id}</td>
-                                    <td>
-                                        <span className={`status-badge status-${emp.status.toLowerCase()}`}>
-                                            {emp.status}
-                                        </span>
-                                    </td>
-                                    <td>{emp.tier}</td>
-                                    <td>{emp.date}</td>
+            // ============ ENROLLMENT ENGINE ============
+
+            const getStatusColor = (status) => {
+                switch(status) {
+                    case 'active': return '#10b981';
+                    case 'cobra': return '#f59e0b';
+                    case 'terminated': return '#ef4444';
+                    case 'pending': return '#3b82f6';
+                    default: return '#6b7280';
+                }
+            };
+
+            const filteredEmployees = employees.filter(emp => {
+                const matchesSearch =
+                    emp.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    emp.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    emp.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    emp.memberId.toLowerCase().includes(searchTerm.toLowerCase());
+                const matchesStatus = statusFilter === 'all' || emp.status === statusFilter;
+                return matchesSearch && matchesStatus;
+            });
+
+            const sortedEmployees = [...filteredEmployees].sort((a, b) => {
+                return (a.firstName + a.lastName).localeCompare(b.firstName + b.lastName);
+            });
+
+            const renderRosterView = () => {
+                const activeCount = employees.filter(e => e.status === 'active').length;
+                const cobraCount = employees.filter(e => e.status === 'cobra').length;
+                const pendingCount = employees.filter(e => e.status === 'pending').length;
+                const totalEnrolled = activeCount + cobraCount;
+
+                return (
+                    <div className="fade-in">
+                        <h2 className="section-header">Employee Enrollment</h2>
+
+                        <div className="enrollment-stats">
+                            <div className="stat-card">
+                                <div className="stat-value">{totalEnrolled}</div>
+                                <div className="stat-label">Total Enrolled</div>
+                            </div>
+                            <div className="stat-card">
+                                <div className="stat-value" style={{ color: '#10b981' }}>{activeCount}</div>
+                                <div className="stat-label">Active</div>
+                            </div>
+                            <div className="stat-card">
+                                <div className="stat-value" style={{ color: '#f59e0b' }}>{cobraCount}</div>
+                                <div className="stat-label">COBRA</div>
+                            </div>
+                            <div className="stat-card">
+                                <div className="stat-value" style={{ color: '#3b82f6' }}>{pendingCount}</div>
+                                <div className="stat-label">Pending</div>
+                            </div>
+                        </div>
+
+                        <div className="enrollment-actions">
+                            <button className="btn-action btn-action-primary" onClick={() => setEnrollmentView('addEmployee')}>
+                                + Add Employee
+                            </button>
+                            <button className="btn-action btn-action-secondary" onClick={() => setEnrollmentView('verify')}>
+                                Verify Eligibility
+                            </button>
+                        </div>
+
+                        <div className="search-filter-bar">
+                            <input
+                                type="text"
+                                placeholder="Search by name, ID, or member ID..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                                <option value="all">All Status</option>
+                                <option value="active">Active</option>
+                                <option value="cobra">COBRA</option>
+                                <option value="terminated">Terminated</option>
+                                <option value="pending">Pending</option>
+                            </select>
+                        </div>
+
+                        <table className="enrollment-table">
+                            <thead>
+                                <tr>
+                                    <th onClick={() => setSearchTerm('')}>Name</th>
+                                    <th>Employee ID</th>
+                                    <th>Member ID</th>
+                                    <th>Status</th>
+                                    <th>Tier</th>
+                                    <th>Department</th>
+                                    <th>Dependents</th>
+                                    <th>Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            );
+                            </thead>
+                            <tbody>
+                                {sortedEmployees.map((emp) => (
+                                    <tr key={emp.id}>
+                                        <td>{emp.firstName} {emp.lastName}</td>
+                                        <td>{emp.id}</td>
+                                        <td>{emp.memberId}</td>
+                                        <td>
+                                            <span className={`status-badge status-${emp.status}`}>
+                                                {emp.status.charAt(0).toUpperCase() + emp.status.slice(1)}
+                                            </span>
+                                        </td>
+                                        <td>{emp.tier}</td>
+                                        <td>{emp.department}</td>
+                                        <td>{emp.dependents.length}</td>
+                                        <td>
+                                            <button
+                                                className="btn-action btn-action-secondary btn-small"
+                                                onClick={() => {
+                                                    setSelectedEmployee(emp);
+                                                    setEnrollmentView('detail');
+                                                }}
+                                            >
+                                                View
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        {sortedEmployees.length === 0 && (
+                            <div className="empty-state">
+                                <div className="empty-state-icon">👤</div>
+                                <p>No employees found matching your search.</p>
+                            </div>
+                        )}
+                    </div>
+                );
+            };
+
+            const renderDetailView = () => {
+                if (!selectedEmployee) return null;
+
+                return (
+                    <div className="fade-in">
+                        <a className="back-link" onClick={() => setEnrollmentView('roster')}>
+                            ← Back to Roster
+                        </a>
+                        <h2 className="section-header">{selectedEmployee.firstName} {selectedEmployee.lastName}</h2>
+
+                        <div className="employee-detail-card">
+                            <div className="detail-section">
+                                <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', fontWeight: 700 }}>Employee Info</h3>
+                                <div className="detail-row">
+                                    <span className="detail-label">Full Name</span>
+                                    <span className="detail-value">{selectedEmployee.firstName} {selectedEmployee.lastName}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <span className="detail-label">Date of Birth</span>
+                                    <span className="detail-value">{selectedEmployee.dob}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <span className="detail-label">SSN</span>
+                                    <span className="detail-value">{selectedEmployee.ssn}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <span className="detail-label">Hire Date</span>
+                                    <span className="detail-value">{selectedEmployee.hireDate}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <span className="detail-label">Department</span>
+                                    <span className="detail-value">{selectedEmployee.department}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <span className="detail-label">Salary</span>
+                                    <span className="detail-value">${selectedEmployee.salary.toLocaleString()}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <span className="detail-label">Member ID</span>
+                                    <span className="detail-value" style={{ fontWeight: 600, color: '#7c3aed' }}>{selectedEmployee.memberId}</span>
+                                </div>
+                            </div>
+
+                            <div className="detail-section">
+                                <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', fontWeight: 700 }}>Coverage Status</h3>
+                                <div style={{ marginBottom: '1.5rem' }}>
+                                    <span className={`status-badge status-${selectedEmployee.status}`} style={{ fontSize: '0.875rem', padding: '0.5rem 1rem' }}>
+                                        {selectedEmployee.status.charAt(0).toUpperCase() + selectedEmployee.status.slice(1)}
+                                    </span>
+                                </div>
+                                <div className="detail-row">
+                                    <span className="detail-label">Tier</span>
+                                    <span className="detail-value">{selectedEmployee.tier}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <span className="detail-label">Plan</span>
+                                    <span className="detail-value">{companyInfo.planName}</span>
+                                </div>
+                                {selectedEmployee.terminationDate && (
+                                    <>
+                                        <div className="detail-row">
+                                            <span className="detail-label">Termination Date</span>
+                                            <span className="detail-value">{selectedEmployee.terminationDate}</span>
+                                        </div>
+                                        {selectedEmployee.cobraEndDate && (
+                                            <div className="detail-row">
+                                                <span className="detail-label">COBRA End Date</span>
+                                                <span className="detail-value">{selectedEmployee.cobraEndDate}</span>
+                                            </div>
+                                        )}
+                                    </>
+                                )}
+                            </div>
+                        </div>
+
+                        {selectedEmployee.dependents.length > 0 && (
+                            <div className="detail-section" style={{ marginBottom: '2rem' }}>
+                                <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', fontWeight: 700 }}>Dependents</h3>
+                                <table className="dependent-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Relationship</th>
+                                            <th>Date of Birth</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {selectedEmployee.dependents.map((dep, idx) => (
+                                            <tr key={idx}>
+                                                <td>{dep.name}</td>
+                                                <td>{dep.relationship}</td>
+                                                <td>{dep.dob}</td>
+                                                <td>
+                                                    <span className="status-badge" style={{ background: '#dcfce7', color: '#166534' }}>
+                                                        {dep.status.charAt(0).toUpperCase() + dep.status.slice(1)}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+
+                        {selectedEmployee.addIns.length > 0 && (
+                            <div className="detail-section" style={{ marginBottom: '2rem' }}>
+                                <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', fontWeight: 700 }}>Active Add-Ins</h3>
+                                <ul style={{ margin: 0, paddingLeft: '1.5rem' }}>
+                                    {selectedEmployee.addIns.map((addin, idx) => (
+                                        <li key={idx} style={{ marginBottom: '0.5rem', color: '#0f172a' }}>{addin}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
+
+                        <div className="detail-section" style={{ marginBottom: '2rem' }}>
+                            <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', fontWeight: 700 }}>Coverage Timeline</h3>
+                            <div className="timeline">
+                                <div className="timeline-item">
+                                    <div className="timeline-dot"></div>
+                                    <div className="timeline-content">
+                                        <div className="timeline-label">Hire Date</div>
+                                        <div className="timeline-date">{selectedEmployee.hireDate}</div>
+                                    </div>
+                                </div>
+                                <div className="timeline-item">
+                                    <div className="timeline-dot"></div>
+                                    <div className="timeline-content">
+                                        <div className="timeline-label">Enrollment</div>
+                                        <div className="timeline-date">{selectedEmployee.hireDate}</div>
+                                    </div>
+                                </div>
+                                <div className="timeline-item">
+                                    <div className="timeline-dot"></div>
+                                    <div className="timeline-content">
+                                        <div className="timeline-label">Coverage Start</div>
+                                        <div className="timeline-date">{selectedEmployee.hireDate}</div>
+                                    </div>
+                                </div>
+                                {selectedEmployee.terminationDate && (
+                                    <>
+                                        <div className="timeline-item">
+                                            <div className="timeline-dot" style={{ background: '#ef4444' }}></div>
+                                            <div className="timeline-content">
+                                                <div className="timeline-label">Termination</div>
+                                                <div className="timeline-date">{selectedEmployee.terminationDate}</div>
+                                            </div>
+                                        </div>
+                                        {selectedEmployee.status === 'cobra' && (
+                                            <>
+                                                <div className="timeline-item">
+                                                    <div className="timeline-dot" style={{ background: '#f59e0b' }}></div>
+                                                    <div className="timeline-content">
+                                                        <div className="timeline-label">COBRA Start</div>
+                                                        <div className="timeline-date">{new Date(new Date(selectedEmployee.terminationDate).getTime() + 31*24*60*60*1000).toISOString().split('T')[0]}</div>
+                                                    </div>
+                                                </div>
+                                                <div className="timeline-item">
+                                                    <div className="timeline-dot" style={{ background: '#ef4444' }}></div>
+                                                    <div className="timeline-content">
+                                                        <div className="timeline-label">COBRA End</div>
+                                                        <div className="timeline-date">{selectedEmployee.cobraEndDate}</div>
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )}
+                                    </>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="enrollment-actions">
+                            <button className="btn-action btn-action-secondary" onClick={() => setShowLifeEventModal(true)}>
+                                Process Life Event
+                            </button>
+                            {selectedEmployee.status !== 'terminated' && (
+                                <button className="btn-action btn-action-danger" onClick={() => {
+                                    const terminated = { ...selectedEmployee, status: 'terminated', terminationDate: '2026-03-31', salary: 0 };
+                                    setEmployees(employees.map(e => e.id === selectedEmployee.id ? terminated : e));
+                                    setSelectedEmployee(terminated);
+                                }}>
+                                    Terminate Employee
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                );
+            };
+
+            const renderVerifyView = () => {
+                const handleVerify = () => {
+                    const found = employees.find(e => e.memberId === verifyMemberId);
+                    setVerifyResult(found ? found : null);
+                };
+
+                return (
+                    <div className="fade-in">
+                        <a className="back-link" onClick={() => {
+                            setEnrollmentView('roster');
+                            setVerifyMemberId('');
+                            setVerifyResult(null);
+                        }}>
+                            ← Back to Roster
+                        </a>
+                        <h2 className="section-header">Eligibility Verification</h2>
+
+                        <div className="detail-section">
+                            <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', fontWeight: 700 }}>Verify Member</h3>
+                            <div className="member-id-input">
+                                <input
+                                    type="text"
+                                    placeholder="Enter Member ID (e.g., PLR-2024-00101)"
+                                    value={verifyMemberId}
+                                    onChange={(e) => setVerifyMemberId(e.target.value)}
+                                />
+                                <button className="btn-action btn-action-primary" onClick={handleVerify}>
+                                    Verify
+                                </button>
+                            </div>
+                        </div>
+
+                        {verifyResult && (
+                            <div className="verification-result">
+                                <div className="verification-status eligible">✅ ELIGIBLE</div>
+                                <div className="detail-row">
+                                    <span className="detail-label">Member</span>
+                                    <span className="detail-value">{verifyResult.firstName} {verifyResult.lastName}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <span className="detail-label">Member ID</span>
+                                    <span className="detail-value">{verifyResult.memberId}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <span className="detail-label">Status</span>
+                                    <span className="detail-value">
+                                        <span className={`status-badge status-${verifyResult.status}`}>
+                                            {verifyResult.status.charAt(0).toUpperCase() + verifyResult.status.slice(1)}
+                                        </span>
+                                    </span>
+                                </div>
+                                <div className="detail-row">
+                                    <span className="detail-label">Coverage Tier</span>
+                                    <span className="detail-value">{verifyResult.tier}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <span className="detail-label">Plan</span>
+                                    <span className="detail-value">{companyInfo.planName}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <span className="detail-label">Employer</span>
+                                    <span className="detail-value">{companyInfo.name}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <span className="detail-label">Coverage Effective</span>
+                                    <span className="detail-value">{verifyResult.hireDate}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <span className="detail-label">OOP Max</span>
+                                    <span className="detail-value">${planLimits.individualOopMax.toLocaleString()}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <span className="detail-label">Deductible</span>
+                                    <span className="detail-value">$0 (Bind-style)</span>
+                                </div>
+
+                                <h4 style={{ marginTop: '1.5rem', marginBottom: '0.75rem', fontSize: '0.875rem', fontWeight: 700 }}>Copay Schedule</h4>
+                                <table className="copay-schedule">
+                                    <thead>
+                                        <tr>
+                                            <th>Service</th>
+                                            <th>Copay Range</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Primary Care</td>
+                                            <td>$10-$35</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Specialist Visit</td>
+                                            <td>$40-$85</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Imaging</td>
+                                            <td>$75-$200</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Urgent Care</td>
+                                            <td>$25-$75</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Physical Therapy</td>
+                                            <td>$25-$45</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                {verifyResult.addIns.length > 0 && (
+                                    <>
+                                        <h4 style={{ marginTop: '1.5rem', marginBottom: '0.75rem', fontSize: '0.875rem', fontWeight: 700 }}>Active Add-Ins</h4>
+                                        <ul style={{ margin: 0, paddingLeft: '1.5rem' }}>
+                                            {verifyResult.addIns.map((addin, idx) => (
+                                                <li key={idx} style={{ marginBottom: '0.5rem', color: '#0f172a', fontSize: '0.875rem' }}>{addin}</li>
+                                            ))}
+                                        </ul>
+                                    </>
+                                )}
+
+                                {verifyResult.dependents.length > 0 && (
+                                    <>
+                                        <h4 style={{ marginTop: '1.5rem', marginBottom: '0.75rem', fontSize: '0.875rem', fontWeight: 700 }}>Dependents Covered</h4>
+                                        <ul style={{ margin: 0, paddingLeft: '1.5rem' }}>
+                                            {verifyResult.dependents.map((dep, idx) => (
+                                                <li key={idx} style={{ marginBottom: '0.5rem', color: '#0f172a', fontSize: '0.875rem' }}>
+                                                    {dep.name} ({dep.relationship})
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </>
+                                )}
+                            </div>
+                        )}
+
+                        {verifyResult === null && verifyMemberId && (
+                            <div className="verification-result">
+                                <div className="verification-status not-found">❌ NOT FOUND</div>
+                                <p style={{ color: '#64748b', marginBottom: 0 }}>No member found with ID "{verifyMemberId}". Check the ID and try again.</p>
+                            </div>
+                        )}
+                    </div>
+                );
+            };
+
+            const renderAddEmployeeView = () => {
+                return (
+                    <div className="fade-in">
+                        <a className="back-link" onClick={() => setEnrollmentView('roster')}>
+                            ← Back to Roster
+                        </a>
+                        <h2 className="section-header">Add New Employee</h2>
+                        <div className="detail-section">
+                            <p style={{ color: '#64748b', marginTop: 0 }}>This feature is coming soon. For now, you can process life events and verify eligibility for existing employees.</p>
+                        </div>
+                    </div>
+                );
+            };
+
+            const renderEnrollmentSection = () => {
+                if (enrollmentView === 'roster') return renderRosterView();
+                if (enrollmentView === 'detail') return renderDetailView();
+                if (enrollmentView === 'verify') return renderVerifyView();
+                if (enrollmentView === 'addEmployee') return renderAddEmployeeView();
+                return renderRosterView();
+            };
 
             // ============ RENDER: MEMBER VIEW ============
 
