@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pillar Health — Plan Builder</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+        }
+        .sidebar-nav {
+            border-right: 1px solid #e5e7eb;
+        }
+        .nav-item {
+            transition: all 0.2s ease;
+        }
+        .nav-item.active {
+            background: #ede9fe;
+            border-left: 3px solid #7c3aed;
+        }
+        .accordion-header {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .accordion-header:hover {
+            background: #f3f4f6;
+        }
+        .accordion-content {
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+        }
+        .accordion-content.open {
+            max-height: 2000px;
+            opacity: 1;
+        }
+        .toggle-switch {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .toggle-switch.on {
+            background: #10b981;
+        }
+        .card {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            transition: box-shadow 0.2s ease;
+        }
+        .card:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+        }
+        .json-preview {
+            background: #0f172a;
+            color: #e5e7eb;
+            border-radius: 0.5rem;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            overflow-x: auto;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        .json-preview code {
+            color: #e5e7eb;
+        }
+        .json-key {
+            color: #7c3aed;
+        }
+        .json-string {
+            color: #34d399;
+        }
+        .json-number {
+            color: #fbbf24;
+        }
+        .json-boolean {
+            color: #60a5fa;
+        }
+        .input-group {
+            transition: all 0.2s ease;
+        }
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus {
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+        .section-header {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #7c3aed;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        .badge-primary {
+            background: #ede9fe;
+            color: #5b21b6;
+        }
+        .badge-success {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .progress-ring {
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+        .progress-ring-circle {
+            transition: stroke-dashoffset 0.35s;
+            stroke-dasharray: 314;
+            stroke-dashoffset: 0;
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .spinner {
+            border: 2px solid #e5e7eb;
+            border-top: 2px solid #7c3aed;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 0.6s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useCallback, useMemo } = React;
+
+        // Default service categories
+        const DEFAULT_SERVICE_CATEGORIES = {
+            imaging: {
+                name: 'Imaging (MRI, CT, X-Ray, Ultrasound)',
+                icon: '🔍',
+                enabled: true,
+                tiers: {
+                    'Freestanding Imaging Center': 75,
+                    'Community Hospital Outpatient': 150,
+                    'Academic Medical Center': 200,
+                }
+            },
+            primaryCare: {
+                name: 'Primary Care',
+                icon: '🏥',
+                enabled: true,
+                tiers: {
+                    'Community Health Center': 10,
+                    'Independent Practice': 20,
+                    'Hospital-Affiliated Practice': 35,
+                }
+            },
+            specialistVisits: {
+                name: 'Specialist Visits',
+                icon: '👨‍⚕️',
+                enabled: true,
+                tiers: {
+                    'Independent Practice': 40,
+                    'Hospital-Affiliated': 65,
+                    'Academic Medical Center': 85,
+                }
+            },
+            physicalTherapy: {
+                name: 'Physical Therapy / Rehab',
+                icon: '🏃',
+                enabled: true,
+                tiers: {
+                    'Independent PT Practice': 25,
+                    'Hospital-Affiliated PT': 45,
+                },
+                visitLimit: 30
+            },
+            urgentCare: {
+                name: 'Urgent Care',
+                icon: '⚡',
+                enabled: true,
+                tiers: {
+                    'Retail Clinic (CVS/MinuteClinic)': 25,
+                    'Freestanding Urgent Care': 50,
+                    'Hospital-Affiliated Urgent Care': 75,
+                }
+            },
+            emergency: {
+                name: 'Emergency Room',
+                icon: '🚑',
+                enabled: true,
+                tiers: {
+                    'Emergency Room': 250,
+                },
+                waivedIfAdmitted: true
+            },
+            lab: {
+                name: 'Lab & Diagnostics',
+                icon: '🧪',
+                enabled: true,
+                tiers: {
+                    'Freestanding Lab': 0,
+                    'Hospital Lab': 15,
+                }
+            },
+            mentalHealth: {
+                name: 'Mental Health & Substance Use',
+                icon: '🧠',
+                enabled: true,
+                tiers: {
+                    'Outpatient Therapy Session': 20,
+                    'Psychiatry Visit': 35,
+                    'Inpatient (per day)': 150,
+                }
+            },
+            preventive: {
+                name: 'Preventive Care',
+                icon: '❤️',
+                enabled: true,
+                tiers: {
+                    'All preventive services': 0,
+                },
+                locked: true
+            }
+        };
+
+        // Default add-in procedures
+        const DEFAULT_ADD_INS = [
+            { id: 'knee-hip', name: 'Knee/Hip Replacement', included: true, costPerPaycheck: 45, durationMonths: 12 },
+            { id: 'back-surgery', name: 'Back Surgery', included: true, costPerPaycheck: 38, durationMonths: 12 },
+            { id: 'cataract', name: 'Cataract Surgery', included: true, costPerPaycheck: 22, durationMonths: 6 },
+            { id: 'shoulder', name: 'Shoulder Surgery', included: true, costPerPaycheck: 35, durationMonths: 12 },
+            { id: 'hernia', name: 'Hernia Repair', included: true, costPerPaycheck: 18, durationMonths: 6 },
+            { id: 'bariatric', name: 'Bariatric Surgery', included: false, costPerPaycheck: 55, durationMonths: 18 },
+            { id: 'sleep', name: 'Sleep Study + CPAP', included: true, costPerPaycheck: 12, durationMonths: 6 },
+            { id: 'fertility', name: 'Fertility Treatment', included: false, costPerPaycheck: 65, durationMonths: 12 },
+        ];
+
+        // Main App Component
+        function PlanConfigurator() {
+            const [currentSection, setCurrentSection] = useState('company');
+            const [expandedCategory, setExpandedCategory] = useState(null);
+
+            const [companyInfo, setCompanyInfo] = useState({
+                name: 'Acme Corporation',
+                planName: 'Acme Bind-Style Health Plan',
+                state: 'Massachusetts',
+                employeeCount: 450,
+                planYearStart: '2026-01-01',
+                planYearEnd: '2026-12-31',
+                contactName: 'Jamie Goldstein',
+                contactEmail: 'jamie@pillar.vc',
+            });
+
+            const [serviceCategories, setServiceCategories] = useState(DEFAULT_SERVICE_CATEGORIES);
+
+            const [addIns, setAddIns] = useState(DEFAULT_ADD_INS);
+
+            const [planLimits, setPlanLimits] = useState({
+                individualOopMax: 6000,
+                familyOopMax: 12000,
+                dependentAgeLimit: 26,
+                domesticPartnerCoverage: true,
+                payrollFrequency: 'Bi-weekly',
+            });
+
+            const [networkSettings, setNetworkSettings] = useState({
+                network: 'PHCS/Multiplan',
+                outOfNetworkPolicy: 'Reference-based pricing',
+                referenceRate: 150,
+                balanceProtection: true,
+            });
+
+            // Handlers for company info
+            const handleCompanyChange = (field, value) => {
+                setCompanyInfo(prev => ({ ...prev, [field]: value }));
+            };
+
+            // Handlers for service categories
+            const handleCategoryTierChange = (categoryKey, tierName, newCopay) => {
+                setServiceCategories(prev => ({
+                    ...prev,
+                    [categoryKey]: {
+                        ...prev[categoryKey],
+                        tiers: {
+                            ...prev[categoryKey].tiers,
+                            [tierName]: parseInt(newCopay) || 0
+                        }
+                    }
+                }));
+            };
+
+            const handleCategoryToggle = (categoryKey) => {
+                setServiceCategories(prev => ({
+                    ...prev,
+                    [categoryKey]: {
+                        ...prev[categoryKey],
+                        enabled: !prev[categoryKey].enabled
+                    }
+                }));
+            };
+
+            const handleVisitLimitChange = (categoryKey, newLimit) => {
+                setServiceCategories(prev => ({
+                    ...prev,
+                    [categoryKey]: {
+                        ...prev[categoryKey],
+                        visitLimit: parseInt(newLimit) || 0
+                    }
+                }));
+            };
+
+            const handleResetCategory = (categoryKey) => {
+                setServiceCategories(prev => ({
+                    ...prev,
+                    [categoryKey]: DEFAULT_SERVICE_CATEGORIES[categoryKey]
+                }));
+            };
+
+            // Handlers for add-ins
+            const handleAddInToggle = (id) => {
+                setAddIns(prev => prev.map(a => a.id === id ? { ...a, included: !a.included } : a));
+            };
+
+            const handleAddInChange = (id, field, value) => {
+                setAddIns(prev => prev.map(a => a.id === id ? { ...a, [field]: value } : a));
+            };
+
+            const addCustomAddIn = () => {
+                setAddIns(prev => [...prev, {
+                    id: `custom-${Date.now()}`,
+                    name: 'New Procedure',
+                    included: true,
+                    costPerPaycheck: 0,
+                    durationMonths: 12
+                }]);
+            };
+
+            // Handlers for plan limits
+            const handlePlanLimitChange = (field, value) => {
+                setPlanLimits(prev => ({ ...prev, [field]: value }));
+            };
+
+            // Handlers for network settings
+            const handleNetworkChange = (field, value) => {
+                setNetworkSettings(prev => ({ ...prev, [field]: value }));
+            };
+
+            // Calculate statistics
+            const stats = useMemo(() => {
+                const enabledCategories = Object.values(serviceCategories).filter(c => c.enabled).length;
+                const enabledAddIns = addIns.filter(a => a.included).length;
+                const totalCost = addIns
+                    .filter(a => a.included)
+                    .reduce((sum, a) => sum + (a.costPerPaycheck * a.durationMonths * 26 / 12), 0);
+
+                return {
+                    enabledCategories,
+                    enabledAddIns,
+                    totalCost: Math.round(totalCost)
+                };
+            }, [serviceCategories, addIns]);
+
+            // Generate plan config JSON
+            const planConfig = useMemo(() => {
+                return {
+                    meta: {
+                        planName: companyInfo.planName,
+                        companyName: companyInfo.name,
+                        state: companyInfo.state,
+                        planYear: `${companyInfo.planYearStart} to ${companyInfo.planYearEnd}`,
+                        version: '1.0',
+                        generatedAt: new Date().toISOString()
+                    },
+                    company: companyInfo,
+                    serviceCategories: Object.keys(serviceCategories)
+                        .filter(key => serviceCategories[key].enabled)
+                        .reduce((acc, key) => {
+                            acc[key] = {
+                                name: serviceCategories[key].name,
+                                tiers: serviceCategories[key].tiers,
+                                ...(serviceCategories[key].visitLimit && { visitLimit: serviceCategories[key].visitLimit }),
+                                ...(serviceCategories[key].waivedIfAdmitted && { waivedIfAdmitted: true })
+                            };
+                            return acc;
+                        }, {}),
+                    addInProcedures: addIns.filter(a => a.included).map(a => ({
+                        name: a.name,
+                        costPerPaycheck: a.costPerPaycheck,
+                        durationMonths: a.durationMonths,
+                        totalAnnualCost: Math.round(a.costPerPaycheck * a.durationMonths * 26 / 12)
+                    })),
+                    planLimits: {
+                        individualOopMaximum: planLimits.individualOopMax,
+                        familyOopMaximum: planLimits.familyOopMax,
+                        deductible: 0,
+                        planType: 'Bind-Style Variable Copay'
+                    },
+                    coverage: {
+                        dependentAgeLimit: planLimits.dependentAgeLimit,
+                        domesticPartnerCoverage: planLimits.domesticPartnerCoverage,
+                        payrollFrequency: planLimits.payrollFrequency
+                    },
+                    network: networkSettings
+                };
+            }, [companyInfo, serviceCategories, addIns, planLimits, networkSettings]);
+
+            return (
+                <div className="flex h-screen bg-gray-50">
+                    {/* Sidebar */}
+                    <aside className="w-64 bg-white sidebar-nav overflow-y-auto">
+                        {/* Header */}
+                        <div className="p-6 border-b border-gray-200">
+                            <div className="flex items-center gap-2 mb-2">
+                                <span className="text-2xl">🏥</span>
+                                <div>
+                                    <h1 className="text-lg font-bold text-gray-900">Pillar Health</h1>
+                                    <p className="text-xs text-gray-500">Plan Builder</p>
+                                </div>
+                            </div>
+                            <div className="mt-3 inline-block">
+                                <span className="badge badge-primary">AI-Powered Design</span>
+                            </div>
+                        </div>
+
+                        {/* Navigation */}
+                        <nav className="p-4 space-y-1">
+                            {[
+                                { id: 'company', label: 'Company Info', icon: '🏢' },
+                                { id: 'services', label: 'Service Categories', icon: '💊' },
+                                { id: 'addins', label: 'Add-In Procedures', icon: '🔧' },
+                                { id: 'limits', label: 'Plan Limits & Rules', icon: '⚙️' },
+                                { id: 'network', label: 'Network Settings', icon: '🌐' },
+                                { id: 'preview', label: 'Preview & Export', icon: '📊' },
+                            ].map(item => (
+                                <button
+                                    key={item.id}
+                                    onClick={() => setCurrentSection(item.id)}
+                                    className={`nav-item w-full text-left px-4 py-3 rounded-lg font-medium text-sm transition-all ${
+                                        currentSection === item.id
+                                            ? 'active bg-violet-100 text-violet-900 border-l-3 border-violet-600'
+                                            : 'text-gray-700 hover:bg-gray-100'
+                                    }`}
+                                >
+                                    <span className="mr-2">{item.icon}</span>
+                                    {item.label}
+                                </button>
+                            ))}
+                        </nav>
+
+                        {/* Progress Indicator */}
+                        <div className="p-4 border-t border-gray-200 mt-6">
+                            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Plan Overview</p>
+                            <div className="space-y-2">
+                                <div className="flex justify-between text-xs">
+                                    <span className="text-gray-600">Service Categories</span>
+                                    <span className="font-bold text-gray-900">{stats.enabledCategories}/10</span>
+                                </div>
+                                <div className="flex justify-between text-xs">
+                                    <span className="text-gray-600">Add-In Procedures</span>
+                                    <span className="font-bold text-gray-900">{stats.enabledAddIns}</span>
+                                </div>
+                                <div className="flex justify-between text-xs">
+                                    <span className="text-gray-600">Est. Annual Cost</span>
+                                    <span className="font-bold text-gray-900">${(stats.totalCost / 1000).toFixed(1)}k</span>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+
+                    {/* Main Content */}
+                    <main className="flex-1 overflow-y-auto">
+                        <div className="p-8 max-w-6xl">
+                            {/* Company Info Section */}
+                            {currentSection === 'company' && (
+                                <div className="fade-in">
+                                    <h2 className="section-header">Company Information</h2>
+                                    <div className="bg-white rounded-lg p-6 card space-y-6">
+                                        <div className="grid grid-cols-2 gap-6">
+                                            <div className="input-group">
+                                                <label className="block text-sm font-semibold text-gray-900 mb-2">Company Name</label>
+                                                <input
+                                                    type="text"
+                                                    value={companyInfo.name}
+                                                    onChange={(e) => handleCompanyChange('name', e.target.value)}
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                                                />
+                                            </div>
+                                            <div className="input-group">
+                                                <label className="block text-sm font-semibold text-gray-900 mb-2">Plan Name</label>
+                                                <input
+                                                    type="text"
+                                                    value={companyInfo.planName}
+                                                    onChange={(e) => handleCompanyChange('planName', e.target.value)}
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                                                />
+                                            </div>
+                                            <div className="input-group">
+                                                <label className="block text-sm font-semibold text-gray-900 mb-2">State</label>
+                                                <select
+                                                    value={companyInfo.state}
+                                                    onChange={(e) => handleCompanyChange('state', e.target.value)}
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                                                >
+                                                    {['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'].map(s => (
+                                                        <option key={s}>{s}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                            <div className="input-group">
+                                                <label className="block text-sm font-semibold text-gray-900 mb-2">Employee Count</label>
+                                                <input
+                                                    type="number"
+                                                    value={companyInfo.employeeCount}
+                                                    onChange={(e) => handleCompanyChange('employeeCount', parseInt(e.target.value))}
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                                                />
+                                            </div>
+                                            <div className="input-group">
+                                                <label className="block text-sm font-semibold text-gray-900 mb-2">Plan Year Start</label>
+                                                <input
+                                                    type="date"
+                                                    value={companyInfo.planYearStart}
+                                                    onChange={(e) => handleCompanyChange('planYearStart', e.target.value)}
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                                                />
+                                            </div>
+                                            <div className="input-group">
+                                                <label className="block text-sm font-semibold text-gray-900 mb-2">Plan Year End</label>
+                                                <input
+                                                    type="date"
+                                                    value={companyInfo.planYearEnd}
+                                                    onChange={(e) => handleCompanyChange('planYearEnd', e.target.value)}
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                                                />
+                                            </div>
+                                            <div className="input-group">
+                                                <label className="block text-sm font-semibold text-gray-900 mb-2">Employer Contact</label>
+                                                <input
+                                                    type="text"
+                                                    value={companyInfo.contactName}
+                                                    onChange={(e) => handleCompanyChange('contactName', e.target.value)}
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                                                />
+                                            </div>
+                                            <div className="input-group">
+                                                <label className="block text-sm font-semibold text-gray-900 mb-2">Contact Email</label>
+                                                <input
+                                                    type="email"
+                                                    value={companyInfo.contactEmail}
+                                                    onChange={(e) => handleCompanyChange('contactEmail', e.target.value)}
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Service Categories Section */}
+                            {currentSection === 'services' && (
+                                <div className="fade-in">
+                                    <h2 className="section-header">Service Categories & Copays</h2>
+                                    <p className="text-gray-600 mb-6">Configure copay tiers for each service category based on care setting.</p>
+                                    <div className="space-y-4">
+                                        {Object.entries(serviceCategories).map(([key, category]) => (
+                                            <div key={key} className="bg-white rounded-lg card overflow-hidden">
+                                                <div
+                                                    className="accordion-header px-6 py-4 flex items-center justify-between bg-gray-50"
+                                                    onClick={() => setExpandedCategory(expandedCategory === key ? null : key)}
+                                                >
+                                                    <div className="flex items-center gap-4">
+                                                        <span className="text-2xl">{category.icon}</span>
+                                                        <div>
+                                                            <h3 className="font-semibold text-gray-900">{category.name}</h3>
+                                                            <p className="text-sm text-gray-500">
+                                                                ${Math.min(...Object.values(category.tiers))} – ${Math.max(...Object.values(category.tiers))}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-4">
+                                                        {!category.locked && (
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleCategoryToggle(key);
+                                                                }}
+                                                                className={`toggle-switch w-12 h-7 rounded-full transition-all flex items-center ${
+                                                                    category.enabled ? 'bg-green-500' : 'bg-gray-300'
+                                                                }`}
+                                                            >
+                                                                <div className={`w-5 h-5 rounded-full bg-white transition-all ${category.enabled ? 'ml-6' : 'ml-1'}`} />
+                                                            </button>
+                                                        )}
+                                                        <span className={`transform transition-transform ${expandedCategory === key ? 'rotate-180' : ''}`}>
+                                                            ▼
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <div className={`accordion-content ${expandedCategory === key ? 'open' : ''}`}>
+                                                    <div className="px-6 py-6 border-t border-gray-200 space-y-4">
+                                                        {Object.entries(category.tiers).map(([tierName, copay]) => (
+                                                            <div key={tierName} className="flex items-center justify-between gap-4">
+                                                                <label className="flex-1 text-sm font-medium text-gray-700">{tierName}</label>
+                                                                <div className="flex items-center gap-2">
+                                                                    <span className="text-gray-500">$</span>
+                                                                    <input
+                                                                        type="number"
+                                                                        value={copay}
+                                                                        onChange={(e) => handleCategoryTierChange(key, tierName, e.target.value)}
+                                                                        disabled={category.locked}
+                                                                        className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 disabled:bg-gray-100 disabled:text-gray-500"
+                                                                    />
+                                                                </div>
+                                                            </div>
+                                                        ))}
+
+                                                        {category.visitLimit && (
+                                                            <div className="flex items-center justify-between gap-4 mt-6 pt-6 border-t border-gray-200">
+                                                                <label className="text-sm font-medium text-gray-700">Visit Limit Per Year</label>
+                                                                <input
+                                                                    type="number"
+                                                                    value={category.visitLimit}
+                                                                    onChange={(e) => handleVisitLimitChange(key, e.target.value)}
+                                                                    className="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                                                                />
+                                                            </div>
+                                                        )}
+
+                                                        {category.locked && (
+                                                            <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                                                <p className="text-sm text-blue-900">
+                                                                    <span className="font-semibold">🔒 Locked:</span> Bind-style plans mandate $0 preventive care per ACA requirements.
+                                                                </p>
+                                                            </div>
+                                                        )}
+
+                                                        {category.waivedIfAdmitted && (
+                                                            <div className="flex items-center gap-2 mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    defaultChecked={true}
+                                                                    className="w-4 h-4"
+                                                                />
+                                                                <label className="text-sm text-gray-700">Waived if admitted as inpatient</label>
+                                                            </div>
+                                                        )}
+
+                                                        {!category.locked && (
+                                                            <button
+                                                                onClick={() => handleResetCategory(key)}
+                                                                className="mt-6 text-sm font-medium text-violet-600 hover:text-violet-700 p-2 rounded hover:bg-violet-50 transition-colors"
+                                                            >
+                                                                ↻ Reset to Defaults
+                                                            </button>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Add-In Procedures Section */}
+                            {currentSection === 'addins' && (
+                                <div className="fade-in">
+                                    <h2 className="section-header">Add-In Procedures</h2>
+                                    <p className="text-gray-600 mb-6">Configure which plannable procedures are available as add-ins with payroll deductions.</p>
+                                    <div className="bg-white rounded-lg card overflow-hidden">
+                                        <div className="overflow-x-auto">
+                                            <table className="w-full">
+                                                <thead className="bg-gray-50 border-b border-gray-200">
+                                                    <tr>
+                                                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Procedure</th>
+                                                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Included</th>
+                                                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Paycheck Cost</th>
+                                                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Duration</th>
+                                                        <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Total Cost</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-gray-200">
+                                                    {addIns.map(procedure => {
+                                                        const totalCost = Math.round(procedure.costPerPaycheck * procedure.durationMonths * 26 / 12);
+                                                        return (
+                                                            <tr key={procedure.id} className="hover:bg-gray-50 transition-colors">
+                                                                <td className="px-6 py-4">
+                                                                    <input
+                                                                        type="text"
+                                                                        value={procedure.name}
+                                                                        onChange={(e) => handleAddInChange(procedure.id, 'name', e.target.value)}
+                                                                        className="text-sm font-medium text-gray-900 bg-transparent border-b border-transparent hover:border-gray-300 focus:border-violet-500 focus:outline-none py-1"
+                                                                    />
+                                                                </td>
+                                                                <td className="px-6 py-4">
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={procedure.included}
+                                                                        onChange={() => handleAddInToggle(procedure.id)}
+                                                                        className="w-4 h-4 rounded cursor-pointer"
+                                                                    />
+                                                                </td>
+                                                                <td className="px-6 py-4">
+                                                                    <div className="flex items-center gap-1">
+                                                                        <span className="text-gray-500">$</span>
+                                                                        <input
+                                                                            type="number"
+                                                                            value={procedure.costPerPaycheck}
+                                                                            onChange={(e) => handleAddInChange(procedure.id, 'costPerPaycheck', parseInt(e.target.value) || 0)}
+                                                                            className="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                                                                        />
+                                                                    </div>
+                                                                </td>
+                                                                <td className="px-6 py-4">
+                                                                    <div className="flex items-center gap-1">
+                                                                        <input
+                                                                            type="number"
+                                                                            value={procedure.durationMonths}
+                                                                            onChange={(e) => handleAddInChange(procedure.id, 'durationMonths', parseInt(e.target.value) || 1)}
+                                                                            className="w-20 px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                                                                        />
+                                                                        <span className="text-gray-500 text-sm">mo.</span>
+                                                                    </div>
+                                                                </td>
+                                                                <td className="px-6 py-4 font-semibold text-gray-900">${totalCost}</td>
+                                                            </tr>
+                                                        );
+                                                    })}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div className="px-6 py-4 border-t border-gray-200 bg-gray-50">
+                                            <button
+                                                onClick={addCustomAddIn}
+                                                className="text-sm font-medium text-violet-600 hover:text-violet-700 p-2 rounded hover:bg-violet-50 transition-colors"
+                                            >
+                                                + Add Custom Procedure
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Plan Limits Section */}
+                            {currentSection === 'limits' && (
+                                <div className="fade-in">
+                                    <h2 className="section-header">Plan Limits & Rules</h2>
+                                    <div className="bg-white rounded-lg p-6 card space-y-6">
+                                        <div className="grid grid-cols-2 gap-6">
+                                            <div className="input-group">
+                                                <label className="block text-sm font-semibold text-gray-900 mb-2">Individual OOP Maximum</label>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-gray-500">$</span>
+                                                    <input
+                                                        type="number"
+                                                        value={planLimits.individualOopMax}
+                                                        onChange={(e) => handlePlanLimitChange('individualOopMax', parseInt(e.target.value))}
+                                                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="input-group">
+                                                <label className="block text-sm font-semibold text-gray-900 mb-2">Family OOP Maximum</label>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-gray-500">$</span>
+                                                    <input
+                                                        type="number"
+                                                        value={planLimits.familyOopMax}
+                                                        onChange={(e) => handlePlanLimitChange('familyOopMax', parseInt(e.target.value))}
+                                                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="input-group bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                                <label className="block text-sm font-semibold text-gray-700 mb-1">Individual Deductible</label>
+                                                <p className="text-lg font-bold text-gray-900">$0</p>
+                                                <p className="text-xs text-gray-500 mt-1">🔒 Bind-style plans always have $0 deductible</p>
+                                            </div>
+
+                                            <div className="input-group bg-gray-50 p-4 rounded-lg border border-gray-200">
+                                                <label className="block text-sm font-semibold text-gray-700 mb-1">Family Deductible</label>
+                                                <p className="text-lg font-bold text-gray-900">$0</p>
+                                                <p className="text-xs text-gray-500 mt-1">🔒 Bind-style plans always have $0 deductible</p>
+                                            </div>
+
+                                            <div className="input-group">
+                                                <label className="block text-sm font-semibold text-gray-900 mb-2">Dependent Age Limit</label>
+                                                <input
+                                                    type="number"
+                                                    value={planLimits.dependentAgeLimit}
+                                                    onChange={(e) => handlePlanLimitChange('dependentAgeLimit', parseInt(e.target.value))}
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                                                />
+                                            </div>
+
+                                            <div className="input-group">
+                                                <label className="block text-sm font-semibold text-gray-900 mb-2">Payroll Frequency</label>
+                                                <select
+                                                    value={planLimits.payrollFrequency}
+                                                    onChange={(e) => handlePlanLimitChange('payrollFrequency', e.target.value)}
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                                                >
+                                                    <option>Bi-weekly</option>
+                                                    <option>Semi-monthly</option>
+                                                    <option>Monthly</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div className="pt-6 border-t border-gray-200">
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-gray-900 mb-1">Domestic Partner Coverage</label>
+                                                    <p className="text-xs text-gray-500">Allow domestic partners to enroll</p>
+                                                </div>
+                                                <button
+                                                    onClick={() => handlePlanLimitChange('domesticPartnerCoverage', !planLimits.domesticPartnerCoverage)}
+                                                    className={`toggle-switch w-12 h-7 rounded-full transition-all flex items-center ${
+                                                        planLimits.domesticPartnerCoverage ? 'bg-green-500' : 'bg-gray-300'
+                                                    }`}
+                                                >
+                                                    <div className={`w-5 h-5 rounded-full bg-white transition-all ${planLimits.domesticPartnerCoverage ? 'ml-6' : 'ml-1'}`} />
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                                            <p className="text-sm text-blue-900">
+                                                <span className="font-semibold">ℹ️ Plan Type:</span> Variable Copay (Bind-Style)
+                                            </p>
+                                            <p className="text-xs text-blue-800 mt-2">Variable copays adjust by care setting. No coinsurance. No deductible.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Network Settings Section */}
+                            {currentSection === 'network' && (
+                                <div className="fade-in">
+                                    <h2 className="section-header">Network Settings</h2>
+                                    <div className="bg-white rounded-lg p-6 card space-y-6">
+                                        <div className="grid grid-cols-2 gap-6">
+                                            <div className="input-group">
+                                                <label className="block text-sm font-semibold text-gray-900 mb-2">Preferred Network</label>
+                                                <select
+                                                    value={networkSettings.network}
+                                                    onChange={(e) => handleNetworkChange('network', e.target.value)}
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                                                >
+                                                    <option>PHCS/Multiplan</option>
+                                                    <option>First Health</option>
+                                                    <option>Zelis</option>
+                                                    <option>Custom/TBD</option>
+                                                </select>
+                                            </div>
+
+                                            <div className="input-group">
+                                                <label className="block text-sm font-semibold text-gray-900 mb-2">Out-of-Network Policy</label>
+                                                <select
+                                                    value={networkSettings.outOfNetworkPolicy}
+                                                    onChange={(e) => handleNetworkChange('outOfNetworkPolicy', e.target.value)}
+                                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                                                >
+                                                    <option>No OON coverage</option>
+                                                    <option>50% of allowed amount</option>
+                                                    <option>Reference-based pricing</option>
+                                                </select>
+                                            </div>
+
+                                            {networkSettings.outOfNetworkPolicy === 'Reference-based pricing' && (
+                                                <div className="input-group col-span-2">
+                                                    <label className="block text-sm font-semibold text-gray-900 mb-2">Reference Rate Basis</label>
+                                                    <div className="flex items-center gap-2">
+                                                        <input
+                                                            type="number"
+                                                            value={networkSettings.referenceRate}
+                                                            onChange={(e) => handleNetworkChange('referenceRate', parseInt(e.target.value))}
+                                                            className="w-32 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                                                        />
+                                                        <span className="text-gray-600">% of Medicare</span>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="pt-6 border-t border-gray-200">
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-gray-900 mb-1">Balance Billing Protection</label>
+                                                    <p className="text-xs text-gray-500">Prohibit balance billing from participating providers</p>
+                                                </div>
+                                                <button
+                                                    onClick={() => handleNetworkChange('balanceProtection', !networkSettings.balanceProtection)}
+                                                    className={`toggle-switch w-12 h-7 rounded-full transition-all flex items-center ${
+                                                        networkSettings.balanceProtection ? 'bg-green-500' : 'bg-gray-300'
+                                                    }`}
+                                                >
+                                                    <div className={`w-5 h-5 rounded-full bg-white transition-all ${networkSettings.balanceProtection ? 'ml-6' : 'ml-1'}`} />
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                                            <p className="text-sm text-yellow-900">
+                                                <span className="font-semibold">⚠️ Note:</span> Network contracts determine actual provider agreements and reimbursement rates. Finalize with your broker/network administrator before plan launch.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Preview & Export Section */}
+                            {currentSection === 'preview' && (
+                                <div className="fade-in">
+                                    <h2 className="section-header">Preview & Export</h2>
+                                    <div className="grid grid-cols-2 gap-8">
+                                        {/* Member Preview */}
+                                        <div>
+                                            <h3 className="text-lg font-semibold text-gray-900 mb-4">Member Preview</h3>
+                                            <div className="bg-white rounded-lg card p-6 space-y-4">
+                                                <div>
+                                                    <h4 className="text-xl font-bold text-gray-900">{companyInfo.planName}</h4>
+                                                    <div className="flex gap-2 mt-2">
+                                                        <span className="badge badge-success">$0 Deductible</span>
+                                                        <span className="badge badge-primary">Variable Copays</span>
+                                                    </div>
+                                                </div>
+
+                                                <div className="border-t border-gray-200 pt-4">
+                                                    <h5 className="font-semibold text-gray-900 text-sm mb-3">Sample Copay Structure</h5>
+                                                    <div className="space-y-2 text-sm">
+                                                        <div className="flex justify-between">
+                                                            <span className="text-gray-700">Primary Care</span>
+                                                            <span className="font-semibold text-gray-900">${serviceCategories.primaryCare.tiers['Community Health Center']}</span>
+                                                        </div>
+                                                        <div className="flex justify-between">
+                                                            <span className="text-gray-700">Specialist Visit</span>
+                                                            <span className="font-semibold text-gray-900">${serviceCategories.specialistVisits.tiers['Independent Practice']}</span>
+                                                        </div>
+                                                        <div className="flex justify-between">
+                                                            <span className="text-gray-700">Urgent Care</span>
+                                                            <span className="font-semibold text-gray-900">${serviceCategories.urgentCare.tiers['Freestanding Urgent Care']}</span>
+                                                        </div>
+                                                        <div className="flex justify-between">
+                                                            <span className="text-gray-700">Emergency Room</span>
+                                                            <span className="font-semibold text-gray-900">${serviceCategories.emergency.tiers['Emergency Room']}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="border-t border-gray-200 pt-4">
+                                                    <h5 className="font-semibold text-gray-900 text-sm mb-3">Coverage Limits</h5>
+                                                    <div className="space-y-2 text-sm">
+                                                        <div className="flex justify-between">
+                                                            <span className="text-gray-700">Individual OOP Max</span>
+                                                            <span className="font-semibold text-gray-900">${planLimits.individualOopMax.toLocaleString()}</span>
+                                                        </div>
+                                                        <div className="flex justify-between">
+                                                            <span className="text-gray-700">Family OOP Max</span>
+                                                            <span className="font-semibold text-gray-900">${planLimits.familyOopMax.toLocaleString()}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {stats.enabledAddIns > 0 && (
+                                                    <div className="border-t border-gray-200 pt-4">
+                                                        <h5 className="font-semibold text-gray-900 text-sm mb-3">Available Add-Ins</h5>
+                                                        <p className="text-sm text-gray-600">{stats.enabledAddIns} special procedures available with payroll deductions</p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* JSON Export */}
+                                        <div>
+                                            <h3 className="text-lg font-semibold text-gray-900 mb-4">Plan Configuration JSON</h3>
+                                            <div className="bg-white rounded-lg card p-4 space-y-4">
+                                                <div className="json-preview">
+                                                    <code>{JSON.stringify(planConfig, null, 2)}</code>
+                                                </div>
+                                                <div className="flex gap-3">
+                                                    <button
+                                                        onClick={() => {
+                                                            navigator.clipboard.writeText(JSON.stringify(planConfig, null, 2));
+                                                            alert('JSON copied to clipboard!');
+                                                        }}
+                                                        className="flex-1 px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white font-medium rounded-lg transition-colors"
+                                                    >
+                                                        📋 Copy JSON
+                                                    </button>
+                                                    <button
+                                                        onClick={() => {
+                                                            const element = document.createElement('a');
+                                                            const file = new Blob([JSON.stringify(planConfig, null, 2)], {type: 'application/json'});
+                                                            element.href = URL.createObjectURL(file);
+                                                            element.download = `${companyInfo.planName.replace(/\s+/g, '-').toLowerCase()}-config.json`;
+                                                            document.body.appendChild(element);
+                                                            element.click();
+                                                            document.body.removeChild(element);
+                                                        }}
+                                                        className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors"
+                                                    >
+                                                        ⬇️ Export JSON
+                                                    </button>
+                                                </div>
+                                                <button
+                                                    disabled
+                                                    className="w-full px-4 py-2 bg-gray-300 text-gray-600 font-medium rounded-lg cursor-not-allowed opacity-50"
+                                                >
+                                                    📄 Export as PDF (Coming Soon)
+                                                </button>
+                                            </div>
+
+                                            <div className="mt-6 bg-white rounded-lg card p-6">
+                                                <h4 className="font-semibold text-gray-900 text-sm mb-4">Plan Summary</h4>
+                                                <div className="space-y-3">
+                                                    <div className="flex justify-between text-sm">
+                                                        <span className="text-gray-600">Service Categories Enabled</span>
+                                                        <span className="font-semibold text-gray-900">{stats.enabledCategories} of 10</span>
+                                                    </div>
+                                                    <div className="flex justify-between text-sm">
+                                                        <span className="text-gray-600">Add-In Procedures Available</span>
+                                                        <span className="font-semibold text-gray-900">{stats.enabledAddIns}</span>
+                                                    </div>
+                                                    <div className="flex justify-between text-sm">
+                                                        <span className="text-gray-600">Est. Annual Add-In Cost</span>
+                                                        <span className="font-semibold text-gray-900">${(stats.totalCost / 1000).toFixed(1)}k</span>
+                                                    </div>
+                                                    <div className="pt-3 border-t border-gray-200 flex justify-between text-sm">
+                                                        <span className="text-gray-600">Plan Type</span>
+                                                        <span className="badge badge-primary">Bind-Style Variable Copay</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </main>
+                </div>
+            );
+        }
+
+        // Render the app
+        ReactDOM.createRoot(document.getElementById('root')).render(<PlanConfigurator />);
+    </script>
+</body>
+</html>

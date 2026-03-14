@@ -917,6 +917,44 @@
                     savings: 35
                 }
             ],
+            'Lab Work': [
+                {
+                    id: 30,
+                    name: 'Quest Diagnostics — Downtown Boston',
+                    copay: 0,
+                    rating: 4.3,
+                    distance: '0.5 mi',
+                    facility: 'Freestanding Lab',
+                    savings: 15
+                },
+                {
+                    id: 31,
+                    name: 'Labcorp — Back Bay',
+                    copay: 0,
+                    rating: 4.4,
+                    distance: '1.1 mi',
+                    facility: 'Freestanding Lab',
+                    savings: 15
+                },
+                {
+                    id: 32,
+                    name: 'BMC Clinical Laboratory',
+                    copay: 10,
+                    rating: 4.6,
+                    distance: '2.0 mi',
+                    facility: 'Hospital Lab',
+                    savings: 5
+                },
+                {
+                    id: 33,
+                    name: 'Mass General Brigham Laboratory',
+                    copay: 15,
+                    rating: 4.8,
+                    distance: '1.9 mi',
+                    facility: 'Academic Medical Center Lab',
+                    savings: 0
+                }
+            ],
             'Urgent Care': [
                 {
                     id: 23,
@@ -1062,6 +1100,21 @@
             const [sortBy, setSortBy] = useState('price');
             const [upcomingVisits, setUpcomingVisits] = useState([]);
 
+            // Map category names to provider data keys
+            const serviceKeyMap = {
+                'Imaging': 'Knee MRI',
+                'Primary Care': 'Primary Care',
+                'Specialist': 'Dermatologist',
+                'Therapy': 'Physical Therapy',
+                'Lab & Testing': 'Lab Work',
+                'Urgent/ER': 'Urgent Care',
+                'Knee MRI': 'Knee MRI',
+                'Dermatologist': 'Dermatologist',
+                'Physical Therapy': 'Physical Therapy',
+                'Orthopedic Surgery': 'Orthopedic Surgery',
+                'Urgent Care': 'Urgent Care'
+            };
+
             const handleServiceSelect = (service) => {
                 setSelectedService(service);
                 setSortBy('price');
@@ -1100,7 +1153,8 @@
 
             const getSortedProviders = () => {
                 if (!selectedService) return [];
-                let providers = [...(mockProviders[selectedService] || [])];
+                const providerKey = serviceKeyMap[selectedService] || selectedService;
+                let providers = [...(mockProviders[providerKey] || [])];
 
                 if (sortBy === 'price') {
                     providers.sort((a, b) => a.copay - b.copay);
