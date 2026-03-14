@@ -1028,6 +1028,18 @@
                                                     </button>
                                                 </div>
                                                 <button
+                                                    onClick={() => {
+                                                        const configJson = JSON.stringify(planConfig);
+                                                        const encoded = btoa(unescape(encodeURIComponent(configJson)));
+                                                        const appPath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/')) + '/app.html';
+                                                        const baseUrl = window.location.origin + appPath;
+                                                        window.open(`${baseUrl}?config=${encoded}`, '_blank');
+                                                    }}
+                                                    className="w-full px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors"
+                                                >
+                                                    🚀 Launch Member Preview →
+                                                </button>
+                                                <button
                                                     disabled
                                                     className="w-full px-4 py-2 bg-gray-300 text-gray-600 font-medium rounded-lg cursor-not-allowed opacity-50"
                                                 >

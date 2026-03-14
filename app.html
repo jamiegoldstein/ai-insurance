@@ -705,7 +705,74 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState } = React;
+        const { useState, useMemo } = React;
+
+        // Parse config from URL if present
+        function getConfigFromUrl() {
+            const params = new URLSearchParams(window.location.search);
+            const configParam = params.get('config');
+            if (configParam) {
+                try {
+                    const decoded = decodeURIComponent(atob(configParam));
+                    return JSON.parse(decoded);
+                } catch (e) {
+                    console.error('Failed to parse config:', e);
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        const urlConfig = getConfigFromUrl();
+
+        // Map facility types to copay tier keys
+        function getFacilityTier(facilityType) {
+            const lowerType = facilityType.toLowerCase();
+
+            // Lowest tier (independent/freestanding)
+            if (lowerType.includes('freestanding') || lowerType.includes('independent') || lowerType.includes('retail')) {
+                return 'Freestanding';
+            }
+            // Middle tier (community/hospital-affiliated)
+            if (lowerType.includes('community') || lowerType.includes('hospital-affiliated') ||
+                lowerType.includes('hospital-') || lowerType.includes('pt practice') ||
+                lowerType.includes('imaging center') || lowerType.includes('lab')) {
+                return 'Community';
+            }
+            // Highest tier (academic)
+            if (lowerType.includes('academic')) {
+                return 'Academic';
+            }
+
+            // Fallback: use Community as default middle tier
+            return 'Community';
+        }
+
+        // Get copay for a provider based on service category and facility type
+        function getCopayForProvider(serviceKey, facilityType, defaultCopay, config) {
+            if (!config || !config.serviceCategories) {
+                return defaultCopay;
+            }
+
+            const serviceCat = config.serviceCategories[serviceKey];
+            if (!serviceCat || !serviceCat.tiers) {
+                return defaultCopay;
+            }
+
+            const tier = getFacilityTier(facilityType);
+
+            // Try exact matches first (e.g., "Freestanding Imaging Center" -> "Freestanding")
+            for (const tierKey of Object.keys(serviceCat.tiers)) {
+                if (tierKey.toLowerCase().includes(tier.toLowerCase()) ||
+                    tier.toLowerCase().includes(tierKey.toLowerCase())) {
+                    return serviceCat.tiers[tierKey];
+                }
+            }
+
+            // Fallback to first available tier
+            const tierValues = Object.values(serviceCat.tiers);
+            return tierValues.length > 0 ? tierValues[0] : defaultCopay;
+        }
 
         // Real provider data from CMS NPPES Database
         const mockProviders = {
@@ -1004,7 +1071,7 @@
             ]
         };
 
-        const addInProducts = [
+        const defaultAddInProducts = [
             {
                 id: 1,
                 name: 'Knee/Hip Replacement',
@@ -1065,6 +1132,22 @@
             }
         ];
 
+        // Build add-in products from config if available, otherwise use defaults
+        function getAddInProducts(config) {
+            if (config && config.addInProcedures && config.addInProcedures.length > 0) {
+                return config.addInProcedures.map((addIn, idx) => ({
+                    id: idx + 1,
+                    name: addIn.name,
+                    costPerPaycheck: addIn.costPerPaycheck,
+                    duration: addIn.durationMonths,
+                    description: `Coverage for ${addIn.name.toLowerCase()}`
+                }));
+            }
+            return defaultAddInProducts;
+        }
+
+        const addInProducts = getAddInProducts(urlConfig);
+
         const recentActivity = [
             {
                 id: 1,
@@ -1099,6 +1182,10 @@
             const [activeAddIns, setActiveAddIns] = useState([2]);
             const [sortBy, setSortBy] = useState('price');
             const [upcomingVisits, setUpcomingVisits] = useState([]);
+
+            // Use config from URL if present
+            const config = urlConfig;
+            const hasCustomConfig = !!config;
 
             // Map category names to provider data keys
             const serviceKeyMap = {
@@ -1156,6 +1243,14 @@
                 const providerKey = serviceKeyMap[selectedService] || selectedService;
                 let providers = [...(mockProviders[providerKey] || [])];
 
+                // Apply config-based copays if available
+                if (config && config.serviceCategories) {
+                    providers = providers.map(provider => {
+                        const newCopay = getCopayForProvider(providerKey, provider.facility, provider.copay, config);
+                        return { ...provider, copay: newCopay };
+                    });
+                }
+
                 if (sortBy === 'price') {
                     providers.sort((a, b) => a.copay - b.copay);
                 } else if (sortBy === 'rating') {
@@ -1168,9 +1263,23 @@
 
             return (
                 <div className="app-container">
+                    {hasCustomConfig && config?.meta && (
+                        <div style={{
+                            background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+                            padding: '12px 16px',
+                            borderBottom: '1px solid #fcd34d',
+                            fontSize: '13px',
+                            fontWeight: '500',
+                            color: '#92400e',
+                            textAlign: 'center',
+                            zIndex: 40
+                        }}>
+                            📋 Custom plan: <strong>{config.meta.planName}</strong> for <strong>{config.meta.companyName}</strong>
+                        </div>
+                    )}
                     <div className="content-area">
                         {currentTab === 'dashboard' && (
-                            <DashboardView upcomingVisits={upcomingVisits} />
+                            <DashboardView upcomingVisits={upcomingVisits} config={config} />
                         )}
 
                         {currentTab === 'care' && (
@@ -1191,6 +1300,7 @@
                                     onSelectService={handleServiceSelect}
                                     searchQuery={searchQuery}
                                     onSearchChange={setSearchQuery}
+                                    config={config}
                                 />
                             )
                         )}
@@ -1263,18 +1373,26 @@
         }
 
         // Dashboard View
-        function DashboardView({ upcomingVisits }) {
+        function DashboardView({ upcomingVisits, config }) {
             const oopSpent = 847;
-            const oopMax = 6000;
+            const oopMax = config?.planLimits?.individualOopMaximum || 6000;
             const progress = (oopSpent / oopMax) * 100;
+
+            const planName = config?.meta?.planName || 'Pillar Health — Bind-Style Plan';
+            const companyName = config?.meta?.companyName || 'Pillar Health';
 
             return (
                 <>
                     <div className="header">
                         <div className="welcome-text">Welcome back, Sarah</div>
                         <div className="plan-name">
-                            💜 Pillar Health — Bind-Style Plan
+                            💜 {planName}
                         </div>
+                        {config?.meta?.companyName && (
+                            <div style={{ fontSize: '14px', color: '#e0e7ff', marginTop: '4px' }}>
+                                {config.meta.companyName}
+                            </div>
+                        )}
                         <div className="badge-ai">AI-Powered</div>
                     </div>
 
@@ -1354,10 +1472,10 @@
         }
 
         // Care Search View
-        function CareSearchView({ onSelectService, searchQuery, onSearchChange }) {
+        function CareSearchView({ onSelectService, searchQuery, onSearchChange, config }) {
             const popularSearches = ['Knee MRI', 'Primary Care', 'Dermatologist', 'Physical Therapy', 'Orthopedic Surgery', 'Urgent Care'];
 
-            const categories = [
+            const allCategories = [
                 { name: 'Imaging', icon: '🖼️', key: 'imaging' },
                 { name: 'Primary Care', icon: '👨‍⚕️', key: 'primary' },
                 { name: 'Specialist', icon: '👩‍⚕️', key: 'specialist' },
@@ -1365,6 +1483,27 @@
                 { name: 'Lab & Testing', icon: '🧪', key: 'lab' },
                 { name: 'Urgent/ER', icon: '🚑', key: 'urgent' }
             ];
+
+            // Filter categories based on enabled services in config
+            const categories = useMemo(() => {
+                if (!config || !config.serviceCategories) {
+                    return allCategories;
+                }
+                const enabledKeys = Object.keys(config.serviceCategories);
+                return allCategories.filter(cat => {
+                    // Map category keys to service category names for matching
+                    const categoryMapping = {
+                        'imaging': ['Knee MRI', 'Imaging', 'CT Scan', 'X-Ray'],
+                        'primary': ['Primary Care', 'PCP'],
+                        'specialist': ['Specialist', 'Dermatologist', 'Orthopedic Surgery'],
+                        'therapy': ['Physical Therapy', 'Therapy'],
+                        'lab': ['Lab & Testing', 'Lab Work'],
+                        'urgent': ['Urgent/ER', 'Urgent Care', 'Emergency']
+                    };
+                    const mappedNames = categoryMapping[cat.key] || [cat.name];
+                    return mappedNames.some(name => enabledKeys.some(key => key.toLowerCase().includes(name.toLowerCase()) || name.toLowerCase().includes(key.toLowerCase())));
+                });
+            }, [config]);
 
             return (
                 <div style={{ padding: '20px' }}>
