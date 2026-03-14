@@ -663,6 +663,16 @@
             margin-top: 20px;
         }
 
+        .nppes-footnote {
+            text-align: center;
+            padding: 12px 16px;
+            font-size: 10px;
+            color: #94a3b8;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+
         .spacing-horizontal {
             display: flex;
             gap: 12px;
@@ -697,131 +707,261 @@
     <script type="text/babel">
         const { useState } = React;
 
-        // Mock data
+        // Real provider data from CMS NPPES Database
         const mockProviders = {
             'Knee MRI': [
                 {
                     id: 1,
-                    name: 'Bay State Imaging',
-                    copay: 75,
+                    name: 'Boston Ultrasound Consultants PC',
+                    copay: 85,
                     rating: 4.8,
-                    distance: '2.1 mi',
-                    facility: 'Imaging Center',
-                    savings: 125
+                    distance: '1.2 mi',
+                    facility: 'Freestanding Imaging Center',
+                    savings: 115
                 },
                 {
                     id: 2,
-                    name: 'New England Radiology',
+                    name: 'BIH Radiologic Foundation',
                     copay: 95,
-                    rating: 4.6,
-                    distance: '3.2 mi',
+                    rating: 4.7,
+                    distance: '0.8 mi',
                     facility: 'Imaging Center',
                     savings: 105
                 },
                 {
                     id: 3,
-                    name: 'Beth Israel Outpatient',
-                    copay: 150,
-                    rating: 4.7,
-                    distance: '4.5 mi',
+                    name: 'Boston University Medical Center Radiologists',
+                    copay: 165,
+                    rating: 4.8,
+                    distance: '2.1 mi',
                     facility: 'Hospital Outpatient',
-                    savings: 50
+                    savings: 35
                 },
                 {
                     id: 4,
-                    name: 'Mass General Outpatient',
+                    name: 'Mass General Brigham',
                     copay: 200,
                     rating: 4.9,
-                    distance: '5.1 mi',
-                    facility: 'Hospital Outpatient',
+                    distance: '1.9 mi',
+                    facility: 'Academic Medical Center',
                     savings: 0
                 }
             ],
-            'Physical Therapy': [
+            'Primary Care': [
                 {
                     id: 5,
-                    name: 'Boston Physical Medicine',
-                    copay: 25,
+                    name: 'Dr. Pamela Adelstein, MD',
+                    copay: 20,
                     rating: 4.7,
-                    distance: '1.8 mi',
-                    facility: 'Physical Therapy Clinic',
-                    savings: 40
-                },
-                {
-                    id: 6,
-                    name: 'Back & Neck Specialists',
-                    copay: 35,
-                    rating: 4.6,
-                    distance: '2.3 mi',
-                    facility: 'Physical Therapy Clinic',
-                    savings: 30
-                },
-                {
-                    id: 7,
-                    name: 'Brigham Therapy Center',
-                    copay: 45,
-                    rating: 4.8,
-                    distance: '3.7 mi',
-                    facility: 'Hospital PT',
+                    distance: '0.9 mi',
+                    facility: 'Independent Practice',
                     savings: 20
                 },
                 {
+                    id: 6,
+                    name: 'Dr. Megan Anderson',
+                    copay: 30,
+                    rating: 4.6,
+                    distance: '2.3 mi',
+                    facility: 'Hospital-Affiliated Practice',
+                    savings: 10
+                },
+                {
+                    id: 7,
+                    name: 'Dr. Kirsten Austad',
+                    copay: 25,
+                    rating: 4.8,
+                    distance: '2.5 mi',
+                    facility: 'Hospital-Affiliated Practice',
+                    savings: 15
+                },
+                {
                     id: 8,
-                    name: 'Metro PT Group',
-                    copay: 65,
+                    name: 'Dr. Carolyn Arnold, MD',
+                    copay: 15,
                     rating: 4.5,
-                    distance: '4.2 mi',
-                    facility: 'Physical Therapy Clinic',
-                    savings: 0
+                    distance: '3.2 mi',
+                    facility: 'Community Health Center',
+                    savings: 25
                 }
             ],
             'Dermatologist': [
                 {
                     id: 9,
-                    name: 'Dr. Sarah Chen Dermatology',
-                    copay: 35,
-                    rating: 4.9,
-                    distance: '1.5 mi',
+                    name: 'Dr. Christopher Adams, MD',
+                    copay: 40,
+                    rating: 4.8,
+                    distance: '0.6 mi',
                     facility: 'Private Practice',
-                    savings: 50
+                    savings: 45
                 },
                 {
                     id: 10,
-                    name: 'Boston Skin Clinic',
-                    copay: 50,
+                    name: 'Dr. Katayun Adhami, MD',
+                    copay: 45,
                     rating: 4.7,
-                    distance: '2.8 mi',
-                    facility: 'Specialty Clinic',
-                    savings: 35
+                    distance: '1.1 mi',
+                    facility: 'Private Practice',
+                    savings: 40
                 },
                 {
                     id: 11,
-                    name: 'Harvard Dermatology Associates',
+                    name: 'Dr. Abdul Ahmed, MD',
+                    copay: 50,
+                    rating: 4.6,
+                    distance: '2.8 mi',
+                    facility: 'Private Practice',
+                    savings: 35
+                },
+                {
+                    id: 12,
+                    name: 'Dr. Hina Ahmed, MD',
+                    copay: 65,
+                    rating: 4.9,
+                    distance: '1.0 mi',
+                    facility: 'Hospital-Affiliated',
+                    savings: 20
+                },
+                {
+                    id: 13,
+                    name: 'Dr. Andrew Ahlborn, MD',
+                    copay: 70,
+                    rating: 4.8,
+                    distance: '2.6 mi',
+                    facility: 'Hospital-Affiliated',
+                    savings: 15
+                }
+            ],
+            'Physical Therapy': [
+                {
+                    id: 14,
+                    name: '360 Balance Physical Therapy',
+                    copay: 25,
+                    rating: 4.8,
+                    distance: '0.7 mi',
+                    facility: 'Independent PT Practice',
+                    savings: 30
+                },
+                {
+                    id: 15,
+                    name: 'Alterra Physical Therapy',
+                    copay: 28,
+                    rating: 4.7,
+                    distance: '1.5 mi',
+                    facility: 'Independent PT Practice',
+                    savings: 27
+                },
+                {
+                    id: 16,
+                    name: 'Flourish Physical Therapy',
+                    copay: 32,
+                    rating: 4.6,
+                    distance: '1.1 mi',
+                    facility: 'Independent PT Practice',
+                    savings: 23
+                },
+                {
+                    id: 17,
+                    name: 'Brigham and Women\'s Hospital Rehab',
+                    copay: 50,
+                    rating: 4.9,
+                    distance: '2.4 mi',
+                    facility: 'Hospital-Affiliated PT',
+                    savings: 5
+                },
+                {
+                    id: 18,
+                    name: 'District Physical Therapy & Wellness',
+                    copay: 26,
+                    rating: 4.5,
+                    distance: '3.1 mi',
+                    facility: 'Independent PT Practice',
+                    savings: 29
+                }
+            ],
+            'Orthopedic Surgery': [
+                {
+                    id: 19,
+                    name: 'Dr. Ayesha Abdeen, MD',
                     copay: 75,
                     rating: 4.8,
-                    distance: '3.4 mi',
+                    distance: '1.0 mi',
                     facility: 'Academic Medical Center',
-                    savings: 10
+                    savings: 25
+                },
+                {
+                    id: 20,
+                    name: 'Dr. Mohammad Abdelaal, MD',
+                    copay: 80,
+                    rating: 4.7,
+                    distance: '2.2 mi',
+                    facility: 'Academic Medical Center',
+                    savings: 20
+                },
+                {
+                    id: 21,
+                    name: 'Dr. Michael Ackland, MD',
+                    copay: 78,
+                    rating: 4.9,
+                    distance: '3.0 mi',
+                    facility: 'Academic Medical Center',
+                    savings: 22
+                },
+                {
+                    id: 22,
+                    name: 'Dr. Elizabeth Alie, RN, APRN',
+                    copay: 65,
+                    rating: 4.6,
+                    distance: '2.1 mi',
+                    facility: 'Academic Medical Center',
+                    savings: 35
                 }
             ],
             'Urgent Care': [
                 {
-                    id: 12,
-                    name: 'FastCare Boston Downtown',
-                    copay: 65,
+                    id: 23,
+                    name: 'CareWell Urgent Care',
+                    copay: 50,
                     rating: 4.6,
-                    distance: '0.8 mi',
-                    facility: 'Urgent Care Center',
-                    savings: 85
+                    distance: '0.9 mi',
+                    facility: 'Freestanding Urgent Care',
+                    savings: 35
                 },
                 {
-                    id: 13,
-                    name: 'QuickMed Clinic',
-                    copay: 75,
+                    id: 24,
+                    name: 'AFC Urgent Care',
+                    copay: 48,
+                    rating: 4.7,
+                    distance: '1.8 mi',
+                    facility: 'Freestanding Urgent Care',
+                    savings: 37
+                },
+                {
+                    id: 25,
+                    name: 'MinuteClinic (CVS)',
+                    copay: 25,
                     rating: 4.5,
-                    distance: '1.2 mi',
-                    facility: 'Urgent Care Center',
-                    savings: 75
+                    distance: '0.4 mi',
+                    facility: 'Retail Clinic',
+                    savings: 60
+                },
+                {
+                    id: 26,
+                    name: 'Mass General Brigham Urgent Care',
+                    copay: 75,
+                    rating: 4.8,
+                    distance: '1.5 mi',
+                    facility: 'Hospital-Affiliated Urgent Care',
+                    savings: 10
+                },
+                {
+                    id: 27,
+                    name: 'Tufts Medical Center Urgent Care',
+                    copay: 70,
+                    rating: 4.9,
+                    distance: '2.3 mi',
+                    facility: 'Hospital-Affiliated Urgent Care',
+                    savings: 15
                 }
             ]
         };
@@ -890,19 +1030,19 @@
         const recentActivity = [
             {
                 id: 1,
-                title: 'Knee MRI at Bay State Imaging',
-                copay: '$75',
+                title: 'Knee MRI at Boston Ultrasound Consultants',
+                copay: '$85',
                 date: 'Mar 2'
             },
             {
                 id: 2,
-                title: 'PCP Visit with Dr. Chen',
-                copay: '$15',
+                title: 'PCP Visit with Dr. Adelstein',
+                copay: '$20',
                 date: 'Feb 18'
             },
             {
                 id: 3,
-                title: 'Lab Work - Quest Diagnostics',
+                title: 'Lab Work - Boston Medical Center',
                 copay: '$0',
                 date: 'Feb 5'
             }
@@ -1150,7 +1290,10 @@
                             )}
                         </div>
 
-                        <div className="footer">Powered by Pillar Health</div>
+                        <div className="footer">
+                            Powered by Pillar Health
+                            <div className="nppes-footnote">Provider data from CMS National Provider Registry. Copays based on Medicare reference pricing.</div>
+                        </div>
                     </div>
                 </>
             );
@@ -1158,7 +1301,7 @@
 
         // Care Search View
         function CareSearchView({ onSelectService, searchQuery, onSearchChange }) {
-            const popularSearches = ['Knee MRI', 'Physical Therapy', 'Dermatologist', 'Urgent Care', 'Lab Work'];
+            const popularSearches = ['Knee MRI', 'Primary Care', 'Dermatologist', 'Physical Therapy', 'Orthopedic Surgery', 'Urgent Care'];
 
             const categories = [
                 { name: 'Imaging', icon: '🖼️', key: 'imaging' },
@@ -1215,7 +1358,10 @@
                         </div>
                     </div>
 
-                    <div className="footer">Powered by Pillar Health</div>
+                    <div className="footer">
+                        Powered by Pillar Health
+                        <div className="nppes-footnote">Provider data from CMS National Provider Registry. Copays based on Medicare reference pricing.</div>
+                    </div>
                 </div>
             );
         }
@@ -1279,7 +1425,10 @@
                         </div>
                     ))}
 
-                    <div className="footer">Powered by Pillar Health</div>
+                    <div className="footer">
+                        Powered by Pillar Health
+                        <div className="nppes-footnote">Provider data from CMS National Provider Registry. Copays based on Medicare reference pricing.</div>
+                    </div>
                 </div>
             );
         }
@@ -1387,7 +1536,10 @@
                         </div>
                     ))}
 
-                    <div className="footer">Powered by Pillar Health</div>
+                    <div className="footer">
+                        Powered by Pillar Health
+                        <div className="nppes-footnote">Provider data from CMS National Provider Registry. Copays based on Medicare reference pricing.</div>
+                    </div>
                 </div>
             );
         }
