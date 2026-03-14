@@ -1,0 +1,1782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anatomy of a Health Plan</title>
+<style>
+  :root {
+    --navy: #1a2744;
+    --blue: #2563eb;
+    --blue-light: #dbeafe;
+    --green: #16a34a;
+    --green-light: #dcfce7;
+    --amber: #d97706;
+    --amber-light: #fef3c7;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --radius: 12px;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 12px rgba(0,0,0,.04);
+    --shadow-lg: 0 4px 24px rgba(0,0,0,.1);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: var(--gray-50); color: var(--gray-800); line-height: 1.6; }
+
+  /* NAV */
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,.85); backdrop-filter: blur(16px); border-bottom: 1px solid var(--gray-200); }
+  nav .inner { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; height: 56px; gap: 32px; }
+  nav .logo { font-weight: 700; color: var(--navy); font-size: 15px; white-space: nowrap; }
+  nav .links { display: flex; gap: 4px; overflow-x: auto; }
+  nav .links a { padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; color: var(--gray-500); text-decoration: none; white-space: nowrap; transition: all .15s; }
+  nav .links a:hover, nav .links a.active { color: var(--blue); background: var(--blue-light); }
+
+  /* HERO */
+  .hero { background: linear-gradient(135deg, var(--navy) 0%, #1e3a5f 50%, #2563eb 100%); color: white; padding: 80px 24px 60px; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+  .hero h1 { font-size: clamp(32px, 5vw, 52px); font-weight: 800; margin-bottom: 12px; position: relative; }
+  .hero p { font-size: 18px; opacity: .85; max-width: 640px; margin: 0 auto 32px; position: relative; }
+  .hero-stats { display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; position: relative; }
+  .hero-stat { text-align: center; }
+  .hero-stat .num { font-size: 40px; font-weight: 800; }
+  .hero-stat .label { font-size: 13px; opacity: .7; text-transform: uppercase; letter-spacing: .5px; }
+
+  /* SECTIONS */
+  section { max-width: 1200px; margin: 0 auto; padding: 64px 24px; }
+  section h2 { font-size: 28px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+  section .subtitle { color: var(--gray-500); font-size: 16px; margin-bottom: 32px; }
+
+  /* DOMAIN CARDS */
+  .domain-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+  .domain-card { background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); cursor: pointer; transition: all .2s; overflow: hidden; }
+  .domain-card:hover { box-shadow: var(--shadow-lg); border-color: var(--blue); transform: translateY(-2px); }
+  .domain-card.expanded { grid-column: 1 / -1; }
+  .domain-header { padding: 20px 24px; display: flex; align-items: center; gap: 16px; }
+  .domain-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .domain-title { font-weight: 700; font-size: 16px; color: var(--gray-900); }
+  .domain-desc { font-size: 13px; color: var(--gray-500); margin-top: 2px; }
+  .ai-badge { margin-left: auto; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+  .ai-badge.very-high { background: var(--green-light); color: var(--green); }
+  .ai-badge.high { background: #d1fae5; color: #059669; }
+  .ai-badge.medium-high { background: var(--amber-light); color: var(--amber); }
+  .ai-badge.medium { background: #ffedd5; color: #ea580c; }
+  .domain-body { display: none; padding: 0 24px 24px; border-top: 1px solid var(--gray-100); }
+  .domain-card.expanded .domain-body { display: block; padding-top: 20px; }
+  .domain-card .chevron { transition: transform .2s; color: var(--gray-400); font-size: 18px; margin-left: 8px; }
+  .domain-card.expanded .chevron { transform: rotate(180deg); }
+
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-top: 16px; }
+  @media (max-width: 768px) { .detail-grid { grid-template-columns: 1fr; } }
+  .detail-col h4 { font-size: 12px; text-transform: uppercase; letter-spacing: .8px; color: var(--gray-400); margin-bottom: 8px; font-weight: 600; }
+  .detail-col ul { list-style: none; }
+  .detail-col li { font-size: 14px; padding: 4px 0; padding-left: 16px; position: relative; color: var(--gray-600); }
+  .detail-col li::before { content: ''; position: absolute; left: 0; top: 11px; width: 6px; height: 6px; border-radius: 50%; }
+  .detail-col.subfunctions li::before { background: var(--blue); }
+  .detail-col.ai-can li::before { background: var(--green); }
+  .detail-col.humans-must li::before { background: var(--amber); }
+  .detail-note { margin-top: 16px; padding: 16px; background: var(--gray-50); border-radius: 8px; font-size: 14px; color: var(--gray-600); border-left: 3px solid var(--blue); }
+
+  /* MATRIX */
+  .matrix-wrap { overflow-x: auto; }
+  .matrix { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  .matrix th { background: var(--navy); color: white; padding: 14px 16px; text-align: left; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+  .matrix td { padding: 14px 16px; font-size: 14px; border-bottom: 1px solid var(--gray-100); background: white; }
+  .matrix tr:nth-child(even) td { background: var(--gray-50); }
+  .matrix tr:hover td { background: var(--blue-light); }
+  .matrix .fn { font-weight: 600; color: var(--gray-900); }
+  .pct-bar { height: 8px; border-radius: 4px; background: var(--gray-200); overflow: hidden; margin-top: 6px; width: 100px; }
+  .pct-bar .fill { height: 100%; border-radius: 4px; }
+  .pct-bar .fill.high { background: linear-gradient(90deg, #16a34a, #22c55e); }
+  .pct-bar .fill.med { background: linear-gradient(90deg, #d97706, #fbbf24); }
+
+  /* TIMELINE */
+  .timeline { position: relative; padding-left: 40px; }
+  .timeline::before { content: ''; position: absolute; left: 15px; top: 0; bottom: 0; width: 3px; background: linear-gradient(to bottom, var(--blue), var(--green)); border-radius: 2px; }
+  .tl-phase { position: relative; margin-bottom: 40px; }
+  .tl-dot { position: absolute; left: -33px; top: 4px; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 0 3px var(--blue); }
+  .tl-dot.p1 { background: var(--blue); }
+  .tl-dot.p2 { background: #8b5cf6; box-shadow: 0 0 0 3px #8b5cf6; }
+  .tl-dot.p3 { background: var(--green); box-shadow: 0 0 0 3px var(--green); }
+  .tl-phase h3 { font-size: 18px; font-weight: 700; color: var(--gray-900); }
+  .tl-phase .tl-time { font-size: 13px; color: var(--gray-400); margin-bottom: 8px; }
+  .tl-items { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .tl-item { padding: 6px 14px; background: white; border: 1px solid var(--gray-200); border-radius: 8px; font-size: 13px; color: var(--gray-600); }
+
+  /* COMPETITIVE */
+  .comp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .comp-card { background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 24px; transition: all .2s; }
+  .comp-card:hover { box-shadow: var(--shadow-lg); }
+  .comp-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .comp-card .focus { font-size: 13px; color: var(--blue); font-weight: 500; margin-bottom: 8px; }
+  .comp-card p { font-size: 14px; color: var(--gray-500); }
+  .comp-card .funding { margin-top: 12px; font-size: 12px; font-weight: 600; color: var(--gray-400); text-transform: uppercase; letter-spacing: .5px; }
+
+  /* TAKEAWAYS */
+  .takeaway-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; counter-reset: take; }
+  .takeaway { background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 24px; padding-left: 72px; position: relative; counter-increment: take; }
+  .takeaway::before { content: counter(take); position: absolute; left: 20px; top: 20px; width: 36px; height: 36px; background: var(--navy); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px; }
+  .takeaway h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; color: var(--gray-900); }
+  .takeaway p { font-size: 14px; color: var(--gray-500); }
+
+  /* DONUT */
+  .donut-section { display: flex; align-items: center; gap: 48px; flex-wrap: wrap; justify-content: center; margin-bottom: 32px; }
+  .donut-wrap { position: relative; width: 220px; height: 220px; flex-shrink: 0; }
+  .donut-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .donut-wrap .center-label { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .donut-wrap .center-label .big { font-size: 36px; font-weight: 800; color: var(--navy); }
+  .donut-wrap .center-label .small { font-size: 12px; color: var(--gray-400); text-transform: uppercase; }
+  .donut-legend { display: flex; flex-direction: column; gap: 10px; }
+  .legend-item { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--gray-600); }
+  .legend-dot { width: 12px; height: 12px; border-radius: 4px; flex-shrink: 0; }
+
+  /* REGULATORY ALERT */
+  .reg-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+  .reg-card { padding: 24px; border-radius: var(--radius); border: 1px solid var(--gray-200); background: white; }
+  .reg-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .reg-card p { font-size: 14px; color: var(--gray-500); }
+  .reg-card .icon { font-size: 28px; margin-bottom: 12px; }
+
+  footer { text-align: center; padding: 40px 24px; color: var(--gray-400); font-size: 13px; border-top: 1px solid var(--gray-200); }
+
+  /* DEEP DIVE */
+  .dd-hero { background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%); color: white; border-radius: var(--radius); padding: 40px; margin-bottom: 32px; }
+  .dd-hero h3 { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+  .dd-hero p { opacity: .85; font-size: 15px; max-width: 700px; }
+  .dd-context-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-top: 20px; }
+  .dd-context-chip { background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.2); border-radius: 8px; padding: 12px 16px; }
+  .dd-context-chip .chip-label { font-size: 11px; text-transform: uppercase; letter-spacing: .8px; opacity: .6; }
+  .dd-context-chip .chip-value { font-size: 15px; font-weight: 600; margin-top: 2px; }
+
+  .dd-arch { display: grid; grid-template-columns: 1fr 40px 1fr; gap: 0; align-items: stretch; margin: 32px 0; }
+  @media (max-width: 768px) { .dd-arch { grid-template-columns: 1fr; } .dd-arrow-col { transform: rotate(90deg); } }
+  .dd-arch-box { background: white; border: 2px solid var(--gray-200); border-radius: var(--radius); padding: 28px; }
+  .dd-arch-box h4 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .dd-arch-box .arch-sub { font-size: 13px; color: var(--blue); font-weight: 600; margin-bottom: 12px; }
+  .dd-arch-box p, .dd-arch-box li { font-size: 14px; color: var(--gray-600); }
+  .dd-arch-box ul { list-style: none; margin-top: 8px; }
+  .dd-arch-box li { padding: 3px 0 3px 16px; position: relative; }
+  .dd-arch-box li::before { content: ''; position: absolute; left: 0; top: 10px; width: 6px; height: 6px; border-radius: 50%; background: var(--blue); }
+  .dd-arch-box.compiler { border-color: var(--green); }
+  .dd-arch-box.compiler li::before { background: var(--green); }
+  .dd-arrow-col { display: flex; align-items: center; justify-content: center; color: var(--gray-300); font-size: 28px; font-weight: 800; }
+
+  .dd-schema { background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); overflow: hidden; margin: 32px 0; }
+  .dd-schema-header { background: var(--navy); color: white; padding: 16px 24px; font-weight: 700; font-size: 15px; }
+  .dd-schema-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1px; background: var(--gray-200); }
+  .dd-schema-col { background: white; padding: 20px; }
+  .dd-schema-col h5 { font-size: 13px; text-transform: uppercase; letter-spacing: .7px; color: var(--blue); margin-bottom: 10px; font-weight: 700; }
+  .dd-schema-col .field { display: flex; justify-content: space-between; align-items: baseline; padding: 5px 0; border-bottom: 1px solid var(--gray-100); font-size: 13px; }
+  .dd-schema-col .field:last-child { border-bottom: none; }
+  .dd-schema-col .field .fname { color: var(--gray-800); font-weight: 500; font-family: 'SF Mono', 'Fira Code', monospace; }
+  .dd-schema-col .field .ftype { color: var(--gray-400); font-size: 12px; }
+
+  .dd-build-phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 32px 0; }
+  @media (max-width: 900px) { .dd-build-phases { grid-template-columns: 1fr; } }
+  .dd-phase { border-radius: var(--radius); border: 1px solid var(--gray-200); overflow: hidden; background: white; }
+  .dd-phase-head { padding: 16px 20px; font-weight: 700; font-size: 14px; color: white; }
+  .dd-phase-head.p1 { background: var(--blue); }
+  .dd-phase-head.p2 { background: #7c3aed; }
+  .dd-phase-head.p3 { background: var(--green); }
+  .dd-phase-body { padding: 16px 20px; }
+  .dd-phase-body .dd-time { font-size: 12px; color: var(--gray-400); font-weight: 600; text-transform: uppercase; margin-bottom: 8px; }
+  .dd-phase-body ul { list-style: none; }
+  .dd-phase-body li { font-size: 13px; color: var(--gray-600); padding: 4px 0 4px 18px; position: relative; }
+  .dd-phase-body li::before { content: ''; position: absolute; left: 0; top: 11px; width: 8px; height: 8px; border-radius: 2px; border: 2px solid var(--blue); }
+  .dd-phase-body li.done::before { background: var(--green); border-color: var(--green); }
+
+  .dd-inputs { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin: 32px 0; }
+  .dd-input-card { background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 24px; position: relative; border-left: 4px solid var(--blue); }
+  .dd-input-card.critical { border-left-color: var(--red); }
+  .dd-input-card.critical .dd-input-tag { background: var(--red-light); color: var(--red); }
+  .dd-input-card .dd-input-tag { display: inline-block; font-size: 11px; font-weight: 600; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; background: var(--blue-light); color: var(--blue); margin-bottom: 8px; }
+  .dd-input-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .dd-input-card p { font-size: 13px; color: var(--gray-500); }
+
+  .dd-risks { margin: 32px 0; }
+  .dd-risk-row { display: flex; align-items: flex-start; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--gray-100); }
+  .dd-risk-row:last-child { border-bottom: none; }
+  .dd-risk-icon { width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .dd-risk-row h4 { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+  .dd-risk-row p { font-size: 13px; color: var(--gray-500); }
+
+  /* BIND MODEL SECTION */
+  .bind-hero { background: linear-gradient(135deg, #0f172a 0%, #7c3aed 100%); color: white; border-radius: var(--radius); padding: 48px; margin-bottom: 32px; position: relative; overflow: hidden; }
+  .bind-hero::before { content: ''; position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,.05); border-radius: 50%; }
+  .bind-hero h3 { font-size: 28px; font-weight: 800; margin-bottom: 8px; }
+  .bind-hero p { opacity: .85; font-size: 15px; max-width: 700px; }
+  .bind-compare { display: grid; grid-template-columns: 1fr 60px 1fr; gap: 0; align-items: stretch; margin: 32px 0; }
+  @media (max-width: 768px) { .bind-compare { grid-template-columns: 1fr; gap: 16px; } .bind-vs { display: none; } }
+  .bind-plan { border-radius: var(--radius); padding: 28px; border: 2px solid var(--gray-200); background: white; }
+  .bind-plan.traditional { opacity: .7; }
+  .bind-plan.innovative { border-color: #7c3aed; box-shadow: 0 0 0 4px rgba(124,58,237,.1); }
+  .bind-plan h4 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .bind-plan .plan-sub { font-size: 13px; color: var(--gray-400); margin-bottom: 16px; }
+  .bind-plan .plan-feature { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--gray-100); font-size: 14px; }
+  .bind-plan .plan-feature:last-child { border-bottom: none; }
+  .bind-plan .plan-feature .label { color: var(--gray-500); }
+  .bind-plan .plan-feature .value { font-weight: 600; color: var(--gray-800); }
+  .bind-plan.innovative .plan-feature .value { color: #7c3aed; }
+  .bind-vs { display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800; color: var(--gray-300); }
+  .bind-flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 32px 0; }
+  @media (max-width: 900px) { .bind-flow { grid-template-columns: repeat(2, 1fr); } }
+  .bind-step { background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 24px; text-align: center; position: relative; }
+  .bind-step .step-num { width: 32px; height: 32px; background: #7c3aed; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; margin: 0 auto 12px; }
+  .bind-step h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .bind-step p { font-size: 13px; color: var(--gray-500); }
+  .bind-decision { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin: 32px 0; }
+  .bind-choice { background: white; border: 1px solid var(--gray-200); border-radius: var(--radius); padding: 24px; border-top: 4px solid #7c3aed; }
+  .bind-choice h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+  .bind-choice .choice-q { font-size: 13px; color: #7c3aed; font-weight: 600; margin-bottom: 8px; }
+  .bind-choice p { font-size: 13px; color: var(--gray-500); }
+  .bind-choice .choice-rec { margin-top: 12px; padding: 10px 14px; background: #f5f3ff; border-radius: 8px; font-size: 13px; color: #5b21b6; font-weight: 500; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="inner">
+    <div class="logo">Anatomy of a Health Plan</div>
+    <div class="links">
+      <a href="#domains" class="active">Domains</a>
+      <a href="#bind-model">Bind/Surest Model</a>
+      <a href="#matrix">Matrix</a>
+      <a href="#build">Build Sequence</a>
+      <a href="#regulatory">Regulatory</a>
+      <a href="#landscape">Landscape</a>
+      <a href="#takeaways">Takeaways</a>
+    </div>
+  </div>
+</nav>
+
+<div class="hero">
+  <h1>Anatomy of a Health Plan</h1>
+  <p>A full-stack analysis of the 10 functional domains, 40+ sub-functions, and AI automation potential for self-insured employers.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="num">67%</div><div class="label">of covered workers<br>self-insured (2025)</div></div>
+    <div class="hero-stat"><div class="num">10</div><div class="label">functional<br>domains</div></div>
+    <div class="hero-stat"><div class="num">60–70%</div><div class="label">of operations<br>AI-automatable</div></div>
+    <div class="hero-stat"><div class="num">$0</div><div class="label">full-stack AI<br>plans built today</div></div>
+  </div>
+</div>
+
+<!-- AI AUTOMATION OVERVIEW -->
+<section id="overview">
+  <h2>AI Automation Potential</h2>
+  <p class="subtitle">Across 10 functional domains, the majority of health plan operations can be AI-driven.</p>
+  <div class="donut-section">
+    <div class="donut-wrap">
+      <svg viewBox="0 0 42 42">
+        <circle cx="21" cy="21" r="15.9" fill="none" stroke="#e5e7eb" stroke-width="5"/>
+        <circle cx="21" cy="21" r="15.9" fill="none" stroke="#16a34a" stroke-width="5" stroke-dasharray="30 70" stroke-dashoffset="0"/>
+        <circle cx="21" cy="21" r="15.9" fill="none" stroke="#22c55e" stroke-width="5" stroke-dasharray="20 80" stroke-dashoffset="-30"/>
+        <circle cx="21" cy="21" r="15.9" fill="none" stroke="#d97706" stroke-width="5" stroke-dasharray="15 85" stroke-dashoffset="-50"/>
+        <circle cx="21" cy="21" r="15.9" fill="none" stroke="#f59e0b" stroke-width="5" stroke-dasharray="15 85" stroke-dashoffset="-65"/>
+        <circle cx="21" cy="21" r="15.9" fill="none" stroke="#e5e7eb" stroke-width="5" stroke-dasharray="20 80" stroke-dashoffset="-80"/>
+      </svg>
+      <div class="center-label"><span class="big">65%</span><span class="small">AI-Ready</span></div>
+    </div>
+    <div class="donut-legend">
+      <div class="legend-item"><span class="legend-dot" style="background:#16a34a"></span><strong>Very High</strong> — Claims, Member Services, Analytics (30%)</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#22c55e"></span><strong>High</strong> — Plan Design, Eligibility, Utilization Mgmt (20%)</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#d97706"></span><strong>Medium-High</strong> — Pharmacy Benefits (15%)</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#f59e0b"></span><strong>Medium</strong> — Network, Compliance, Financial (15%)</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#e5e7eb"></span><strong>Human-Led</strong> — Negotiations, legal, licensing (20%)</div>
+    </div>
+  </div>
+</section>
+
+<!-- DOMAINS -->
+<section id="domains">
+  <h2>The 10 Functional Domains</h2>
+  <p class="subtitle">Click any domain to explore sub-functions, AI potential, and where humans remain essential.</p>
+  <div class="domain-grid" id="domainGrid"></div>
+</section>
+
+<!-- BIND/SUREST MODEL -->
+<section id="bind-model">
+  <h2>The Bind/Surest Model: What If We Go This Direction?</h2>
+  <p class="subtitle">Bind (now Surest/UHC) proved that eliminating deductibles in favor of variable, transparent copays creates better outcomes for both employers and members. Here's what it would mean for our build.</p>
+
+  <div class="bind-hero">
+    <h3>The Core Insight</h3>
+    <p>Deductibles don't work. They frustrate members, they don't drive informed shopping behavior, and they create a "donut hole" where members avoid care early in the year. Bind's thesis: replace the entire deductible/coinsurance structure with variable copays that differ by provider and service — so members see one transparent price before they get care, and that price incentivizes them toward higher-value providers.</p>
+  </div>
+
+  <!-- TRADITIONAL VS BIND -->
+  <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;color:var(--navy);">Traditional Plan vs. Bind-Style Plan</h3>
+  <div class="bind-compare">
+    <div class="bind-plan traditional">
+      <h4>Traditional PPO</h4>
+      <div class="plan-sub">What most mid-market employers offer today</div>
+      <div class="plan-feature"><span class="label">Deductible</span><span class="value">$1,500 individual / $3,000 family</span></div>
+      <div class="plan-feature"><span class="label">Coinsurance</span><span class="value">80/20 after deductible</span></div>
+      <div class="plan-feature"><span class="label">OOP Max</span><span class="value">$6,000 / $12,000</span></div>
+      <div class="plan-feature"><span class="label">PCP Visit</span><span class="value">$30 copay (pre-deductible)</span></div>
+      <div class="plan-feature"><span class="label">Specialist</span><span class="value">$50 copay (pre-deductible)</span></div>
+      <div class="plan-feature"><span class="label">Knee MRI</span><span class="value">??? (subject to deductible + coinsurance)</span></div>
+      <div class="plan-feature"><span class="label">Knee Surgery</span><span class="value">??? (subject to deductible + coinsurance)</span></div>
+      <div class="plan-feature"><span class="label">Member Experience</span><span class="value">Opaque, unpredictable costs</span></div>
+      <div class="plan-feature"><span class="label">Shopping Behavior</span><span class="value">Minimal — no usable price info</span></div>
+    </div>
+    <div class="bind-vs">vs</div>
+    <div class="bind-plan innovative">
+      <h4>Bind-Style Variable Copay</h4>
+      <div class="plan-sub">Transparent, provider-variable pricing</div>
+      <div class="plan-feature"><span class="label">Deductible</span><span class="value">$0</span></div>
+      <div class="plan-feature"><span class="label">Coinsurance</span><span class="value">None — copay is the only cost</span></div>
+      <div class="plan-feature"><span class="label">OOP Max</span><span class="value">$6,000 / $12,000 (still applies)</span></div>
+      <div class="plan-feature"><span class="label">PCP Visit</span><span class="value">$10–$40 (varies by provider quality/cost)</span></div>
+      <div class="plan-feature"><span class="label">Specialist</span><span class="value">$25–$75 (varies by provider)</span></div>
+      <div class="plan-feature"><span class="label">Knee MRI</span><span class="value">$75 at Site A, $200 at Site B (shown upfront)</span></div>
+      <div class="plan-feature"><span class="label">Knee Surgery</span><span class="value">$500 at Hospital A, $2,500 at Hospital B (bundled)</span></div>
+      <div class="plan-feature"><span class="label">Member Experience</span><span class="value">One clear price before every service</span></div>
+      <div class="plan-feature"><span class="label">Shopping Behavior</span><span class="value">Active — visible price differential drives steerage</span></div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS FOR THE MEMBER -->
+  <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;color:var(--navy);">The Member Experience Flow</h3>
+  <div class="bind-flow">
+    <div class="bind-step">
+      <div class="step-num">1</div>
+      <h4>Search</h4>
+      <p>Member opens app: "I need a knee MRI." Sees 8 providers within 15 miles, each with a clear copay price and quality rating.</p>
+    </div>
+    <div class="bind-step">
+      <div class="step-num">2</div>
+      <h4>Compare</h4>
+      <p>Imaging center: $75 copay. Hospital outpatient: $200 copay. Both are in-network, both are high-quality. The price difference reflects the cost of the setting.</p>
+    </div>
+    <div class="bind-step">
+      <div class="step-num">3</div>
+      <h4>Choose</h4>
+      <p>Member picks the $75 option. No surprise bills. No "what will my insurance cover?" anxiety. That $75 is the total out-of-pocket.</p>
+    </div>
+    <div class="bind-step">
+      <div class="step-num">4</div>
+      <h4>Result</h4>
+      <p>Member saves money. Employer saves money (lower-cost setting). Provider gets paid promptly. Everyone wins.</p>
+    </div>
+  </div>
+
+  <!-- ON-DEMAND / ADD-IN COVERAGE -->
+  <h3 style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--navy);">The "Add-In" Coverage Innovation</h3>
+  <p style="font-size:14px;color:var(--gray-500);margin-bottom:20px;">Bind's most novel feature: for ~30 plannable procedures (knee surgery, cataract removal, back surgery, etc.), base coverage doesn't include them. Members "activate" coverage when they need it, paying an additional premium spread across future paychecks. This is like on-demand insurance for big-ticket procedures.</p>
+  <div class="dd-arch">
+    <div class="dd-arch-box">
+      <h4>Base Coverage (Always Active)</h4>
+      <div class="arch-sub">Core medical needs — covered from day 1</div>
+      <ul>
+        <li>Primary care and specialist visits</li>
+        <li>Emergency and urgent care</li>
+        <li>Maternity and newborn care</li>
+        <li>Mental health and substance use</li>
+        <li>Cancer treatment</li>
+        <li>Prescription drugs</li>
+        <li>Preventive care (100% covered per ACA)</li>
+        <li>Hospital stays for covered conditions</li>
+      </ul>
+    </div>
+    <div class="dd-arrow-col" style="font-size:20px;">+</div>
+    <div class="dd-arch-box compiler" style="border-color:#7c3aed;">
+      <h4>Add-In Coverage (Activated On Demand)</h4>
+      <div class="arch-sub" style="color:#7c3aed;">Plannable procedures — activate when needed</div>
+      <ul>
+        <li>Joint replacement (knee, hip, shoulder)</li>
+        <li>Spine surgery</li>
+        <li>Cataract surgery</li>
+        <li>Bariatric surgery</li>
+        <li>Coronary bypass / cardiac procedures</li>
+        <li>~30 total plannable procedures</li>
+        <li>Member activates 3+ business days before service</li>
+        <li>Premium increases temporarily, then returns to base</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- KEY DESIGN DECISIONS -->
+  <h3 style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--navy);">Key Design Decisions For Our Build</h3>
+  <p style="font-size:14px;color:var(--gray-500);margin-bottom:16px;">If we adopt the Bind model, here are the critical architectural and strategic choices we'd need to make.</p>
+  <div class="bind-decision">
+    <div class="bind-choice">
+      <h4>Variable Copay Pricing Engine</h4>
+      <div class="choice-q">How do we set provider-specific copays?</div>
+      <p>Bind/Surest uses a proprietary algorithm that scores providers on quality, efficiency, and cost, then maps scores to copay tiers. Lower copay = higher-value provider. This requires: claims data for benchmarking, a provider scoring model, and actuarial validation that the copay structure is revenue-neutral for the plan.</p>
+      <div class="choice-rec">Build decision: This is a core AI competency. Our scoring model + the plan configuration compiler can generate provider-level copays from network rate data and quality metrics. This is where our AI advantage is strongest.</div>
+    </div>
+    <div class="bind-choice">
+      <h4>Actuarial Equivalence</h4>
+      <div class="choice-q">How do we make $0 deductible cost-neutral for the employer?</div>
+      <p>Removing the deductible shifts costs to the plan. You offset this with: higher copays on low-value providers (incentivizing steerage), the add-in premium structure for plannable procedures, and behavioral savings from members choosing lower-cost settings. Surest reports 5–15% total cost savings vs. traditional plans — but proving this actuarially for your first client is critical.</p>
+      <div class="choice-rec">Build decision: You need a credentialed actuary (FSA) to validate the plan design. This is not something AI can replace — regulators and stop-loss carriers require human actuarial sign-off. Engage an actuarial consulting firm (Milliman, Oliver Wyman, or a boutique) early.</div>
+    </div>
+    <div class="bind-choice">
+      <h4>Add-In Premium Mechanics</h4>
+      <div class="choice-q">Do we implement the on-demand add-in model?</div>
+      <p>The add-in model is innovative but adds complexity: you need payroll integration to adjust premiums mid-period, actuarial pricing for each add-in procedure, an activation workflow with a waiting period (to prevent adverse selection), and ACA compliance review (the plan must still meet minimum value requirements).</p>
+      <div class="choice-rec">Recommendation: Start without add-ins for V1. Launch with the variable copay / no-deductible model first. Add the on-demand layer in V2 once you have claims data to price it actuarially and payroll integrations to support dynamic premiums.</div>
+    </div>
+    <div class="bind-choice">
+      <h4>490+ Service Pricing</h4>
+      <div class="choice-q">How do we price every service transparently?</div>
+      <p>Surest shows upfront prices for 490+ services. This requires: mapping every CPT/HCPCS code to a member-facing service description, calculating member cost for each service at each provider (using network rates + copay algorithm), and bundling related services (e.g., a surgery copay includes surgeon, anesthesia, facility, and follow-up).</p>
+      <div class="choice-rec">Build decision: This is the hardest AI/data problem in the Bind model. Start with the top 100 most common services (which cover ~80% of member interactions) and expand. The service bundling logic is deeply complex and is exactly where your domain expert hire is critical.</div>
+    </div>
+    <div class="bind-choice">
+      <h4>Provider Steerage & Legal Risk</h4>
+      <div class="choice-q">Can we steer members without legal exposure?</div>
+      <p>Variable copays inherently steer members toward certain providers. This is legal under ERISA for self-insured plans, but raises considerations: any willing provider laws in some states (though ERISA preempts most for self-insured), provider relations (hospitals may push back against being labeled "high copay"), and member perception (are we restricting choice or empowering it?).</p>
+      <div class="choice-rec">Framing matters: "We show you the price so you can decide" is very different from "We penalize you for choosing this doctor." The Bind model succeeds because it's positioned as transparency and choice, not restriction. Your AI-powered member experience must reinforce this framing.</div>
+    </div>
+    <div class="bind-choice">
+      <h4>Stop-Loss Compatibility</h4>
+      <div class="choice-q">Will stop-loss carriers accept a non-traditional plan design?</div>
+      <p>Stop-loss carriers are conservative. A $0-deductible plan with variable copays is unfamiliar to most underwriters. They may charge higher premiums or decline to quote. You need to demonstrate: actuarial soundness, that total plan cost is comparable or lower than traditional designs, and that your adjudication engine correctly applies the variable copay structure.</p>
+      <div class="choice-rec">Start the stop-loss conversation early, with the actuarial analysis in hand. Sun Life and Voya have experience with innovative plan designs. Having a credentialed actuary present the design to the stop-loss carrier is essential.</div>
+    </div>
+  </div>
+
+  <!-- WHAT CHANGES IN OUR 10 MODULES -->
+  <h3 style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--navy);">Impact on Our 10 Modules</h3>
+  <p style="font-size:14px;color:var(--gray-500);margin-bottom:16px;">Adopting the Bind model changes the build requirements in several modules.</p>
+  <div class="matrix-wrap">
+    <table class="matrix">
+      <thead><tr><th>Module</th><th>What Changes</th><th>Complexity Impact</th></tr></thead>
+      <tbody>
+        <tr><td class="fn">Plan Design</td><td>Variable copay algorithm replaces deductible/coinsurance. Plan config schema needs provider-level pricing. Actuarial validation required.</td><td><span class="ai-badge medium-high" style="display:inline-block;">Significantly harder</span></td></tr>
+        <tr><td class="fn">Eligibility</td><td>Minimal change. Add-in activation tracking if implemented.</td><td><span class="ai-badge high" style="display:inline-block;">Minor change</span></td></tr>
+        <tr><td class="fn">Provider Network</td><td>Need provider quality/cost scoring to set variable copays. Provider directory must show per-service prices. Provider relations management for "tier" placement.</td><td><span class="ai-badge medium-high" style="display:inline-block;">Significantly harder</span></td></tr>
+        <tr><td class="fn">Claims Admin</td><td>Adjudication applies provider-specific copay (not flat copay). Accumulator logic simpler (no deductible tracking). Bundled service adjudication is complex.</td><td><span class="ai-badge medium" style="display:inline-block;">Different, not harder</span></td></tr>
+        <tr><td class="fn">Utilization Mgmt</td><td>Minimal change. Site-of-service steerage becomes core to value proposition.</td><td><span class="ai-badge high" style="display:inline-block;">Minor change</span></td></tr>
+        <tr><td class="fn">Pharmacy</td><td>Minimal change. Rx copays could also be variable by pharmacy.</td><td><span class="ai-badge high" style="display:inline-block;">Minor change</span></td></tr>
+        <tr><td class="fn">Member Services</td><td>This is where the model shines. AI must power real-time price lookup across 490+ services at every provider. This is the core product experience.</td><td><span class="ai-badge medium-high" style="display:inline-block;">Significantly harder</span></td></tr>
+        <tr><td class="fn">Compliance</td><td>ACA minimum value analysis for $0 deductible plan. Add-in model needs careful ACA review. State any-willing-provider law analysis.</td><td><span class="ai-badge medium" style="display:inline-block;">Moderately harder</span></td></tr>
+        <tr><td class="fn">Data & Analytics</td><td>Provider scoring model development. Steerage effectiveness tracking. Cost savings attribution vs. traditional design.</td><td><span class="ai-badge medium" style="display:inline-block;">Moderately harder</span></td></tr>
+        <tr><td class="fn">Financial Mgmt</td><td>Stop-loss carrier education required. Premium equivalent calc more complex. Add-in premium collection if implemented.</td><td><span class="ai-badge medium" style="display:inline-block;">Moderately harder</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- VERDICT -->
+  <div style="margin-top:32px;padding:32px;background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-radius:var(--radius);border:1px solid #c4b5fd;">
+    <h3 style="font-size:18px;font-weight:700;color:#5b21b6;margin-bottom:12px;">Strategic Assessment</h3>
+    <p style="font-size:14px;color:var(--gray-700);margin-bottom:12px;">The Bind model is a compelling direction with proven results (5–15% employer savings, 44% lower member OOP, 90% re-enrollment). It plays directly to AI strengths: the variable copay pricing engine, real-time member price lookup, and provider quality scoring are all AI-native capabilities.</p>
+    <p style="font-size:14px;color:var(--gray-700);margin-bottom:12px;">However, it raises the bar on three fronts: <strong>actuarial complexity</strong> (you must prove the $0-deductible design is cost-equivalent or better), <strong>provider data requirements</strong> (you need cost and quality data at the provider level for every service), and <strong>stop-loss acceptance</strong> (carriers need to be comfortable with a non-traditional design).</p>
+    <p style="font-size:14px;color:var(--gray-700);"><strong>Recommended approach:</strong> Design the system architecture to support variable copays from day one, but launch your first clients on a simplified version — $0 deductible, tiered copays (3–4 tiers based on provider value), no add-ins. This gets 80% of the Bind benefit with 40% of the complexity. Then evolve toward full provider-level variable pricing and add-ins as your data and actuarial confidence grow.</p>
+  </div>
+</section>
+
+<!-- MATRIX -->
+<section id="matrix">
+  <h2>Summary Matrix</h2>
+  <p class="subtitle">Side-by-side comparison of AI vs. human responsibilities across every domain.</p>
+  <div class="matrix-wrap">
+    <table class="matrix">
+      <thead><tr><th>Function</th><th>AI Potential</th><th>AI Can Do</th><th>Humans Must Do</th></tr></thead>
+      <tbody id="matrixBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<!-- BUILD SEQUENCE -->
+<section id="build">
+  <h2>Recommended Build Sequence</h2>
+  <p class="subtitle">A phased approach prioritized by AI readiness, competitive differentiation, and regulatory necessity.</p>
+  <div class="timeline">
+    <div class="tl-phase">
+      <div class="tl-dot p1"></div>
+      <h3>Phase 1: Foundation</h3>
+      <div class="tl-time">Months 0–6</div>
+      <p style="font-size:14px;color:var(--gray-500);">Build the core that everything else depends on.</p>
+      <div class="tl-items">
+        <div class="tl-item">Claims adjudication engine</div>
+        <div class="tl-item">Eligibility management</div>
+        <div class="tl-item">AI member services</div>
+        <div class="tl-item">Rent provider network</div>
+        <div class="tl-item">Partner with transparent PBM</div>
+        <div class="tl-item">Stop-loss carrier relationships</div>
+        <div class="tl-item">ERISA compliance framework</div>
+      </div>
+    </div>
+    <div class="tl-phase">
+      <div class="tl-dot p2"></div>
+      <h3>Phase 2: Differentiation</h3>
+      <div class="tl-time">Months 6–12</div>
+      <p style="font-size:14px;color:var(--gray-500);">Layer on capabilities that create visible competitive advantage.</p>
+      <div class="tl-items">
+        <div class="tl-item">AI prior authorization</div>
+        <div class="tl-item">Real-time analytics dashboard</div>
+        <div class="tl-item">Predictive cost modeling</div>
+        <div class="tl-item">Advanced fraud detection</div>
+        <div class="tl-item">Care navigation tools</div>
+      </div>
+    </div>
+    <div class="tl-phase">
+      <div class="tl-dot p3"></div>
+      <h3>Phase 3: Expansion</h3>
+      <div class="tl-time">Months 12–24</div>
+      <p style="font-size:14px;color:var(--gray-500);">Deepen capabilities and build proprietary advantages.</p>
+      <div class="tl-items">
+        <div class="tl-item">Direct provider contracts</div>
+        <div class="tl-item">Reference-based pricing</div>
+        <div class="tl-item">AI case management</div>
+        <div class="tl-item">NL plan optimizer for employers</div>
+        <div class="tl-item">HRIS integrations</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REGULATORY -->
+<section id="regulatory">
+  <h2>Regulatory Considerations</h2>
+  <p class="subtitle">Critical licensing and compliance requirements for an AI-native health plan.</p>
+  <div class="reg-cards">
+    <div class="reg-card"><div class="icon">&#x1F3DB;</div><h4>TPA Licensing</h4><p>Most states require TPA licensure. Requirements include financial solvency, state filing, and agreement to examination. This is a necessary early step.</p></div>
+    <div class="reg-card"><div class="icon">&#x2696;</div><h4>ERISA Fiduciary Risk</h4><p>A TPA exercising discretionary control may be deemed a fiduciary by courts, carrying significant liability. ERISA counsel is essential from day one.</p></div>
+    <div class="reg-card"><div class="icon">&#x1F916;</div><h4>AI-Specific Regulation</h4><p>CMS requires clinical judgment in coverage decisions. States are introducing human-review requirements for AI denials. Explainability requirements are increasing.</p></div>
+    <div class="reg-card"><div class="icon">&#x1F512;</div><h4>HIPAA & Data Security</h4><p>Processing massive PHI volumes requires strong HIPAA compliance, BAAs, SOC 2 Type II certification, and careful handling of AI model training on health data.</p></div>
+  </div>
+</section>
+
+<!-- COMPETITIVE LANDSCAPE -->
+<section id="landscape">
+  <h2>Competitive Landscape</h2>
+  <p class="subtitle">Companies attacking pieces of the stack — but no one has built the full thing yet.</p>
+  <div class="comp-grid">
+    <div class="comp-card"><h4>Cohere Health</h4><div class="focus">Prior Authorization</div><p>Auto-approves up to 90% of PA requests using AI that matches clinical criteria against documentation.</p><div class="funding">$200M raised (Series C, 2025)</div></div>
+    <div class="comp-card"><h4>Mirra Healthcare</h4><div class="focus">Claims Adjudication</div><p>AI-powered TPA and claims platform targeting self-insured employers with automated adjudication.</p><div class="funding">Growth stage</div></div>
+    <div class="comp-card"><h4>Corgi</h4><div class="focus">Full-Stack Carrier</div><p>AI-native insurance carrier for startups. First mover on full-stack AI insurance, but targeting fully-insured (not self-insured).</p><div class="funding">$108M raised (Jan 2026)</div></div>
+    <div class="comp-card"><h4>HealthEdge</h4><div class="focus">Core Admin Platform</div><p>AI embedded in claims and care management workflows for payers. Legacy platform being modernized with AI.</p><div class="funding">Acquired by Blackstone</div></div>
+    <div class="comp-card"><h4>SmithRx</h4><div class="focus">Transparent PBM</div><p>AI-driven formulary optimization with transparent, pass-through pricing model. Potential partner, not competitor.</p><div class="funding">Growth stage</div></div>
+    <div class="comp-card"><h4>DeepClaim</h4><div class="focus">Claims Coding</div><p>Neural network for claims adjudication, focused on accuracy and speed improvement over legacy systems.</p><div class="funding">Growth stage</div></div>
+  </div>
+</section>
+
+<!-- TAKEAWAYS -->
+<section id="takeaways">
+  <h2>Key Takeaways</h2>
+  <p class="subtitle">Six strategic conclusions for building an AI-native health plan.</p>
+  <div class="takeaway-grid">
+    <div class="takeaway"><h4>Massive, dissatisfied market</h4><p>67% of covered workers are in self-funded plans run on legacy systems. Employers want transparency and better service.</p></div>
+    <div class="takeaway"><h4>AI can automate 60–70% of operations</h4><p>Claims, prior auth, member services, eligibility, and analytics are highly automatable — translating to lower costs and faster service.</p></div>
+    <div class="takeaway"><h4>Humans essential for judgment & relationships</h4><p>Provider contracting, complex clinical decisions, legal compliance, and stop-loss placement require experienced professionals.</p></div>
+    <div class="takeaway"><h4>Network access is the hardest problem</h4><p>Rent first, build direct contracts over time. No amount of AI solves the cold-start network problem.</p></div>
+    <div class="takeaway"><h4>No one has built this yet</h4><p>Existing AI startups attack individual functions. The full-stack, unified platform opportunity remains wide open.</p></div>
+    <div class="takeaway"><h4>Regulatory tailwinds with careful navigation</h4><p>CMS interoperability rules and PA mandates favor tech-forward entrants, but AI regulation is evolving fast.</p></div>
+  </div>
+</section>
+
+<footer>
+  Prepared for Pillar VC &middot; March 2026 &middot; Confidential
+</footer>
+
+<script>
+const domains = [
+  {
+    icon: "&#x1F3AF;", color: "#2563eb", bg: "#dbeafe",
+    title: "Plan Design & Configuration", desc: "Benefit structure, plan documents, cost-sharing architecture",
+    badge: "High", badgeClass: "high",
+    subfunctions: ["Benefit design (deductibles, copays, OOP max)", "Plan document creation (SPD, SBC)", "Network tier design", "HSA/HRA/FSA integration", "Cost modeling and scenario analysis"],
+    aiCan: ["Generate plan designs from claims data", "Benchmark against peer employers", "Model thousands of configurations in minutes", "Draft plan documents from structured inputs"],
+    humansMust: ["Strategic philosophy decisions", "Final legal review (ERISA counsel)", "Employer HR sign-off on design choices"],
+    note: "AI can reduce plan design from weeks to hours by automating cost modeling and document generation.",
+    deepDive: `
+    <div style="margin-top:24px;border-top:2px solid var(--gray-200);padding-top:24px;">
+
+      <div class="dd-hero">
+        <h3>Strategic Context</h3>
+        <p>We are building an AI-native TPA for mid-market self-insured employers (100–2,000 lives), where the plan design tool outputs a machine-readable configuration that directly drives the claims adjudication engine.</p>
+        <div class="dd-context-grid">
+          <div class="dd-context-chip"><div class="chip-label">Target Segment</div><div class="chip-value">Mid-Market (100–2,000 lives)</div></div>
+          <div class="dd-context-chip"><div class="chip-label">Business Model</div><div class="chip-value">We ARE the TPA</div></div>
+          <div class="dd-context-chip"><div class="chip-label">Product Architecture</div><div class="chip-value">Configurator + Compiler (integrated)</div></div>
+          <div class="dd-context-chip"><div class="chip-label">Critical Gap</div><div class="chip-value">Domain expert needed</div></div>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;color:var(--navy);">The Two-Half Architecture</h3>
+      <p style="font-size:14px;color:var(--gray-500);margin-bottom:20px;">Plan Design has two distinct halves that must work together. The configurator is what employers and brokers see. The compiler is what makes it an integrated platform instead of just a design tool.</p>
+      <div class="dd-arch">
+        <div class="dd-arch-box">
+          <h4>The Configurator</h4>
+          <div class="arch-sub">What employers &amp; brokers interact with</div>
+          <p>An AI-powered tool that lets employers or their broker design a plan by selecting from benefit options, cost-sharing structures, network tiers, and pharmacy parameters.</p>
+          <ul>
+            <li>Select from common mid-market plan templates (PPO, HDHP/HSA, tiered)</li>
+            <li>Adjust deductibles, copays, coinsurance, OOP max</li>
+            <li>AI recommends optimal configurations from census data, prior claims, budget, and priorities</li>
+            <li>Side-by-side scenario comparison with cost projections</li>
+            <li>Auto-generates SPD, SBC, and plan documents from selections</li>
+            <li>Broker-facing: this is the wedge that gets brokers excited</li>
+          </ul>
+        </div>
+        <div class="dd-arrow-col">&rarr;</div>
+        <div class="dd-arch-box compiler">
+          <h4>The Compiler</h4>
+          <div class="arch-sub" style="color:var(--green);">What makes the integrated vision work</div>
+          <p>Takes the human-readable plan design and translates it into a machine-executable rules configuration that the claims adjudication engine consumes directly.</p>
+          <ul>
+            <li>Outputs structured plan config (JSON schema)</li>
+            <li>Encodes every benefit rule, limit, exclusion, and cost-sharing formula</li>
+            <li>Directly drives claims adjudication — no manual translation</li>
+            <li>Generates eligibility rules, COB logic, accumulator tracking</li>
+            <li>Feeds member-facing benefit descriptions and cost estimator</li>
+            <li>This is the part no one has built well</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--navy);">Plan Configuration Data Model (Draft Schema)</h3>
+      <p style="font-size:14px;color:var(--gray-500);margin-bottom:4px;">Every variable a plan design must specify. This schema is the foundation of both the configurator UI and the rules compiler.</p>
+      <div class="dd-schema">
+        <div class="dd-schema-header">plan_configuration</div>
+        <div class="dd-schema-grid">
+          <div class="dd-schema-col">
+            <h5>Plan Identifiers</h5>
+            <div class="field"><span class="fname">plan_id</span><span class="ftype">uuid</span></div>
+            <div class="field"><span class="fname">plan_name</span><span class="ftype">string</span></div>
+            <div class="field"><span class="fname">plan_type</span><span class="ftype">enum: PPO | HDHP | EPO | POS</span></div>
+            <div class="field"><span class="fname">plan_year</span><span class="ftype">date_range</span></div>
+            <div class="field"><span class="fname">employer_id</span><span class="ftype">uuid</span></div>
+            <div class="field"><span class="fname">situs_state</span><span class="ftype">state_code</span></div>
+          </div>
+          <div class="dd-schema-col">
+            <h5>Cost-Sharing: Medical</h5>
+            <div class="field"><span class="fname">deductible_individual_in</span><span class="ftype">currency</span></div>
+            <div class="field"><span class="fname">deductible_family_in</span><span class="ftype">currency</span></div>
+            <div class="field"><span class="fname">deductible_individual_oon</span><span class="ftype">currency</span></div>
+            <div class="field"><span class="fname">oop_max_individual_in</span><span class="ftype">currency</span></div>
+            <div class="field"><span class="fname">oop_max_family_in</span><span class="ftype">currency</span></div>
+            <div class="field"><span class="fname">coinsurance_in</span><span class="ftype">percentage</span></div>
+            <div class="field"><span class="fname">coinsurance_oon</span><span class="ftype">percentage</span></div>
+          </div>
+          <div class="dd-schema-col">
+            <h5>Service-Level Copays</h5>
+            <div class="field"><span class="fname">copay_pcp_visit</span><span class="ftype">currency</span></div>
+            <div class="field"><span class="fname">copay_specialist_visit</span><span class="ftype">currency</span></div>
+            <div class="field"><span class="fname">copay_urgent_care</span><span class="ftype">currency</span></div>
+            <div class="field"><span class="fname">copay_er</span><span class="ftype">currency</span></div>
+            <div class="field"><span class="fname">copay_telehealth</span><span class="ftype">currency</span></div>
+            <div class="field"><span class="fname">inpatient_cost_share</span><span class="ftype">rule_object</span></div>
+            <div class="field"><span class="fname">outpatient_surgery_share</span><span class="ftype">rule_object</span></div>
+          </div>
+          <div class="dd-schema-col">
+            <h5>Pharmacy Benefits</h5>
+            <div class="field"><span class="fname">rx_deductible</span><span class="ftype">currency | null</span></div>
+            <div class="field"><span class="fname">rx_tier1_copay</span><span class="ftype">currency (generic)</span></div>
+            <div class="field"><span class="fname">rx_tier2_copay</span><span class="ftype">currency (preferred)</span></div>
+            <div class="field"><span class="fname">rx_tier3_copay</span><span class="ftype">currency (non-pref)</span></div>
+            <div class="field"><span class="fname">rx_tier4_coinsurance</span><span class="ftype">pct (specialty)</span></div>
+            <div class="field"><span class="fname">rx_mail_order_factor</span><span class="ftype">multiplier</span></div>
+            <div class="field"><span class="fname">rx_oop_combined</span><span class="ftype">boolean</span></div>
+          </div>
+          <div class="dd-schema-col">
+            <h5>Accumulator &amp; Limits</h5>
+            <div class="field"><span class="fname">accumulator_type</span><span class="ftype">embedded | aggregate</span></div>
+            <div class="field"><span class="fname">deductible_cross_apply</span><span class="ftype">boolean</span></div>
+            <div class="field"><span class="fname">annual_visit_limits</span><span class="ftype">map&lt;service, int&gt;</span></div>
+            <div class="field"><span class="fname">lifetime_max</span><span class="ftype">currency | null</span></div>
+            <div class="field"><span class="fname">preventive_care_100pct</span><span class="ftype">boolean (ACA)</span></div>
+            <div class="field"><span class="fname">mhp_parity_config</span><span class="ftype">parity_rules</span></div>
+          </div>
+          <div class="dd-schema-col">
+            <h5>Network &amp; Eligibility</h5>
+            <div class="field"><span class="fname">network_id</span><span class="ftype">uuid (rental ref)</span></div>
+            <div class="field"><span class="fname">oon_balance_billing</span><span class="ftype">enum: NSA | allowed</span></div>
+            <div class="field"><span class="fname">waiting_period_days</span><span class="ftype">int</span></div>
+            <div class="field"><span class="fname">eligible_classes</span><span class="ftype">class_definition[]</span></div>
+            <div class="field"><span class="fname">dependent_age_max</span><span class="ftype">int (default 26)</span></div>
+            <div class="field"><span class="fname">cobra_enabled</span><span class="ftype">boolean</span></div>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--navy);">Build Phases — Plan Design Module</h3>
+      <p style="font-size:14px;color:var(--gray-500);margin-bottom:16px;">Three phases to go from zero to a production plan design system.</p>
+      <div class="dd-build-phases">
+        <div class="dd-phase">
+          <div class="dd-phase-head p1">Phase 1: Data Model &amp; Templates</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Weeks 1–4</div>
+            <ul>
+              <li>Reverse-engineer 10–20 real SPDs into structured schema</li>
+              <li>Define the plan configuration data model (above)</li>
+              <li>Build 5–8 common mid-market plan templates (PPO, HDHP/HSA, etc.)</li>
+              <li>Define the JSON schema that the compiler will output</li>
+              <li>Map every schema field to its downstream consumers (claims engine, eligibility, member portal)</li>
+            </ul>
+          </div>
+        </div>
+        <div class="dd-phase">
+          <div class="dd-phase-head p2">Phase 2: Configurator MVP</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Weeks 4–10</div>
+            <ul>
+              <li>Build broker/employer-facing configurator UI</li>
+              <li>AI-powered plan recommendation engine (input: census, budget, priorities → output: ranked plan options)</li>
+              <li>Side-by-side cost comparison with projected annual costs</li>
+              <li>Auto-generate SBC from plan config</li>
+              <li>Auto-generate draft SPD from plan config</li>
+              <li>Broker feedback loop — demo to 3–5 brokers for input</li>
+            </ul>
+          </div>
+        </div>
+        <div class="dd-phase">
+          <div class="dd-phase-head p3">Phase 3: Compiler Integration</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Weeks 8–14</div>
+            <ul>
+              <li>Build the compiler: plan config → claims rules engine input</li>
+              <li>Generate eligibility rules from plan config</li>
+              <li>Generate accumulator tracking rules (deductible, OOP)</li>
+              <li>Generate member-facing benefit descriptions</li>
+              <li>Test against real claims data: adjudicate sample claims using compiled rules</li>
+              <li>Validate: can you change a copay in the configurator and see it flow through to a correctly adjudicated test claim?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--navy);">Inputs Needed to Proceed</h3>
+      <p style="font-size:14px;color:var(--gray-500);margin-bottom:16px;">Four things that would unlock the next level of detail and allow us to start building.</p>
+      <div class="dd-inputs">
+        <div class="dd-input-card critical">
+          <div class="dd-input-tag">Critical Hire</div>
+          <h4>Domain Expert</h4>
+          <p>Someone who has been a plan designer or VP of Ops at a mid-market TPA. They carry implicit knowledge that doesn't exist in documentation: how COB really works, what stop-loss carriers evaluate, the 50 most common plan patterns for a 300-life group. This person saves you a year of expensive mistakes.</p>
+        </div>
+        <div class="dd-input-card">
+          <div class="dd-input-tag">Key Input</div>
+          <h4>2–3 Real SPDs</h4>
+          <p>Actual Summary Plan Descriptions from mid-market self-insured employers. These let us reverse-engineer the real data model — what fields, rules, and structures a plan configuration actually contains.</p>
+        </div>
+        <div class="dd-input-card">
+          <div class="dd-input-tag">Key Input</div>
+          <h4>Broker Conversations</h4>
+          <p>For mid-market, the broker recommends the TPA. Talk to 3–5 benefits brokers. The plan design configurator could be the wedge — their current workflow is spreadsheets and PDFs.</p>
+        </div>
+        <div class="dd-input-card">
+          <div class="dd-input-tag">Strategic Decision</div>
+          <h4>Timeline &amp; Milestone</h4>
+          <p>Investor prototype or first employer client? These are different paths. An investor demo can use synthetic data. A first client needs real network access, stop-loss, and compliance infrastructure.</p>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;color:var(--navy);">Risks &amp; Gotchas</h3>
+      <div class="dd-risks" style="background:white;border:1px solid var(--gray-200);border-radius:var(--radius);padding:24px;">
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--red-light);">&#x26A0;</div>
+          <div><h4>Plan design complexity is fractal</h4><p>A "simple" PPO for a 200-life group can still have hundreds of unique rules when you account for in/out-of-network differentials, service-specific copays, accumulator logic, carve-outs, and state mandates.</p></div>
+        </div>
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--amber-light);">&#x26A0;</div>
+          <div><h4>SBC generation is federally regulated</h4><p>The ACA mandates a specific 8-page SBC format with exact coverage examples. Your generator must follow the DOL/HHS template precisely — including the two mandated coverage scenario calculations.</p></div>
+        </div>
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--amber-light);">&#x26A0;</div>
+          <div><h4>The compiler is harder than the configurator</h4><p>The compiler — translating plan design into deterministic adjudication rules — has zero tolerance for error. A copay coded as $40 instead of $50 means every claim for that service is wrong.</p></div>
+        </div>
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--blue-light);">&#x1F4A1;</div>
+          <div><h4>Broker distribution is the go-to-market key</h4><p>Mid-market employers almost never select a TPA directly. Give brokers a 10x better plan design process and they'll bring you the employer.</p></div>
+        </div>
+      </div>
+    </div>`
+  },
+  {
+    icon: "&#x1F4CB;", color: "#059669", bg: "#d1fae5",
+    title: "Eligibility & Enrollment", desc: "Who is covered, when coverage starts/ends, data feeds",
+    badge: "High", badgeClass: "high",
+    subfunctions: ["Eligibility determination (FT/PT rules, waiting periods)", "Open enrollment processing", "COBRA continuation administration", "Dependent verification", "834 EDI file generation", "ID card generation"],
+    aiCan: ["Process enrollment changes in real time", "Validate dependent documents via document AI", "Auto-generate 834 EDI files", "Fully automate COBRA administration", "Flag eligibility discrepancies"],
+    humansMust: ["Edge cases (disputed divorce decrees, disability)", "HRIS integration setup and troubleshooting"],
+    note: "Eligibility is fundamentally rules-based and ideal for full automation. COBRA alone is a major pain point ripe for AI.",
+    deepDive: `
+    <div style="margin-top:24px;border-top:2px solid var(--gray-200);padding-top:24px;">
+      <div class="dd-hero">
+        <h3>Module Strategy</h3>
+        <p>Eligibility is the second function claims touch after plan design — if eligibility is wrong, every downstream process breaks. As the TPA, we own this completely and it's almost fully automatable.</p>
+        <div class="dd-context-grid">
+          <div class="dd-context-chip"><div class="chip-label">Automation Target</div><div class="chip-value">95%+ of transactions</div></div>
+          <div class="dd-context-chip"><div class="chip-label">Key Integration</div><div class="chip-value">Employer HRIS systems</div></div>
+          <div class="dd-context-chip"><div class="chip-label">Regulatory Driver</div><div class="chip-value">COBRA (20+ employee groups)</div></div>
+          <div class="dd-context-chip"><div class="chip-label">Build Priority</div><div class="chip-value">Phase 1 — Foundation</div></div>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;color:var(--navy);">Architecture</h3>
+      <p style="font-size:14px;color:var(--gray-500);margin-bottom:20px;">The eligibility engine is a real-time rules processor that ingests enrollment events and maintains the source of truth for who is covered, under what plan, effective when.</p>
+      <div class="dd-arch">
+        <div class="dd-arch-box">
+          <h4>Inbound Events</h4>
+          <div class="arch-sub">What triggers eligibility changes</div>
+          <ul>
+            <li>New hire enrollment (from HRIS feed or manual entry)</li>
+            <li>Open enrollment elections</li>
+            <li>Qualifying life events (marriage, birth, divorce, death)</li>
+            <li>Termination / leave of absence</li>
+            <li>COBRA election and payment tracking</li>
+            <li>Dependent aging out (age 26 under ACA)</li>
+          </ul>
+        </div>
+        <div class="dd-arrow-col">&rarr;</div>
+        <div class="dd-arch-box compiler">
+          <h4>Outbound Outputs</h4>
+          <div class="arch-sub" style="color:var(--green);">What eligibility feeds downstream</div>
+          <ul>
+            <li>834 EDI files to network, PBM, stop-loss carrier</li>
+            <li>Real-time eligibility verification for claims adjudication</li>
+            <li>Member ID card generation (physical + digital)</li>
+            <li>COBRA notices (election, payment, termination)</li>
+            <li>Accumulator initialization (new plan year, mid-year adds)</li>
+            <li>Stop-loss census reporting (monthly)</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--navy);">Build Phases</h3>
+      <div class="dd-build-phases">
+        <div class="dd-phase">
+          <div class="dd-phase-head p1">Phase 1: Core Engine</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Weeks 1–3</div>
+            <ul>
+              <li>Build eligibility rules engine (waiting periods, class definitions, dependent rules)</li>
+              <li>Member data model (demographics, coverage tiers, effective dates)</li>
+              <li>834 EDI file generation and parsing</li>
+              <li>Real-time eligibility lookup API for claims engine</li>
+            </ul>
+          </div>
+        </div>
+        <div class="dd-phase">
+          <div class="dd-phase-head p2">Phase 2: COBRA &amp; Automation</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Weeks 3–6</div>
+            <ul>
+              <li>COBRA qualifying event detection and notice generation</li>
+              <li>COBRA payment tracking and grace period enforcement</li>
+              <li>AI-powered dependent document verification (marriage/birth certs)</li>
+              <li>Automated QLE processing with document AI</li>
+            </ul>
+          </div>
+        </div>
+        <div class="dd-phase">
+          <div class="dd-phase-head p3">Phase 3: Integrations</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Weeks 6–10</div>
+            <ul>
+              <li>HRIS connectors (Workday, BambooHR, ADP, Gusto, Paylocity)</li>
+              <li>Automated open enrollment workflow</li>
+              <li>Member self-service portal for life events</li>
+              <li>Discrepancy detection and auto-reconciliation</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;color:var(--navy);">Risks &amp; Gotchas</h3>
+      <div class="dd-risks" style="background:white;border:1px solid var(--gray-200);border-radius:var(--radius);padding:24px;">
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--red-light);">&#x26A0;</div>
+          <div><h4>Eligibility errors cascade everywhere</h4><p>A member incorrectly showing as terminated means denied claims, angry calls, and potential lawsuits. A dependent incorrectly added means the plan pays claims it shouldn't. Eligibility accuracy must be near-perfect from day one.</p></div>
+        </div>
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--amber-light);">&#x26A0;</div>
+          <div><h4>COBRA compliance is unforgiving</h4><p>COBRA notice deadlines are strict (44 days for election notice). Penalties for non-compliance include $110/day per qualified beneficiary. Many TPAs outsource COBRA to specialists (WageWorks, COBRA Solutions) — consider whether to build or partner.</p></div>
+        </div>
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--blue-light);">&#x1F4A1;</div>
+          <div><h4>HRIS integration is the moat</h4><p>Mid-market employers use diverse HRIS systems. Building robust, real-time connectors to the top 6–8 platforms creates switching costs and reduces manual data entry errors — a major pain point with legacy TPAs that rely on spreadsheet uploads.</p></div>
+        </div>
+      </div>
+    </div>`
+  },
+  {
+    icon: "&#x1F3E5;", color: "#d97706", bg: "#fef3c7",
+    title: "Provider Network Management", desc: "Network access, credentialing, rate negotiation, adequacy",
+    badge: "Medium", badgeClass: "medium",
+    subfunctions: ["Network access (rent or build)", "Provider credentialing", "Rate negotiation / reference-based pricing", "Network adequacy analysis", "Provider directory maintenance"],
+    aiCan: ["Maintain and update provider directories", "Automate credentialing verification (NPPES, state boards)", "Model network adequacy gaps", "Optimize reference-based pricing"],
+    humansMust: ["Network contract negotiation", "Carrier/rental network partnerships", "Provider dispute resolution", "Relationship management"],
+    note: "This is the hardest cold-start problem. Rent a network (PHCS/Multiplan) initially, layer AI optimization on top, then build direct contracts for high-value services over time.",
+    deepDive: `
+    <div style="margin-top:24px;border-top:2px solid var(--gray-200);padding-top:24px;">
+      <div class="dd-hero">
+        <h3>Module Strategy</h3>
+        <p>Network access is the single hardest cold-start problem. Without a network, members can't see doctors at negotiated rates. The strategy: rent a broad network on day one, then surgically build direct contracts where AI analytics identify the highest-value opportunities.</p>
+        <div class="dd-context-grid">
+          <div class="dd-context-chip"><div class="chip-label">Day 1 Strategy</div><div class="chip-value">Rent PHCS / Multiplan</div></div>
+          <div class="dd-context-chip"><div class="chip-label">Cost</div><div class="chip-value">$3–8 PEPM</div></div>
+          <div class="dd-context-chip"><div class="chip-label">Phase 3 Goal</div><div class="chip-value">Selective direct contracts</div></div>
+          <div class="dd-context-chip"><div class="chip-label">AI Angle</div><div class="chip-value">Reference-based pricing optimization</div></div>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;color:var(--navy);">Network Access Options</h3>
+      <div class="dd-schema">
+        <div class="dd-schema-header">Rental Network Landscape</div>
+        <div class="dd-schema-grid">
+          <div class="dd-schema-col">
+            <h5>Broad National (Recommended Start)</h5>
+            <div class="field"><span class="fname">Multiplan / PHCS</span><span class="ftype">1.2M+ providers</span></div>
+            <div class="field"><span class="fname">Zelis Networks</span><span class="ftype">60+ networks</span></div>
+            <div class="field"><span class="fname">First Health (Aetna)</span><span class="ftype">Broad PPO</span></div>
+          </div>
+          <div class="dd-schema-col">
+            <h5>Carrier ASO / Rental</h5>
+            <div class="field"><span class="fname">Aetna Network</span><span class="ftype">Deepest discounts, most strings</span></div>
+            <div class="field"><span class="fname">Cigna Network</span><span class="ftype">Strong nationally</span></div>
+            <div class="field"><span class="fname">Anthem BCBS</span><span class="ftype">Regional strength varies</span></div>
+          </div>
+          <div class="dd-schema-col">
+            <h5>Alternative Approaches</h5>
+            <div class="field"><span class="fname">Reference-Based Pricing</span><span class="ftype">% of Medicare (150–200%)</span></div>
+            <div class="field"><span class="fname">Direct Contracting</span><span class="ftype">Selective, high-value</span></div>
+            <div class="field"><span class="fname">Hybrid</span><span class="ftype">Rent broad + direct for key facilities</span></div>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--navy);">Build Phases</h3>
+      <div class="dd-build-phases">
+        <div class="dd-phase">
+          <div class="dd-phase-head p1">Phase 1: Rent &amp; Launch</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Weeks 1–4</div>
+            <ul>
+              <li>Execute PHCS/Multiplan rental agreement</li>
+              <li>Integrate network provider data feed into member portal</li>
+              <li>Build provider directory search (by specialty, location, cost)</li>
+              <li>Set up claims repricing against rented network fee schedules</li>
+            </ul>
+          </div>
+        </div>
+        <div class="dd-phase">
+          <div class="dd-phase-head p2">Phase 2: AI-Powered Optimization</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Months 3–9</div>
+            <ul>
+              <li>Build provider quality scoring (outcomes, cost, member satisfaction)</li>
+              <li>AI-powered provider recommendations for members</li>
+              <li>Network adequacy gap analysis by geography and specialty</li>
+              <li>Reference-based pricing engine for out-of-network and facility claims</li>
+            </ul>
+          </div>
+        </div>
+        <div class="dd-phase">
+          <div class="dd-phase-head p3">Phase 3: Direct Contracts</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Months 9–18</div>
+            <ul>
+              <li>Use claims data to identify top 20 facilities by spend per employer</li>
+              <li>Negotiate direct contracts with bundled pricing for common procedures</li>
+              <li>Build center-of-excellence programs (joint replacement, spine, bariatrics)</li>
+              <li>Create value-based arrangements with high-performing primary care groups</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;color:var(--navy);">Risks &amp; Gotchas</h3>
+      <div class="dd-risks" style="background:white;border:1px solid var(--gray-200);border-radius:var(--radius);padding:24px;">
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--red-light);">&#x26A0;</div>
+          <div><h4>Chicken-and-egg leverage problem</h4><p>Providers negotiate rates based on patient volume. A new TPA with zero members has zero leverage. You need members to get good contracts, but need good contracts to attract members. Renting solves this on day one.</p></div>
+        </div>
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--amber-light);">&#x26A0;</div>
+          <div><h4>Reference-based pricing creates balance billing risk</h4><p>If you pay a hospital 150% of Medicare and they normally charge 300%, the hospital may balance-bill the member for the difference. You need a member advocacy/protection program and clear legal strategy (the No Surprises Act helps for emergency care, but not elective).</p></div>
+        </div>
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--amber-light);">&#x26A0;</div>
+          <div><h4>Rental network dependency</h4><p>You're dependent on the rental network's contracts, which can change. If Multiplan loses a major hospital system, your members lose access. Diversify across 2+ rental networks and layer direct contracts to reduce single-point-of-failure risk.</p></div>
+        </div>
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--blue-light);">&#x1F4A1;</div>
+          <div><h4>AI-powered steering is the real value</h4><p>The network itself is a commodity. The AI layer that helps members find the best provider for their specific need at the best price — that's the differentiator. Think of it as "network intelligence" rather than "network access."</p></div>
+        </div>
+      </div>
+    </div>`
+  },
+  {
+    icon: "&#x1F4B3;", color: "#16a34a", bg: "#dcfce7",
+    title: "Claims Administration", desc: "Intake, adjudication, repricing, payment, fraud detection",
+    badge: "Very High", badgeClass: "very-high",
+    subfunctions: ["Claims intake (EDI 837, paper, portal)", "Claims adjudication against plan rules", "Repricing (network discount application)", "Payment issuance", "EOB generation", "Coordination of Benefits (COB)", "Subrogation recovery", "Fraud, waste, and abuse detection"],
+    aiCan: ["Auto-adjudicate 70–80% of clean claims", "Detect billing anomalies and fraud patterns", "Automate COB determinations", "Generate EOBs automatically", "Flag complex claims for human review with context"],
+    humansMust: ["Complex claims (unusual procedures, disputed charges)", "Provider appeals and escalations", "Fraud investigation follow-up", "Regulatory audit responses"],
+    note: "The operational core and the function most ripe for AI transformation. 94% of payers already report using some form of AI in claims processing.",
+    deepDive: `
+    <div style="margin-top:24px;border-top:2px solid var(--gray-200);padding-top:24px;">
+      <div class="dd-hero">
+        <h3>Module Strategy</h3>
+        <p>This is the beating heart of the TPA — the single most important system we build. Every claim flows through here, and every dollar of plan spend is touched by adjudication. Getting this right with AI is the core technical thesis of the entire company.</p>
+        <div class="dd-context-grid">
+          <div class="dd-context-chip"><div class="chip-label">Auto-Adjudication Target</div><div class="chip-value">70–80% of claims</div></div>
+          <div class="dd-context-chip"><div class="chip-label">Avg. Claims/Year (500-life plan)</div><div class="chip-value">~5,000–8,000</div></div>
+          <div class="dd-context-chip"><div class="chip-label">Accuracy Requirement</div><div class="chip-value">99.5%+ (industry standard)</div></div>
+          <div class="dd-context-chip"><div class="chip-label">Build Priority</div><div class="chip-value">Phase 1 — Foundation</div></div>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;color:var(--navy);">Claims Pipeline Architecture</h3>
+      <p style="font-size:14px;color:var(--gray-500);margin-bottom:20px;">Claims flow through a multi-stage pipeline. AI handles the routine; humans handle the exceptions. The key insight: the plan configuration schema from Module 1 directly feeds the adjudication rules here.</p>
+      <div class="dd-arch">
+        <div class="dd-arch-box">
+          <h4>Intake &amp; Validation</h4>
+          <div class="arch-sub">Stage 1: Receive and normalize</div>
+          <ul>
+            <li>EDI 837 (electronic) — 85–90% of claims volume</li>
+            <li>Paper/fax claims — OCR + AI extraction</li>
+            <li>Portal submissions — member and provider</li>
+            <li>Duplicate detection, format validation</li>
+            <li>Eligibility verification (real-time API to Module 2)</li>
+            <li>COB determination (primary/secondary payer)</li>
+          </ul>
+        </div>
+        <div class="dd-arrow-col">&rarr;</div>
+        <div class="dd-arch-box compiler">
+          <h4>Adjudication &amp; Payment</h4>
+          <div class="arch-sub" style="color:var(--green);">Stage 2: Apply rules, price, pay</div>
+          <ul>
+            <li>Apply plan rules from compiled configuration (Module 1 output)</li>
+            <li>Reprice against network fee schedules or RBP rates</li>
+            <li>Apply accumulators (deductible, OOP max tracking)</li>
+            <li>Calculate member responsibility (copay, coinsurance)</li>
+            <li>Fraud/waste/abuse screening (AI pattern detection)</li>
+            <li>Route: auto-pay clean claims OR queue for human review</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--navy);">Build Phases</h3>
+      <div class="dd-build-phases">
+        <div class="dd-phase">
+          <div class="dd-phase-head p1">Phase 1: Core Adjudication Engine</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Weeks 1–8</div>
+            <ul>
+              <li>EDI 837 parser and claim data model</li>
+              <li>Rules engine that consumes plan configuration JSON</li>
+              <li>Accumulator tracking (deductible, OOP, visit limits)</li>
+              <li>Network repricing integration (rental network fee schedules)</li>
+              <li>EOB generation engine</li>
+              <li>Payment file generation (835 EDI, check, EFT)</li>
+            </ul>
+          </div>
+        </div>
+        <div class="dd-phase">
+          <div class="dd-phase-head p2">Phase 2: AI Layer</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Weeks 6–14</div>
+            <ul>
+              <li>Auto-adjudication confidence scoring (route low-confidence to humans)</li>
+              <li>Paper/fax claim OCR and structured data extraction</li>
+              <li>Fraud, waste, and abuse detection models</li>
+              <li>COB auto-determination</li>
+              <li>Claim coding validation (CPT/ICD-10 consistency checks)</li>
+              <li>Subrogation opportunity identification</li>
+            </ul>
+          </div>
+        </div>
+        <div class="dd-phase">
+          <div class="dd-phase-head p3">Phase 3: Optimization</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Months 4–8</div>
+            <ul>
+              <li>Provider billing pattern analysis (flag outliers)</li>
+              <li>Claim-level cost optimization recommendations</li>
+              <li>Automated provider payment reconciliation</li>
+              <li>Stop-loss claim flagging (specific and aggregate thresholds)</li>
+              <li>Real-time claims dashboard for employer clients</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;color:var(--navy);">Risks &amp; Gotchas</h3>
+      <div class="dd-risks" style="background:white;border:1px solid var(--gray-200);border-radius:var(--radius);padding:24px;">
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--red-light);">&#x26A0;</div>
+          <div><h4>Claims accuracy is existential</h4><p>A TPA that adjudicates claims incorrectly loses clients, faces lawsuits, and gets dropped by stop-loss carriers. Industry standard is 99.5%+ financial accuracy and 98%+ procedural accuracy. You need a comprehensive test suite from day one — thousands of test claims covering every plan rule permutation.</p></div>
+        </div>
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--red-light);">&#x26A0;</div>
+          <div><h4>Stop-loss carriers audit your claims</h4><p>Stop-loss underwriters will audit your claims adjudication accuracy before offering coverage, and periodically thereafter. Poor adjudication = higher stop-loss premiums or refusal to write coverage. This is a gating function for the entire business.</p></div>
+        </div>
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--amber-light);">&#x26A0;</div>
+          <div><h4>EDI is a 1990s standard that still rules</h4><p>The 837/835 EDI transaction sets are complex, poorly documented, and vary by trading partner. Budget significant time for EDI integration testing. Consider using a clearinghouse (Availity, Change Healthcare) as an intermediary rather than building direct EDI connections.</p></div>
+        </div>
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--blue-light);">&#x1F4A1;</div>
+          <div><h4>The AI advantage is speed + consistency</h4><p>Legacy TPAs process claims in 5–15 business days. AI auto-adjudication can process clean claims in seconds. For employers, faster claims = faster cash flow visibility. For members, faster claims = faster reimbursements. This is a tangible differentiator.</p></div>
+        </div>
+      </div>
+    </div>`
+  },
+  {
+    icon: "&#x1F50D;", color: "#7c3aed", bg: "#ede9fe",
+    title: "Utilization Management", desc: "Prior auth, concurrent review, case management",
+    badge: "High", badgeClass: "high",
+    subfunctions: ["Prior authorization", "Concurrent review (inpatient stays)", "Retrospective review", "Case management (complex patients)", "Disease management programs"],
+    aiCan: ["Auto-approve up to 90% of PA requests (Cohere Health model)", "Match clinical docs against criteria (InterQual, MCG)", "Identify patients needing case management", "Power disease management outreach", "Apply criteria consistently to reduce unnecessary denials"],
+    humansMust: ["Peer-to-peer reviews with treating physicians", "Complex clinical judgment calls", "Licensed clinician involvement in denials (required by law)", "Catastrophic case management (transplants, NICU)"],
+    note: "CMS rules effective Jan 2026 require PA responses within 72 hours (urgent) or 7 days (standard), making AI-speed processing a regulatory necessity.",
+    deepDive: `
+    <div style="margin-top:24px;border-top:2px solid var(--gray-200);padding-top:24px;">
+      <div class="dd-hero">
+        <h3>Module Strategy</h3>
+        <p>Utilization management is where clinical intelligence meets cost control. The goal is not to deny care — it's to ensure care is appropriate, in the right setting, and at the right cost. AI can make this faster and more consistent than any human-only process.</p>
+        <div class="dd-context-grid">
+          <div class="dd-context-chip"><div class="chip-label">PA Auto-Approval Target</div><div class="chip-value">80–90% of requests</div></div>
+          <div class="dd-context-chip"><div class="chip-label">CMS PA Deadline (2026)</div><div class="chip-value">72 hrs urgent / 7 days standard</div></div>
+          <div class="dd-context-chip"><div class="chip-label">Build vs. Buy</div><div class="chip-value">Build core, license criteria sets</div></div>
+          <div class="dd-context-chip"><div class="chip-label">Build Priority</div><div class="chip-value">Phase 2 — Differentiation</div></div>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--navy);">Build Phases</h3>
+      <div class="dd-build-phases">
+        <div class="dd-phase">
+          <div class="dd-phase-head p1">Phase 1: Prior Auth Engine</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Weeks 1–6</div>
+            <ul>
+              <li>PA request intake (provider portal, fax/OCR, phone)</li>
+              <li>License clinical criteria sets (InterQual or MCG)</li>
+              <li>AI matching: clinical documentation vs. criteria</li>
+              <li>Auto-approve pathway for clear-cut matches</li>
+              <li>Human review queue for clinical edge cases</li>
+              <li>Response generation with decision rationale</li>
+            </ul>
+          </div>
+        </div>
+        <div class="dd-phase">
+          <div class="dd-phase-head p2">Phase 2: Clinical Programs</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Weeks 6–12</div>
+            <ul>
+              <li>Concurrent review (inpatient stay monitoring)</li>
+              <li>High-cost claimant identification and case management triggers</li>
+              <li>Disease management outreach (diabetes, cardiac, musculoskeletal)</li>
+              <li>Site-of-service optimization (steer to lower-cost, equal-quality settings)</li>
+            </ul>
+          </div>
+        </div>
+        <div class="dd-phase">
+          <div class="dd-phase-head p3">Phase 3: Intelligence Layer</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Months 4–8</div>
+            <ul>
+              <li>Predictive models for rising-risk members</li>
+              <li>Provider practice pattern analysis (over-ordering, low-value care)</li>
+              <li>Peer-to-peer scheduling and decision support for medical directors</li>
+              <li>Appeals analytics (identify systematic denial errors)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;color:var(--navy);">Risks &amp; Gotchas</h3>
+      <div class="dd-risks" style="background:white;border:1px solid var(--gray-200);border-radius:var(--radius);padding:24px;">
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--red-light);">&#x26A0;</div>
+          <div><h4>You need a Medical Director from day one</h4><p>State and federal regulations require that PA denials involve a licensed physician. You cannot operate UM without a contracted or employed Medical Director (MD or DO with active license). This is a non-negotiable hire/contract, not optional.</p></div>
+        </div>
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--amber-light);">&#x26A0;</div>
+          <div><h4>Criteria licensing is expensive</h4><p>InterQual (IQVIA) and MCG (Hearst) are the two major clinical criteria sets. They're licensed per-user or per-organization and cost $50K–200K+/year. You cannot build your own criteria set from scratch — you need established, defensible clinical guidelines.</p></div>
+        </div>
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--amber-light);">&#x26A0;</div>
+          <div><h4>AI denials are under increasing scrutiny</h4><p>Multiple lawsuits (including against UnitedHealthcare/naviHealth) have challenged AI-driven care denials. Several states now require human clinical review of any AI-generated denial. Your system must have clear human-in-the-loop for all adverse determinations.</p></div>
+        </div>
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--blue-light);">&#x1F4A1;</div>
+          <div><h4>Speed is the differentiator</h4><p>Legacy UM takes 3–7 days for routine PA. AI can do it in minutes. Providers and members hate PA delays. An AI-native approach that approves 85% of PAs in under an hour — with clear, readable rationale — is a major selling point to employers and their brokers.</p></div>
+        </div>
+      </div>
+    </div>`
+  },
+  {
+    icon: "&#x1F48A;", color: "#0891b2", bg: "#cffafe",
+    title: "Pharmacy Benefits (PBM)", desc: "Formulary, Rx claims, rebates, specialty drugs",
+    badge: "Medium-High", badgeClass: "medium-high",
+    subfunctions: ["Formulary design (tiered drug lists)", "Real-time Rx claims adjudication", "Pharmacy prior authorization", "Rebate negotiation and pass-through", "Mail order / specialty pharmacy", "Drug utilization review"],
+    aiCan: ["Optimize formulary based on clinical evidence + cost", "Automate drug utilization review", "Streamline pharmacy PA", "Check interactions and duplications"],
+    humansMust: ["Pharmacist oversight (legally required)", "Rebate negotiations with manufacturers", "Supply chain and distribution management"],
+    note: "Recommend partnering with a transparent PBM (SmithRx, Cost Plus) rather than building. Layer AI formulary optimization and member cost transparency on top.",
+    deepDive: `
+    <div style="margin-top:24px;border-top:2px solid var(--gray-200);padding-top:24px;">
+      <div class="dd-hero">
+        <h3>Module Strategy</h3>
+        <p>Pharmacy is 20–25% of plan spend but an entirely different business than medical TPA. The recommendation: partner with a transparent, pass-through PBM rather than building. Then layer AI-driven value on top.</p>
+        <div class="dd-context-grid">
+          <div class="dd-context-chip"><div class="chip-label">Strategy</div><div class="chip-value">Partner, don't build</div></div>
+          <div class="dd-context-chip"><div class="chip-label">% of Plan Spend</div><div class="chip-value">20–25%</div></div>
+          <div class="dd-context-chip"><div class="chip-label">Partner Candidates</div><div class="chip-value">SmithRx, Cost Plus, RxBenefits, Capital Rx</div></div>
+          <div class="dd-context-chip"><div class="chip-label">AI Opportunity</div><div class="chip-value">Formulary optimization + cost transparency</div></div>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;color:var(--navy);">Why Partner, Not Build</h3>
+      <div class="dd-risks" style="background:white;border:1px solid var(--gray-200);border-radius:var(--radius);padding:24px;margin-bottom:24px;">
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--amber-light);">&#x26A0;</div>
+          <div><h4>PBM is a separate, capital-intensive business</h4><p>Running a PBM requires pharmacy network contracts with 70,000+ retail pharmacies, manufacturer rebate agreements, a real-time claims adjudication system at point of sale, mail-order/specialty pharmacy operations, and regulatory compliance across 50 states. This is a multi-year, $50M+ build.</p></div>
+        </div>
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--blue-light);">&#x1F4A1;</div>
+          <div><h4>Transparent PBMs already exist and are growing</h4><p>SmithRx, Capital Rx, Mark Cuban Cost Plus, and RxBenefits all offer pass-through pricing models that align with the transparency thesis of an AI-native TPA. Partner with one, integrate their data into your analytics platform, and offer a unified medical + Rx experience to employers.</p></div>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--navy);">What We Build on Top</h3>
+      <div class="dd-build-phases">
+        <div class="dd-phase">
+          <div class="dd-phase-head p1">Phase 1: Integration</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Weeks 1–4</div>
+            <ul>
+              <li>Select and contract with transparent PBM partner</li>
+              <li>Integrate Rx claims data feed into our analytics platform</li>
+              <li>Unified member experience (single portal for medical + Rx)</li>
+              <li>Combined medical + Rx cost estimator for members</li>
+            </ul>
+          </div>
+        </div>
+        <div class="dd-phase">
+          <div class="dd-phase-head p2">Phase 2: AI Optimization</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Months 2–6</div>
+            <ul>
+              <li>AI-driven formulary recommendations based on clinical evidence + cost</li>
+              <li>Generic/biosimilar switching opportunity identification</li>
+              <li>Specialty drug cost management (site-of-care optimization)</li>
+              <li>Drug interaction and polypharmacy alerts integrated with medical claims</li>
+            </ul>
+          </div>
+        </div>
+        <div class="dd-phase">
+          <div class="dd-phase-head p3">Phase 3: Advanced</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Months 6–12</div>
+            <ul>
+              <li>Integrated medical + Rx analytics (e.g., medication adherence impact on ER visits)</li>
+              <li>AI-powered Rx PA integrated with medical PA workflow</li>
+              <li>Employer-facing Rx cost benchmarking and optimization recommendations</li>
+              <li>Evaluate building lightweight PBM capabilities if scale justifies</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>`
+  },
+  {
+    icon: "&#x1F4AC;", color: "#16a34a", bg: "#dcfce7",
+    title: "Member Services & Engagement", desc: "Contact center, digital experience, care navigation",
+    badge: "Very High", badgeClass: "very-high",
+    subfunctions: ["Contact center (phone, chat, email)", "Member portal and mobile app", "Benefits navigation and cost estimation", "Appeals and grievance processing", "Wellness programs and preventive reminders", "Care navigation"],
+    aiCan: ["24/7 conversational AI that understands member's plan, claims, and needs", "Instant, accurate benefit answers", "Pre-visit cost estimation", "Navigate to high-quality, cost-effective providers", "Handle routine appeals automatically"],
+    humansMust: ["Complex grievances and sensitive situations", "Denied claims for serious illness", "Mental health crisis support", "Formal appeals requiring external review"],
+    note: "This is where AI creates the most visible differentiation. Today's member experience is notoriously poor. An AI-native approach can be transformative.",
+    deepDive: `
+    <div style="margin-top:24px;border-top:2px solid var(--gray-200);padding-top:24px;">
+      <div class="dd-hero">
+        <h3>Module Strategy</h3>
+        <p>This is the most visible AI differentiator and the module that members actually interact with daily. Today's health plan experience is a disaster — long hold times, uninformed reps, opaque benefits. An AI-native approach can deliver 10x better experience at a fraction of the cost.</p>
+        <div class="dd-context-grid">
+          <div class="dd-context-chip"><div class="chip-label">Current NPS (industry)</div><div class="chip-value">~20 (abysmal)</div></div>
+          <div class="dd-context-chip"><div class="chip-label">Target NPS</div><div class="chip-value">60+ (best-in-class)</div></div>
+          <div class="dd-context-chip"><div class="chip-label">AI Resolution Rate</div><div class="chip-value">Target 80%+ without human</div></div>
+          <div class="dd-context-chip"><div class="chip-label">Build Priority</div><div class="chip-value">Phase 1 — Foundation</div></div>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;color:var(--navy);">The AI Member Experience</h3>
+      <p style="font-size:14px;color:var(--gray-500);margin-bottom:20px;">Unlike a generic chatbot, our AI agent has deep context: it knows the member's specific plan rules, claims history, accumulator balances, and network. It can answer questions no legacy call center rep could.</p>
+      <div class="dd-arch">
+        <div class="dd-arch-box">
+          <h4>What Members Ask</h4>
+          <div class="arch-sub">Top call/chat drivers in health plans</div>
+          <ul>
+            <li>"Is this procedure covered?" (benefit verification)</li>
+            <li>"How much will this cost me?" (cost estimation)</li>
+            <li>"Where can I find a doctor near me?" (provider search)</li>
+            <li>"Why was my claim denied?" (claim status/explanation)</li>
+            <li>"How much of my deductible have I met?" (accumulator status)</li>
+            <li>"I need to add my new baby to the plan" (life events)</li>
+          </ul>
+        </div>
+        <div class="dd-arrow-col">&rarr;</div>
+        <div class="dd-arch-box compiler">
+          <h4>What AI Can Answer Instantly</h4>
+          <div class="arch-sub" style="color:var(--green);">Because it has the full data context</div>
+          <ul>
+            <li>Real-time benefit check against compiled plan rules</li>
+            <li>Out-of-pocket cost estimate using network rates + accumulator balance</li>
+            <li>Provider search with quality scores and cost comparison</li>
+            <li>Claim status with plain-language explanation of adjudication</li>
+            <li>Live accumulator balances (deductible, OOP, visit limits)</li>
+            <li>Guided life event workflow with document upload</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--navy);">Build Phases</h3>
+      <div class="dd-build-phases">
+        <div class="dd-phase">
+          <div class="dd-phase-head p1">Phase 1: Core AI Agent</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Weeks 1–6</div>
+            <ul>
+              <li>Conversational AI with plan-specific context (benefit Q&amp;A, claim status)</li>
+              <li>Member portal (web + mobile) with digital ID card</li>
+              <li>Provider search with cost and quality indicators</li>
+              <li>Pre-visit cost estimator</li>
+              <li>Human escalation pathway for complex issues</li>
+            </ul>
+          </div>
+        </div>
+        <div class="dd-phase">
+          <div class="dd-phase-head p2">Phase 2: Proactive Engagement</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Weeks 6–12</div>
+            <ul>
+              <li>Preventive care reminders (screenings, immunizations due)</li>
+              <li>Care gap notifications ("you haven't had your annual physical")</li>
+              <li>Post-claim explanations (push notification: "Your ER visit was processed")</li>
+              <li>Guided appeals workflow for denied claims</li>
+            </ul>
+          </div>
+        </div>
+        <div class="dd-phase">
+          <div class="dd-phase-head p3">Phase 3: Care Navigation</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Months 4–8</div>
+            <ul>
+              <li>AI care navigator ("I need knee surgery" → full pathway with cost, quality, scheduling)</li>
+              <li>Second opinion coordination for high-cost procedures</li>
+              <li>Chronic condition support (medication reminders, care plan tracking)</li>
+              <li>Integration with telehealth for immediate low-acuity needs</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;color:var(--navy);">Risks &amp; Gotchas</h3>
+      <div class="dd-risks" style="background:white;border:1px solid var(--gray-200);border-radius:var(--radius);padding:24px;">
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--red-light);">&#x26A0;</div>
+          <div><h4>AI hallucination risk is highest here</h4><p>If the AI tells a member something is covered and it isn't, or quotes the wrong cost, you've created a liability and a trust problem. Every AI response about benefits must be grounded in the compiled plan configuration — no generative guessing.</p></div>
+        </div>
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--amber-light);">&#x26A0;</div>
+          <div><h4>You still need humans for sensitive situations</h4><p>A member whose child's cancer treatment was denied doesn't want a chatbot. Seamless, warm escalation to human advocates is essential. The AI should detect emotional signals and escalate proactively.</p></div>
+        </div>
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--blue-light);">&#x1F4A1;</div>
+          <div><h4>This is the demo that sells the product</h4><p>When a broker sees "ask any benefit question and get an instant, accurate answer" — that's the moment they decide to bring you to their clients. The member experience is the most compelling sales tool for the entire platform.</p></div>
+        </div>
+      </div>
+    </div>`
+  },
+  {
+    icon: "&#x1F4DC;", color: "#ea580c", bg: "#ffedd5",
+    title: "Compliance & Legal", desc: "ERISA, ACA, HIPAA, Mental Health Parity, reporting",
+    badge: "Medium", badgeClass: "medium",
+    subfunctions: ["ERISA compliance (plan docs, fiduciary duties, claims procedures)", "ACA compliance (preventive care, 1094/1095-C reporting)", "HIPAA privacy and security", "Mental Health Parity Act", "No Surprises Act", "State-specific regulations", "DOL reporting (Form 5500)", "COBRA administration"],
+    aiCan: ["Monitor regulatory changes", "Auto-generate compliance reports (5500, 1094/1095-C)", "Audit operations against requirements", "Flag potential violations", "Ensure parity and NSA compliance in adjudication"],
+    humansMust: ["ERISA counsel for plan documents", "Fiduciary obligation advisory", "DOL audit and investigation responses", "Complex legal interpretations"],
+    note: "Errors have severe consequences: DOL penalties can reach $1,100/day per violation, cumulative and retroactive. AI-assisted, human-led.",
+    deepDive: `
+    <div style="margin-top:24px;border-top:2px solid var(--gray-200);padding-top:24px;">
+      <div class="dd-hero">
+        <h3>Module Strategy</h3>
+        <p>As the TPA, we bear direct regulatory exposure. ERISA, ACA, HIPAA, Mental Health Parity, No Surprises Act, state TPA licensing — the compliance surface area is enormous. This module is AI-assisted but human-led. Getting it wrong is existential.</p>
+        <div class="dd-context-grid">
+          <div class="dd-context-chip"><div class="chip-label">Day 1 Requirement</div><div class="chip-value">TPA license (multi-state)</div></div>
+          <div class="dd-context-chip"><div class="chip-label">Key Risk</div><div class="chip-value">ERISA fiduciary liability</div></div>
+          <div class="dd-context-chip"><div class="chip-label">DOL Penalty Risk</div><div class="chip-value">$1,100/day per violation</div></div>
+          <div class="dd-context-chip"><div class="chip-label">Required Hire</div><div class="chip-value">ERISA counsel (external OK)</div></div>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--navy);">Compliance Framework</h3>
+      <div class="dd-schema">
+        <div class="dd-schema-header">Regulatory Requirements by Category</div>
+        <div class="dd-schema-grid">
+          <div class="dd-schema-col">
+            <h5>Pre-Launch (Must Have)</h5>
+            <div class="field"><span class="fname">TPA licenses</span><span class="ftype">State-by-state filing</span></div>
+            <div class="field"><span class="fname">ERISA plan docs</span><span class="ftype">SPD, Plan Document, trust</span></div>
+            <div class="field"><span class="fname">HIPAA compliance</span><span class="ftype">Policies, BAAs, training</span></div>
+            <div class="field"><span class="fname">SOC 2 Type II</span><span class="ftype">Audit engagement (start early)</span></div>
+          </div>
+          <div class="dd-schema-col">
+            <h5>Ongoing Operations</h5>
+            <div class="field"><span class="fname">ACA reporting</span><span class="ftype">1094/1095-C annually</span></div>
+            <div class="field"><span class="fname">Form 5500</span><span class="ftype">Annual DOL filing</span></div>
+            <div class="field"><span class="fname">COBRA notices</span><span class="ftype">Event-driven, strict deadlines</span></div>
+            <div class="field"><span class="fname">Mental Health Parity</span><span class="ftype">NQTL analysis required</span></div>
+          </div>
+          <div class="dd-schema-col">
+            <h5>AI-Specific Compliance</h5>
+            <div class="field"><span class="fname">Denial explainability</span><span class="ftype">Clear rationale for every denial</span></div>
+            <div class="field"><span class="fname">Human-in-the-loop</span><span class="ftype">Clinical review for adverse decisions</span></div>
+            <div class="field"><span class="fname">Bias auditing</span><span class="ftype">Ensure no disparate impact</span></div>
+            <div class="field"><span class="fname">State AI laws</span><span class="ftype">Evolving rapidly (CO, CA, NY)</span></div>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--navy);">Build Phases</h3>
+      <div class="dd-build-phases">
+        <div class="dd-phase">
+          <div class="dd-phase-head p1">Phase 1: Foundation</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Weeks 1–8 (parallel with all other modules)</div>
+            <ul>
+              <li>Engage ERISA counsel (can be external firm initially)</li>
+              <li>File TPA license applications in target states</li>
+              <li>HIPAA compliance program (policies, BAAs, risk assessment)</li>
+              <li>Begin SOC 2 Type II audit engagement</li>
+              <li>Template plan documents (SPD, Plan Document, SBC)</li>
+            </ul>
+          </div>
+        </div>
+        <div class="dd-phase">
+          <div class="dd-phase-head p2">Phase 2: Automation</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Months 3–6</div>
+            <ul>
+              <li>AI-powered regulatory change monitoring</li>
+              <li>Automated 1094/1095-C generation from eligibility data</li>
+              <li>Form 5500 data compilation engine</li>
+              <li>Claims procedure compliance auditing (timely processing, proper notices)</li>
+            </ul>
+          </div>
+        </div>
+        <div class="dd-phase">
+          <div class="dd-phase-head p3">Phase 3: Proactive Compliance</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Months 6–12</div>
+            <ul>
+              <li>Mental Health Parity NQTL analysis automation</li>
+              <li>No Surprises Act compliance monitoring in claims adjudication</li>
+              <li>AI decision audit trail and explainability dashboard</li>
+              <li>State-specific compliance rule engine (benefits mandated by situs state)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;color:var(--navy);">Risks &amp; Gotchas</h3>
+      <div class="dd-risks" style="background:white;border:1px solid var(--gray-200);border-radius:var(--radius);padding:24px;">
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--red-light);">&#x26A0;</div>
+          <div><h4>ERISA fiduciary risk is real</h4><p>Courts have found TPAs that exercise discretionary authority over claims to be functional ERISA fiduciaries. Your ASA (Administrative Services Agreement) must carefully delineate what is administrative vs. discretionary. Get this wrong and you're personally liable.</p></div>
+        </div>
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--red-light);">&#x26A0;</div>
+          <div><h4>TPA licensing is state-by-state</h4><p>Each state has different requirements, fees, and timelines. Some states require surety bonds. Plan to file in your target states 3–6 months before you need to operate there. Don't underestimate the administrative burden.</p></div>
+        </div>
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--amber-light);">&#x26A0;</div>
+          <div><h4>AI regulation is a moving target</h4><p>Colorado, California, and New York are leading on AI-in-insurance regulation. Federal guidance from CMS and DOL is evolving. Build your AI systems with explainability and audit trails from the start — retrofitting is much harder.</p></div>
+        </div>
+      </div>
+    </div>`
+  },
+  {
+    icon: "&#x1F4CA;", color: "#16a34a", bg: "#dcfce7",
+    title: "Data Analytics & Reporting", desc: "Claims analytics, population health, predictive modeling",
+    badge: "Very High", badgeClass: "very-high",
+    subfunctions: ["Claims cost and utilization analytics", "Population health / risk stratification", "Benchmarking against industry norms", "Predictive cost modeling", "Employer dashboards (monthly/quarterly)", "Actuarial analysis (reserves, renewals)"],
+    aiCan: ["Real-time dashboards (vs. 30–60 day legacy lag)", "Predictive cost modeling and anomaly detection", "Natural-language data querying", "Proactive insight surfacing (e.g., diabetics missing care, overpriced facilities)", "Automated benchmarking"],
+    humansMust: ["Strategic interpretation and consulting", "Actuarial sign-off on reserves (FSA/ASA required)", "Consultative conversations with employer teams"],
+    note: "This is a natural AI strength and a massive differentiator vs. legacy TPAs that deliver backward-looking reports.",
+    deepDive: `
+    <div style="margin-top:24px;border-top:2px solid var(--gray-200);padding-top:24px;">
+      <div class="dd-hero">
+        <h3>Module Strategy</h3>
+        <p>Data analytics is where an AI-native TPA should be 10x better than any incumbent. Legacy TPAs deliver PDF reports with 30–60 day lag. We deliver real-time dashboards, predictive models, and natural-language querying of plan data. This is also the module that keeps employers renewing.</p>
+        <div class="dd-context-grid">
+          <div class="dd-context-chip"><div class="chip-label">Legacy TPA Lag</div><div class="chip-value">30–60 days</div></div>
+          <div class="dd-context-chip"><div class="chip-label">Our Target</div><div class="chip-value">Real-time</div></div>
+          <div class="dd-context-chip"><div class="chip-label">Key Differentiator</div><div class="chip-value">Predictive + proactive insights</div></div>
+          <div class="dd-context-chip"><div class="chip-label">Build Priority</div><div class="chip-value">Phase 2 — Differentiation</div></div>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;color:var(--navy);">Analytics Stack</h3>
+      <div class="dd-arch">
+        <div class="dd-arch-box">
+          <h4>Data Sources</h4>
+          <div class="arch-sub">Everything flows into the analytics engine</div>
+          <ul>
+            <li>Medical claims (from adjudication engine)</li>
+            <li>Pharmacy claims (from PBM partner feed)</li>
+            <li>Eligibility and enrollment data</li>
+            <li>Provider network and pricing data</li>
+            <li>Prior authorization decisions and outcomes</li>
+            <li>Member engagement and portal usage</li>
+          </ul>
+        </div>
+        <div class="dd-arrow-col">&rarr;</div>
+        <div class="dd-arch-box compiler">
+          <h4>Output Products</h4>
+          <div class="arch-sub" style="color:var(--green);">What employers and brokers see</div>
+          <ul>
+            <li>Real-time employer dashboard (cost trends, utilization, high-cost claimants)</li>
+            <li>Monthly executive summary (auto-generated narrative)</li>
+            <li>Predictive cost model (next 12-month projection)</li>
+            <li>Population health risk stratification</li>
+            <li>Natural-language query interface ("show me ER visits by department")</li>
+            <li>Renewal projection and benchmarking report</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--navy);">Build Phases</h3>
+      <div class="dd-build-phases">
+        <div class="dd-phase">
+          <div class="dd-phase-head p1">Phase 1: Core Reporting</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Weeks 1–4</div>
+            <ul>
+              <li>Data warehouse / lakehouse architecture</li>
+              <li>Claims data pipeline (real-time from adjudication engine)</li>
+              <li>Employer dashboard MVP (cost summary, utilization trends, large claims)</li>
+              <li>Standard monthly report auto-generation</li>
+            </ul>
+          </div>
+        </div>
+        <div class="dd-phase">
+          <div class="dd-phase-head p2">Phase 2: Predictive &amp; Proactive</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Months 2–6</div>
+            <ul>
+              <li>Predictive cost modeling (12-month forward projection)</li>
+              <li>Population health risk stratification</li>
+              <li>Anomaly detection (cost spikes, utilization outliers, billing anomalies)</li>
+              <li>Natural-language query interface for employer HR/finance teams</li>
+              <li>Benchmarking against de-identified peer data</li>
+            </ul>
+          </div>
+        </div>
+        <div class="dd-phase">
+          <div class="dd-phase-head p3">Phase 3: AI Insights Engine</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Months 6–12</div>
+            <ul>
+              <li>Proactive insight alerts ("15 diabetic members missing A1C tests")</li>
+              <li>Provider cost/quality scoring and steerage recommendations</li>
+              <li>Plan design optimization recommendations based on claims patterns</li>
+              <li>Integrated medical + Rx analytics</li>
+              <li>Stop-loss renewal projection and optimization</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;color:var(--navy);">Risks &amp; Gotchas</h3>
+      <div class="dd-risks" style="background:white;border:1px solid var(--gray-200);border-radius:var(--radius);padding:24px;">
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--amber-light);">&#x26A0;</div>
+          <div><h4>Small group credibility problem</h4><p>With 100–500 lives, a single catastrophic claim can dominate all the data. Predictive models need to account for small-group credibility, blending group-specific experience with broader population norms. Don't over-promise predictive accuracy for very small groups.</p></div>
+        </div>
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--amber-light);">&#x26A0;</div>
+          <div><h4>PHI in analytics requires careful handling</h4><p>Employer dashboards must de-identify data (HIPAA minimum necessary standard). Employers cannot see individual member health data. Your analytics architecture must enforce role-based access control from day one.</p></div>
+        </div>
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--blue-light);">&#x1F4A1;</div>
+          <div><h4>This is the renewal retention tool</h4><p>Employers renew with the TPA that gives them the best visibility into their spend. If your analytics are 10x better than the incumbent, the employer won't switch even if a competitor offers a slightly lower PEPM. Analytics creates stickiness.</p></div>
+        </div>
+      </div>
+    </div>`
+  },
+  {
+    icon: "&#x1F4B0;", color: "#d97706", bg: "#fef3c7",
+    title: "Financial Management", desc: "Claims funding, cash flow, stop-loss, banking",
+    badge: "Medium", badgeClass: "medium",
+    subfunctions: ["Claims funding (trust/account setup)", "Cash flow management (weekly/monthly)", "Banking and trust relationships", "Stop-loss purchasing and reporting", "Premium equivalent calculations", "Vendor payment processing"],
+    aiCan: ["Optimize cash flow projections", "Automate stop-loss reporting and recovery", "Model premium equivalent calculations", "Financial fraud detection"],
+    humansMust: ["Stop-loss underwriting and placement (licensed)", "Banking and trust arrangements", "Financial audits (CPA required)", "Stop-loss carrier relationship management"],
+    note: "Stop-loss carriers assess administration quality when pricing coverage. Strong stop-loss relationships are critical and require human trust-building.",
+    deepDive: `
+    <div style="margin-top:24px;border-top:2px solid var(--gray-200);padding-top:24px;">
+      <div class="dd-hero">
+        <h3>Module Strategy</h3>
+        <p>Financial management is the plumbing that keeps the health plan solvent. As the TPA, we don't bear the insurance risk — the employer does — but we manage the money flow and the stop-loss relationship. Stop-loss is the single most critical external partnership for a new TPA.</p>
+        <div class="dd-context-grid">
+          <div class="dd-context-chip"><div class="chip-label">Employer Funding Model</div><div class="chip-value">Claims trust / bank account</div></div>
+          <div class="dd-context-chip"><div class="chip-label">Stop-Loss: Specific</div><div class="chip-value">Typically $75K–250K per claimant</div></div>
+          <div class="dd-context-chip"><div class="chip-label">Stop-Loss: Aggregate</div><div class="chip-value">125% of expected claims</div></div>
+          <div class="dd-context-chip"><div class="chip-label">Critical Relationship</div><div class="chip-value">Stop-loss carrier trust</div></div>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;color:var(--navy);">How Money Flows</h3>
+      <div class="dd-arch">
+        <div class="dd-arch-box">
+          <h4>Inbound</h4>
+          <div class="arch-sub">Employer funds the plan</div>
+          <ul>
+            <li>Employer deposits funds weekly/monthly into claims trust account</li>
+            <li>Employee premium contributions deducted from payroll</li>
+            <li>Stop-loss premiums paid to carrier</li>
+            <li>TPA admin fees (our revenue) — typically $30–80 PEPM for mid-market</li>
+          </ul>
+        </div>
+        <div class="dd-arrow-col">&rarr;</div>
+        <div class="dd-arch-box compiler">
+          <h4>Outbound</h4>
+          <div class="arch-sub" style="color:var(--green);">Claims and vendor payments</div>
+          <ul>
+            <li>Claims payments to providers (835 EDI, EFT, check)</li>
+            <li>Member reimbursements (out-of-pocket submissions)</li>
+            <li>PBM payments (pharmacy claims)</li>
+            <li>Network access fees (rental PEPM)</li>
+            <li>Stop-loss claim reimbursement recovery (when claimant exceeds specific deductible)</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:8px;color:var(--navy);">Build Phases</h3>
+      <div class="dd-build-phases">
+        <div class="dd-phase">
+          <div class="dd-phase-head p1">Phase 1: Core Financial Operations</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Weeks 1–6</div>
+            <ul>
+              <li>Claims payment processing (835 generation, EFT/check)</li>
+              <li>Employer funding reconciliation</li>
+              <li>Stop-loss carrier relationships (start conversations early — 6+ months before first client)</li>
+              <li>Premium equivalent calculation engine</li>
+              <li>Basic financial reporting for employers</li>
+            </ul>
+          </div>
+        </div>
+        <div class="dd-phase">
+          <div class="dd-phase-head p2">Phase 2: AI Optimization</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Months 2–6</div>
+            <ul>
+              <li>Cash flow forecasting (AI-predicted weekly/monthly funding needs)</li>
+              <li>Automated stop-loss reporting and reimbursement tracking</li>
+              <li>Specific stop-loss claim flagging (real-time alert when claimant approaches attachment point)</li>
+              <li>Financial fraud/anomaly detection in payment flows</li>
+            </ul>
+          </div>
+        </div>
+        <div class="dd-phase">
+          <div class="dd-phase-head p3">Phase 3: Advanced</div>
+          <div class="dd-phase-body">
+            <div class="dd-time">Months 6–12</div>
+            <ul>
+              <li>Stop-loss renewal optimization (AI-modeled attachment point scenarios)</li>
+              <li>Reserve analysis and IBNR (incurred but not reported) estimation</li>
+              <li>Multi-year cost trend modeling for employer budgeting</li>
+              <li>Aggregate stop-loss corridor management</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:16px;color:var(--navy);">Risks &amp; Gotchas</h3>
+      <div class="dd-risks" style="background:white;border:1px solid var(--gray-200);border-radius:var(--radius);padding:24px;">
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--red-light);">&#x26A0;</div>
+          <div><h4>No stop-loss = no business</h4><p>Mid-market employers will not self-insure without stop-loss coverage, and stop-loss carriers will not write coverage for a TPA they don't trust. Your first stop-loss partnership is a gating function. Start these conversations 6+ months before your first client. Carriers will want to see your adjudication accuracy, your team, and your technology.</p></div>
+        </div>
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--red-light);">&#x26A0;</div>
+          <div><h4>New TPAs get worse stop-loss pricing</h4><p>Stop-loss carriers price based on TPA track record. A new TPA with no claims history will pay higher rates, which gets passed to employers. This is a competitive disadvantage vs. established TPAs. Your AI-driven claims accuracy is the story you tell to offset this.</p></div>
+        </div>
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--amber-light);">&#x26A0;</div>
+          <div><h4>Fiduciary handling of plan assets</h4><p>As TPA, you may have check-writing authority over the claims account. This carries fiduciary responsibility. You need proper controls, segregation of duties, and audit trails. Consider using a separate banking partner (e.g., Alegeus, HealthEquity) for claims payment rather than handling funds directly.</p></div>
+        </div>
+        <div class="dd-risk-row">
+          <div class="dd-risk-icon" style="background:var(--blue-light);">&#x1F4A1;</div>
+          <div><h4>Stop-loss intelligence is a selling point</h4><p>Most TPAs treat stop-loss as a pass-through. If you can proactively flag claimants approaching the specific deductible, optimize attachment points at renewal, and demonstrate lower claims volatility through better UM — that's a tangible value proposition for both employers and stop-loss carriers.</p></div>
+        </div>
+      </div>
+    </div>`
+  }
+];
+
+// Render domain cards
+const grid = document.getElementById('domainGrid');
+domains.forEach((d, idx) => {
+  const card = document.createElement('div');
+  card.className = 'domain-card';
+  card.innerHTML = `
+    <div class="domain-header">
+      <div class="domain-icon" style="background:${d.bg};color:${d.color}">${d.icon}</div>
+      <div><div class="domain-title">${d.title}</div><div class="domain-desc">${d.desc}</div></div>
+      <div class="ai-badge ${d.badgeClass}">${d.badge}</div>
+      <span class="chevron">&#x25BC;</span>
+    </div>
+    <div class="domain-body">
+      <div class="detail-grid">
+        <div class="detail-col subfunctions"><h4>Sub-Functions</h4><ul>${d.subfunctions.map(s=>`<li>${s}</li>`).join('')}</ul></div>
+        <div class="detail-col ai-can"><h4>AI Can Do</h4><ul>${d.aiCan.map(s=>`<li>${s}</li>`).join('')}</ul></div>
+        <div class="detail-col humans-must"><h4>Humans Must Do</h4><ul>${d.humansMust.map(s=>`<li>${s}</li>`).join('')}</ul></div>
+      </div>
+      <div class="detail-note">${d.note}</div>
+      ${d.deepDive || ''}
+    </div>`;
+  card.querySelector('.domain-header').addEventListener('click', () => {
+    const wasExpanded = card.classList.contains('expanded');
+    document.querySelectorAll('.domain-card.expanded').forEach(c => c.classList.remove('expanded'));
+    if (!wasExpanded) card.classList.add('expanded');
+  });
+  grid.appendChild(card);
+});
+
+// Render matrix
+const matrixData = [
+  ["Plan Design", "High", 75, "Generate designs, model costs, draft documents", "Strategic decisions, legal review, employer sign-off"],
+  ["Eligibility", "High", 80, "Rules processing, COBRA, data feeds, ID cards", "Edge case resolution, HRIS integration setup"],
+  ["Provider Network", "Medium", 40, "Directory maintenance, credentialing, adequacy modeling", "Contract negotiation, network rental partnerships"],
+  ["Claims Admin", "Very High", 85, "Auto-adjudicate 70\u201380% of claims, fraud detection, EOBs", "Complex claims, appeals, audit responses"],
+  ["Utilization Mgmt", "High", 75, "PA auto-approval (up to 90%), criteria matching", "Peer-to-peer reviews, complex case management"],
+  ["Pharmacy (PBM)", "Medium-High", 55, "Formulary optimization, drug review, Rx PA", "Pharmacist oversight, rebate negotiations"],
+  ["Member Services", "Very High", 85, "24/7 AI support, cost estimates, care navigation", "Complex grievances, sensitive escalations"],
+  ["Compliance", "Medium", 45, "Regulatory monitoring, report generation, audit tools", "Legal review, fiduciary decisions, DOL responses"],
+  ["Data & Analytics", "Very High", 90, "Real-time dashboards, predictions, anomaly detection", "Strategic interpretation, actuarial sign-off"],
+  ["Financial Mgmt", "Medium", 40, "Cash flow modeling, stop-loss reporting, fraud detection", "Banking, stop-loss placement, audits"],
+];
+const mb = document.getElementById('matrixBody');
+matrixData.forEach(r => {
+  const barColor = r[2] >= 70 ? 'high' : 'med';
+  const tr = document.createElement('tr');
+  tr.innerHTML = `<td class="fn">${r[0]}</td><td>${r[1]}<div class="pct-bar"><div class="fill ${barColor}" style="width:${r[2]}%"></div></div></td><td>${r[3]}</td><td>${r[4]}</td>`;
+  mb.appendChild(tr);
+});
+
+// Nav active state
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('nav .links a');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) current = s.id; });
+  navLinks.forEach(a => { a.classList.toggle('active', a.getAttribute('href') === '#' + current); });
+});
+</script>
+</body>
+</html>
