@@ -1,0 +1,1644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pillar Health — Unified Demo</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+        }
+
+        body {
+            background: #f8fafc;
+            color: #0f172a;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header Bar Styles */
+        .header-bar {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-section span:first-child {
+            font-size: 1.5rem;
+        }
+
+        .logo-text h1 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 0;
+            color: #0f172a;
+        }
+
+        .logo-text p {
+            font-size: 0.7rem;
+            color: #64748b;
+            margin: 0;
+        }
+
+        .role-switcher {
+            display: flex;
+            gap: 0.5rem;
+            background: #f1f5f9;
+            padding: 0.25rem;
+            border-radius: 0.5rem;
+        }
+
+        .role-btn {
+            padding: 0.5rem 1.25rem;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.875rem;
+            border-radius: 0.375rem;
+            transition: all 0.2s;
+            color: #64748b;
+        }
+
+        .role-btn.active {
+            background: white;
+            color: #2563eb;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .role-btn:hover {
+            color: #2563eb;
+        }
+
+        .badge-demo {
+            display: inline-block;
+            background: #fef3c7;
+            color: #92400e;
+            padding: 0.375rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* Employer View Styles */
+        .employer-container {
+            display: flex;
+            height: calc(100vh - 60px);
+            gap: 0;
+        }
+
+        .sidebar-nav {
+            width: 256px;
+            background: white;
+            border-right: 1px solid #e5e7eb;
+            overflow-y: auto;
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            margin: 0.25rem 0.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #64748b;
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .nav-item.active {
+            background: #ede9fe;
+            color: #7c3aed;
+            border-left-color: #7c3aed;
+        }
+
+        .employer-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .section-header {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #7c3aed;
+        }
+
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+            transition: box-shadow 0.2s;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Metric Cards */
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-change {
+            font-size: 0.875rem;
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        /* Chart Styles */
+        .chart-container {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 1.5rem;
+        }
+
+        .bar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .bar-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .bar-label {
+            width: 140px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #0f172a;
+        }
+
+        .bar-wrapper {
+            flex: 1;
+            height: 32px;
+            background: #f1f5f9;
+            border-radius: 0.375rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb, #7c3aed);
+            border-radius: 0.375rem;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 0.75rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .bar-value {
+            width: 60px;
+            text-align: right;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        /* Form Styles */
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-label {
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #0f172a;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        input[type="date"],
+        select,
+        textarea {
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="number"]:focus,
+        input[type="date"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #7c3aed;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #0f172a;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.8125rem;
+        }
+
+        /* Member View Styles */
+        .member-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 2rem 1rem;
+            min-height: calc(100vh - 60px);
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+
+        .phone-frame {
+            width: 430px;
+            background: white;
+            border-radius: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            border: 10px solid #000;
+            position: relative;
+        }
+
+        .phone-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 25px;
+            background: #000;
+            border-radius: 0 0 20px 20px;
+            z-index: 10;
+        }
+
+        .app-container {
+            width: 100%;
+            background: white;
+            min-height: calc(100vh - 60px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 70px;
+            padding: 1rem;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-around;
+            z-index: 50;
+            padding-bottom: 10px;
+        }
+
+        .nav-tab {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            padding: 0.75rem 0;
+            cursor: pointer;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            transition: color 0.2s;
+            text-decoration: none;
+        }
+
+        .nav-tab.active {
+            color: #7c3aed;
+        }
+
+        .nav-tab span:first-child {
+            font-size: 1.5rem;
+        }
+
+        /* Member Dashboard Styles */
+        .welcome-card {
+            background: linear-gradient(135deg, #7c3aed, #2563eb);
+            color: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .welcome-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .welcome-subtitle {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .plan-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .oop-tracker {
+            background: #f0f9ff;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 2px solid #0369a1;
+        }
+
+        .oop-title {
+            font-size: 0.875rem;
+            color: #0369a1;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .oop-progress {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 12px;
+            background: #e0f2fe;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0369a1, #0284c7);
+            width: var(--progress-percent);
+        }
+
+        .oop-amount {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #0369a1;
+        }
+
+        .oop-detail {
+            font-size: 0.75rem;
+            color: #0369a1;
+        }
+
+        /* Search and Filter */
+        .search-container {
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .category-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .category-btn {
+            padding: 0.75rem 1rem;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: #0f172a;
+            transition: all 0.2s;
+        }
+
+        .category-btn.active {
+            background: #7c3aed;
+            color: white;
+            border-color: #7c3aed;
+        }
+
+        .category-btn:hover {
+            border-color: #7c3aed;
+        }
+
+        /* Provider Card */
+        .provider-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
+        }
+
+        .provider-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .provider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+
+        .provider-name {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 0.9375rem;
+        }
+
+        .provider-copay {
+            background: #fef3c7;
+            color: #f59e0b;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.375rem;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+
+        .provider-details {
+            font-size: 0.8125rem;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+
+        .provider-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.875rem;
+            color: #f59e0b;
+            margin-bottom: 0.75rem;
+        }
+
+        .provider-action {
+            width: 100%;
+            padding: 0.5rem;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8125rem;
+            color: #2563eb;
+            transition: all 0.2s;
+        }
+
+        .provider-action:hover {
+            background: #e2e8f0;
+        }
+
+        /* Add-in Card */
+        .addin-card {
+            background: linear-gradient(135deg, #f0f9ff, #dbeafe);
+            border: 1px solid #0284c7;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .addin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 0.75rem;
+        }
+
+        .addin-name {
+            font-weight: 700;
+            color: #0f172a;
+            font-size: 0.9375rem;
+        }
+
+        .addin-cost {
+            background: white;
+            color: #0284c7;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.375rem;
+            font-weight: 700;
+            font-size: 0.875rem;
+        }
+
+        .addin-description {
+            font-size: 0.8125rem;
+            color: #475569;
+            line-height: 1.4;
+            margin-bottom: 0.75rem;
+        }
+
+        .addin-action {
+            width: 100%;
+            padding: 0.5rem;
+            background: #0284c7;
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8125rem;
+            transition: all 0.2s;
+        }
+
+        .addin-action:hover {
+            background: #0369a1;
+        }
+
+        /* Enrollment Table */
+        .enrollment-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .enrollment-table th {
+            background: #f8fafc;
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.8125rem;
+            color: #64748b;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .enrollment-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.875rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-cobra {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 2rem;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Accordion */
+        .accordion-header {
+            cursor: pointer;
+            padding: 1rem;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            transition: all 0.2s;
+        }
+
+        .accordion-header:hover {
+            background: #f1f5f9;
+        }
+
+        .accordion-header.open {
+            background: #ede9fe;
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: max-height 0.3s ease, opacity 0.3s ease;
+        }
+
+        .accordion-content.open {
+            max-height: 1000px;
+            opacity: 1;
+        }
+
+        /* Hidden for member view */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useMemo, useCallback } = React;
+
+        // ============ DEFAULT DATA ============
+
+        const DEFAULT_SERVICE_CATEGORIES = {
+            imaging: {
+                name: 'Imaging (MRI, CT, X-Ray, Ultrasound)',
+                icon: '🔍',
+                enabled: true,
+                tiers: {
+                    'Freestanding Imaging Center': 75,
+                    'Community Hospital Outpatient': 150,
+                    'Academic Medical Center': 200,
+                }
+            },
+            primaryCare: {
+                name: 'Primary Care',
+                icon: '🏥',
+                enabled: true,
+                tiers: {
+                    'Community Health Center': 10,
+                    'Independent Practice': 20,
+                    'Hospital-Affiliated Practice': 35,
+                }
+            },
+            specialistVisits: {
+                name: 'Specialist Visits',
+                icon: '👨‍⚕️',
+                enabled: true,
+                tiers: {
+                    'Independent Practice': 40,
+                    'Hospital-Affiliated': 65,
+                    'Academic Medical Center': 85,
+                }
+            },
+            physicalTherapy: {
+                name: 'Physical Therapy / Rehab',
+                icon: '🏃',
+                enabled: true,
+                tiers: {
+                    'Independent PT Practice': 25,
+                    'Hospital-Affiliated PT': 45,
+                },
+                visitLimit: 30
+            },
+            urgentCare: {
+                name: 'Urgent Care',
+                icon: '⚡',
+                enabled: true,
+                tiers: {
+                    'Retail Clinic (CVS/MinuteClinic)': 25,
+                    'Freestanding Urgent Care': 50,
+                    'Hospital-Affiliated Urgent Care': 75,
+                }
+            },
+            emergency: {
+                name: 'Emergency Room',
+                icon: '🚑',
+                enabled: true,
+                tiers: {
+                    'Emergency Room': 250,
+                },
+                waivedIfAdmitted: true
+            },
+            lab: {
+                name: 'Lab & Diagnostics',
+                icon: '🧪',
+                enabled: true,
+                tiers: {
+                    'Freestanding Lab': 0,
+                    'Hospital Lab': 15,
+                }
+            },
+            mentalHealth: {
+                name: 'Mental Health & Substance Use',
+                icon: '🧠',
+                enabled: true,
+                tiers: {
+                    'Outpatient Therapy Session': 20,
+                    'Psychiatry Visit': 35,
+                    'Inpatient (per day)': 150,
+                }
+            },
+            preventive: {
+                name: 'Preventive Care',
+                icon: '❤️',
+                enabled: true,
+                tiers: {
+                    'All preventive services': 0,
+                },
+                locked: true
+            }
+        };
+
+        const DEFAULT_ADD_INS = [
+            { id: 'knee-hip', name: 'Knee/Hip Replacement', included: true, costPerPaycheck: 45, durationMonths: 12 },
+            { id: 'back-surgery', name: 'Back Surgery', included: true, costPerPaycheck: 38, durationMonths: 12 },
+            { id: 'cataract', name: 'Cataract Surgery', included: true, costPerPaycheck: 22, durationMonths: 6 },
+            { id: 'shoulder', name: 'Shoulder Surgery', included: true, costPerPaycheck: 35, durationMonths: 12 },
+            { id: 'hernia', name: 'Hernia Repair', included: true, costPerPaycheck: 18, durationMonths: 6 },
+            { id: 'bariatric', name: 'Bariatric Surgery', included: false, costPerPaycheck: 55, durationMonths: 18 },
+        ];
+
+        // Real Boston provider data
+        const MOCK_PROVIDERS = {
+            'Knee MRI': [
+                { id: 1, name: 'Boston Ultrasound Consultants PC', copay: 85, rating: 4.8, distance: '1.2 mi', facility: 'Freestanding Imaging Center' },
+                { id: 2, name: 'BIH Radiologic Foundation', copay: 95, rating: 4.7, distance: '0.8 mi', facility: 'Community Hospital Outpatient' },
+                { id: 3, name: 'Boston University Medical Center Radiologists', copay: 110, rating: 4.9, distance: '2.1 mi', facility: 'Academic Medical Center' },
+            ],
+            'Shoulder X-Ray': [
+                { id: 4, name: 'Newton Radiology', copay: 65, rating: 4.6, distance: '3.4 mi', facility: 'Freestanding Imaging Center' },
+                { id: 5, name: 'Brigham and Womens Hospital Radiology', copay: 120, rating: 4.9, distance: '4.2 mi', facility: 'Academic Medical Center' },
+            ],
+            'Physical Therapy': [
+                { id: 6, name: 'Boston Physical Therapy Associates', copay: 25, rating: 4.7, distance: '0.5 mi', facility: 'Independent PT Practice' },
+                { id: 7, name: 'Mass General Rehabilitation Center', copay: 45, rating: 4.8, distance: '1.8 mi', facility: 'Hospital-Affiliated PT' },
+            ],
+            'Primary Care Visit': [
+                { id: 8, name: 'Neighborhood Health Center', copay: 10, rating: 4.5, distance: '0.3 mi', facility: 'Community Health Center' },
+                { id: 9, name: 'Boston Medical Center - Family Medicine', copay: 35, rating: 4.6, distance: '2.2 mi', facility: 'Hospital-Affiliated Practice' },
+            ],
+            'Urgent Care': [
+                { id: 10, name: 'CVS MinuteClinic', copay: 25, rating: 4.3, distance: '0.4 mi', facility: 'Retail Clinic' },
+                { id: 11, name: 'FastCare Urgent Center', copay: 50, rating: 4.6, distance: '1.1 mi', facility: 'Freestanding Urgent Care' },
+            ],
+        };
+
+        // ============ MAIN UNIFIED APP COMPONENT ============
+
+        function PillarHealthDemo() {
+            const [role, setRole] = useState('employer'); // 'employer' or 'member'
+
+            // Employer-side state
+            const [currentSection, setCurrentSection] = useState('company');
+            const [companyInfo, setCompanyInfo] = useState({
+                name: 'Acme Corporation',
+                planName: 'Acme Bind-Style Health Plan',
+                state: 'Massachusetts',
+                employeeCount: 450,
+                planYearStart: '2026-01-01',
+                planYearEnd: '2026-12-31',
+                contactName: 'Jamie Goldstein',
+                contactEmail: 'jamie@pillar.vc',
+            });
+
+            const [serviceCategories, setServiceCategories] = useState(DEFAULT_SERVICE_CATEGORIES);
+            const [addIns, setAddIns] = useState(DEFAULT_ADD_INS);
+            const [planLimits, setPlanLimits] = useState({
+                individualOopMax: 6000,
+                familyOopMax: 12000,
+                dependentAgeLimit: 26,
+                domesticPartnerCoverage: true,
+                payrollFrequency: 'Bi-weekly',
+            });
+
+            const [networkSettings, setNetworkSettings] = useState({
+                network: 'PHCS/Multiplan',
+                outOfNetworkPolicy: 'Reference-based pricing',
+                referenceRate: 150,
+                balanceProtection: true,
+            });
+
+            // Member-side state
+            const [memberTab, setMemberTab] = useState('dashboard');
+            const [searchQuery, setSearchQuery] = useState('');
+            const [selectedCategory, setSelectedCategory] = useState(null);
+
+            // ============ EMPLOYER HANDLERS ============
+
+            const handleCompanyChange = (field, value) => {
+                setCompanyInfo(prev => ({ ...prev, [field]: value }));
+            };
+
+            const handleCategoryTierChange = (categoryKey, tierName, newCopay) => {
+                setServiceCategories(prev => ({
+                    ...prev,
+                    [categoryKey]: {
+                        ...prev[categoryKey],
+                        tiers: {
+                            ...prev[categoryKey].tiers,
+                            [tierName]: parseInt(newCopay) || 0
+                        }
+                    }
+                }));
+            };
+
+            const handleCategoryToggle = (categoryKey) => {
+                setServiceCategories(prev => ({
+                    ...prev,
+                    [categoryKey]: {
+                        ...prev[categoryKey],
+                        enabled: !prev[categoryKey].enabled
+                    }
+                }));
+            };
+
+            const handlePlanLimitChange = (field, value) => {
+                setPlanLimits(prev => ({ ...prev, [field]: value }));
+            };
+
+            // ============ MEMBER HELPERS ============
+
+            const enabledCategories = useMemo(() => {
+                return Object.entries(serviceCategories)
+                    .filter(([_, cat]) => cat.enabled)
+                    .map(([key, cat]) => ({ key, ...cat }));
+            }, [serviceCategories]);
+
+            const enabledAddIns = useMemo(() => {
+                return addIns.filter(a => a.included);
+            }, [addIns]);
+
+            // ============ RENDER: HEADER ============
+
+            const renderHeader = () => (
+                <div className="header-bar">
+                    <div className="logo-section">
+                        <span>🏥</span>
+                        <div className="logo-text">
+                            <h1>Pillar Health</h1>
+                            <p>AI-Powered Health Plans</p>
+                        </div>
+                    </div>
+
+                    <div className="role-switcher">
+                        <button
+                            className={`role-btn ${role === 'employer' ? 'active' : ''}`}
+                            onClick={() => {
+                                setRole('employer');
+                                setCurrentSection('company');
+                            }}
+                        >
+                            Employer View
+                        </button>
+                        <button
+                            className={`role-btn ${role === 'member' ? 'active' : ''}`}
+                            onClick={() => {
+                                setRole('member');
+                                setMemberTab('dashboard');
+                            }}
+                        >
+                            Member View
+                        </button>
+                    </div>
+
+                    <span className="badge-demo">Demo Mode</span>
+                </div>
+            );
+
+            // ============ RENDER: EMPLOYER VIEW ============
+
+            const renderEmployerView = () => (
+                <div className="employer-container">
+                    {/* Sidebar */}
+                    <aside className="sidebar-nav">
+                        <div style={{ padding: '1.5rem 0.75rem', borderBottom: '1px solid #e5e7eb', marginBottom: '1rem' }}>
+                            <p style={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, color: '#64748b', margin: 0 }}>Plan Setup</p>
+                        </div>
+                        {[
+                            { id: 'company', label: 'Company Info', icon: '🏢' },
+                            { id: 'services', label: 'Service Categories', icon: '💊' },
+                            { id: 'addins', label: 'Add-In Procedures', icon: '🔧' },
+                            { id: 'limits', label: 'Plan Limits', icon: '⚙️' },
+                            { id: 'network', label: 'Network Settings', icon: '🌐' },
+                            { id: 'preview', label: 'Plan Preview', icon: '📋' },
+                            { id: 'analytics', label: 'Analytics', icon: '📊' },
+                            { id: 'enrollment', label: 'Enrollment', icon: '👥' },
+                        ].map(item => (
+                            <button
+                                key={item.id}
+                                onClick={() => setCurrentSection(item.id)}
+                                className={`nav-item ${currentSection === item.id ? 'active' : ''}`}
+                            >
+                                <span>{item.icon}</span>
+                                <span>{item.label}</span>
+                            </button>
+                        ))}
+                    </aside>
+
+                    {/* Main Content */}
+                    <div className="employer-content">
+                        {currentSection === 'company' && renderCompanySection()}
+                        {currentSection === 'services' && renderServicesSection()}
+                        {currentSection === 'addins' && renderAddInsSection()}
+                        {currentSection === 'limits' && renderLimitsSection()}
+                        {currentSection === 'network' && renderNetworkSection()}
+                        {currentSection === 'preview' && renderPreviewSection()}
+                        {currentSection === 'analytics' && renderAnalyticsSection()}
+                        {currentSection === 'enrollment' && renderEnrollmentSection()}
+                    </div>
+                </div>
+            );
+
+            // ============ EMPLOYER SECTIONS ============
+
+            const renderCompanySection = () => (
+                <div className="fade-in">
+                    <h2 className="section-header">Company Information</h2>
+                    <div className="card">
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
+                            <div className="input-group">
+                                <label className="input-label">Company Name</label>
+                                <input type="text" value={companyInfo.name} onChange={(e) => handleCompanyChange('name', e.target.value)} />
+                            </div>
+                            <div className="input-group">
+                                <label className="input-label">Plan Name</label>
+                                <input type="text" value={companyInfo.planName} onChange={(e) => handleCompanyChange('planName', e.target.value)} />
+                            </div>
+                            <div className="input-group">
+                                <label className="input-label">State</label>
+                                <input type="text" value={companyInfo.state} onChange={(e) => handleCompanyChange('state', e.target.value)} />
+                            </div>
+                            <div className="input-group">
+                                <label className="input-label">Employee Count</label>
+                                <input type="number" value={companyInfo.employeeCount} onChange={(e) => handleCompanyChange('employeeCount', parseInt(e.target.value))} />
+                            </div>
+                            <div className="input-group">
+                                <label className="input-label">Contact Name</label>
+                                <input type="text" value={companyInfo.contactName} onChange={(e) => handleCompanyChange('contactName', e.target.value)} />
+                            </div>
+                            <div className="input-group">
+                                <label className="input-label">Contact Email</label>
+                                <input type="email" value={companyInfo.contactEmail} onChange={(e) => handleCompanyChange('contactEmail', e.target.value)} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            const renderServicesSection = () => (
+                <div className="fade-in">
+                    <h2 className="section-header">Service Categories & Copays</h2>
+                    <div style={{ display: 'grid', gap: '1.5rem' }}>
+                        {Object.entries(serviceCategories).map(([key, cat]) => (
+                            <div key={key} className="card">
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                                    <div>
+                                        <h3 style={{ margin: 0, fontSize: '1.125rem', fontWeight: 700, color: '#0f172a' }}>{cat.icon} {cat.name}</h3>
+                                    </div>
+                                    <button
+                                        onClick={() => handleCategoryToggle(key)}
+                                        style={{
+                                            padding: '0.5rem 1rem',
+                                            background: cat.enabled ? '#10b981' : '#d1d5db',
+                                            color: 'white',
+                                            border: 'none',
+                                            borderRadius: '0.375rem',
+                                            cursor: 'pointer',
+                                            fontWeight: 600,
+                                            fontSize: '0.875rem'
+                                        }}
+                                    >
+                                        {cat.enabled ? 'Enabled' : 'Disabled'}
+                                    </button>
+                                </div>
+                                {cat.enabled && (
+                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
+                                        {Object.entries(cat.tiers).map(([tierName, copay]) => (
+                                            <div key={tierName} className="input-group">
+                                                <label className="input-label">{tierName}</label>
+                                                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                                    <span>$</span>
+                                                    <input
+                                                        type="number"
+                                                        value={copay}
+                                                        onChange={(e) => handleCategoryTierChange(key, tierName, e.target.value)}
+                                                        style={{ flex: 1 }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+
+            const renderAddInsSection = () => (
+                <div className="fade-in">
+                    <h2 className="section-header">Add-In Procedures</h2>
+                    <p style={{ color: '#64748b', marginBottom: '1.5rem' }}>Configure specialty procedures covered through payroll add-ins.</p>
+                    <div style={{ display: 'grid', gap: '1rem' }}>
+                        {addIns.map(addin => (
+                            <div key={addin.id} className="card">
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1rem' }}>
+                                    <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 700, color: '#0f172a' }}>{addin.name}</h3>
+                                    <button
+                                        onClick={() => {
+                                            setAddIns(prev => prev.map(a => a.id === addin.id ? { ...a, included: !a.included } : a));
+                                        }}
+                                        style={{
+                                            padding: '0.375rem 0.75rem',
+                                            background: addin.included ? '#10b981' : '#d1d5db',
+                                            color: 'white',
+                                            border: 'none',
+                                            borderRadius: '0.375rem',
+                                            cursor: 'pointer',
+                                            fontWeight: 600,
+                                            fontSize: '0.8125rem'
+                                        }}
+                                    >
+                                        {addin.included ? 'Included' : 'Excluded'}
+                                    </button>
+                                </div>
+                                {addin.included && (
+                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
+                                        <div className="input-group">
+                                            <label className="input-label">Cost per Paycheck</label>
+                                            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                                <span>$</span>
+                                                <input type="number" value={addin.costPerPaycheck} onChange={(e) => {
+                                                    setAddIns(prev => prev.map(a => a.id === addin.id ? { ...a, costPerPaycheck: parseInt(e.target.value) } : a));
+                                                }} style={{ flex: 1 }} />
+                                            </div>
+                                        </div>
+                                        <div className="input-group">
+                                            <label className="input-label">Duration (months)</label>
+                                            <input type="number" value={addin.durationMonths} onChange={(e) => {
+                                                setAddIns(prev => prev.map(a => a.id === addin.id ? { ...a, durationMonths: parseInt(e.target.value) } : a));
+                                            }} />
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+
+            const renderLimitsSection = () => (
+                <div className="fade-in">
+                    <h2 className="section-header">Plan Limits & Rules</h2>
+                    <div className="card">
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
+                            <div className="input-group">
+                                <label className="input-label">Individual OOP Maximum</label>
+                                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                    <span>$</span>
+                                    <input type="number" value={planLimits.individualOopMax} onChange={(e) => handlePlanLimitChange('individualOopMax', parseInt(e.target.value))} style={{ flex: 1 }} />
+                                </div>
+                            </div>
+                            <div className="input-group">
+                                <label className="input-label">Family OOP Maximum</label>
+                                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                                    <span>$</span>
+                                    <input type="number" value={planLimits.familyOopMax} onChange={(e) => handlePlanLimitChange('familyOopMax', parseInt(e.target.value))} style={{ flex: 1 }} />
+                                </div>
+                            </div>
+                            <div className="input-group">
+                                <label className="input-label">Dependent Age Limit</label>
+                                <input type="number" value={planLimits.dependentAgeLimit} onChange={(e) => handlePlanLimitChange('dependentAgeLimit', parseInt(e.target.value))} />
+                            </div>
+                            <div className="input-group">
+                                <label className="input-label">Payroll Frequency</label>
+                                <select value={planLimits.payrollFrequency} onChange={(e) => handlePlanLimitChange('payrollFrequency', e.target.value)}>
+                                    <option>Bi-weekly</option>
+                                    <option>Weekly</option>
+                                    <option>Monthly</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            const renderNetworkSection = () => (
+                <div className="fade-in">
+                    <h2 className="section-header">Network Settings</h2>
+                    <div className="card">
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
+                            <div className="input-group">
+                                <label className="input-label">Network</label>
+                                <select value={networkSettings.network} onChange={(e) => setNetworkSettings(prev => ({ ...prev, network: e.target.value }))}>
+                                    <option>PHCS/Multiplan</option>
+                                    <option>Aetna National Network</option>
+                                    <option>Cigna Open Access Plus</option>
+                                    <option>UnitedHealth OptumCare</option>
+                                </select>
+                            </div>
+                            <div className="input-group">
+                                <label className="input-label">Out-of-Network Policy</label>
+                                <select value={networkSettings.outOfNetworkPolicy} onChange={(e) => setNetworkSettings(prev => ({ ...prev, outOfNetworkPolicy: e.target.value }))}>
+                                    <option>No OON coverage</option>
+                                    <option>50% of allowed amount</option>
+                                    <option>Reference-based pricing</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            const renderPreviewSection = () => (
+                <div className="fade-in">
+                    <h2 className="section-header">Plan Preview & Config</h2>
+                    <div className="card">
+                        <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>Plan Summary</h3>
+                        <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '0.5rem', marginBottom: '1.5rem' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem', fontSize: '0.875rem' }}>
+                                <div>
+                                    <p style={{ color: '#64748b', margin: 0 }}>Plan Name</p>
+                                    <p style={{ color: '#0f172a', fontWeight: 700, margin: 0 }}>{companyInfo.planName}</p>
+                                </div>
+                                <div>
+                                    <p style={{ color: '#64748b', margin: 0 }}>Company</p>
+                                    <p style={{ color: '#0f172a', fontWeight: 700, margin: 0 }}>{companyInfo.name}</p>
+                                </div>
+                                <div>
+                                    <p style={{ color: '#64748b', margin: 0 }}>Individual OOP Max</p>
+                                    <p style={{ color: '#0f172a', fontWeight: 700, margin: 0 }}>${planLimits.individualOopMax.toLocaleString()}</p>
+                                </div>
+                                <div>
+                                    <p style={{ color: '#64748b', margin: 0 }}>Employees</p>
+                                    <p style={{ color: '#0f172a', fontWeight: 700, margin: 0 }}>{companyInfo.employeeCount}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <button
+                            className="btn btn-primary"
+                            onClick={() => setRole('member')}
+                            style={{ width: '100%', justifyContent: 'center' }}
+                        >
+                            🔄 Switch to Member View
+                        </button>
+                    </div>
+                </div>
+            );
+
+            const renderAnalyticsSection = () => (
+                <div className="fade-in">
+                    <h2 className="section-header">Analytics Dashboard</h2>
+
+                    <div className="metrics-row">
+                        <div className="metric-card">
+                            <div className="metric-label">Total Enrolled</div>
+                            <div className="metric-value">450</div>
+                            <div className="metric-change">↑ 8% vs last quarter</div>
+                        </div>
+                        <div className="metric-card">
+                            <div className="metric-label">Monthly Claims Spend</div>
+                            <div className="metric-value">$312K</div>
+                            <div className="metric-change">↓ 12% vs year-over-year</div>
+                        </div>
+                        <div className="metric-card">
+                            <div className="metric-label">Savings vs Traditional</div>
+                            <div className="metric-value">$47K</div>
+                            <div className="metric-change">15% monthly savings</div>
+                        </div>
+                        <div className="metric-card">
+                            <div className="metric-label">Member Satisfaction</div>
+                            <div className="metric-value">4.6★</div>
+                            <div className="metric-change">↑ 0.2 pts this month</div>
+                        </div>
+                    </div>
+
+                    <div className="chart-container">
+                        <div className="chart-title">Claims Spend by Category (Monthly)</div>
+                        <div className="bar-chart">
+                            {[
+                                { label: 'Primary Care', value: 89, max: 100 },
+                                { label: 'Imaging', value: 67, max: 100 },
+                                { label: 'Specialist', value: 54, max: 100 },
+                                { label: 'Pharmacy', value: 48, max: 100 },
+                                { label: 'Urgent/ER', value: 31, max: 100 },
+                                { label: 'Physical Therapy', value: 23, max: 100 },
+                            ].map((item, idx) => (
+                                <div key={idx} className="bar-item">
+                                    <div className="bar-label">{item.label}</div>
+                                    <div className="bar-wrapper">
+                                        <div
+                                            className="bar-fill"
+                                            style={{
+                                                width: `${(item.value / item.max) * 100}%`,
+                                                background: idx % 2 === 0 ? '#2563eb' : '#7c3aed'
+                                            }}
+                                        >
+                                            {item.value}K
+                                        </div>
+                                    </div>
+                                    <div className="bar-value">${item.value}K</div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="metrics-row">
+                        <div className="metric-card">
+                            <div className="metric-label">App Logins</div>
+                            <div className="metric-value">1,247</div>
+                            <p style={{ fontSize: '0.75rem', color: '#64748b', margin: '0.5rem 0 0 0' }}>This month</p>
+                        </div>
+                        <div className="metric-card">
+                            <div className="metric-label">Care Searches</div>
+                            <div className="metric-value">342</div>
+                            <p style={{ fontSize: '0.75rem', color: '#64748b', margin: '0.5rem 0 0 0' }}>This month</p>
+                        </div>
+                        <div className="metric-card">
+                            <div className="metric-label">Provider Comparisons</div>
+                            <div className="metric-value">89%</div>
+                            <p style={{ fontSize: '0.75rem', color: '#64748b', margin: '0.5rem 0 0 0' }}>Members comparing 2+ options</p>
+                        </div>
+                        <div className="metric-card">
+                            <div className="metric-label">ER Utilization</div>
+                            <div className="metric-value">↓ 23%</div>
+                            <p style={{ fontSize: '0.75rem', color: '#64748b', margin: '0.5rem 0 0 0' }}>Using urgent care instead</p>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            const renderEnrollmentSection = () => (
+                <div className="fade-in">
+                    <h2 className="section-header">Employee Enrollment</h2>
+                    <div className="card" style={{ background: '#fef3c7', border: '1px solid #f59e0b', marginBottom: '1.5rem' }}>
+                        <p style={{ color: '#92400e', fontWeight: 600, margin: 0 }}>✨ Eligibility engine coming soon</p>
+                        <p style={{ color: '#92400e', fontSize: '0.875rem', margin: '0.5rem 0 0 0' }}>Full enrollment management, life events, and COBRA administration will be available in Q2 2026.</p>
+                    </div>
+                    <table className="enrollment-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Employee ID</th>
+                                <th>Status</th>
+                                <th>Plan Tier</th>
+                                <th>Enrolled Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {[
+                                { name: 'Sarah Johnson', id: 'EMP001', status: 'Active', tier: 'Gold', date: '2025-01-15' },
+                                { name: 'Michael Chen', id: 'EMP002', status: 'Active', tier: 'Silver', date: '2025-01-15' },
+                                { name: 'Jessica Rodriguez', id: 'EMP003', status: 'Pending', tier: 'Gold', date: '2026-03-01' },
+                                { name: 'David Thompson', id: 'EMP004', status: 'COBRA', tier: 'Silver', date: '2025-06-01' },
+                                { name: 'Emily Wilson', id: 'EMP005', status: 'Active', tier: 'Gold', date: '2025-01-15' },
+                            ].map((emp, idx) => (
+                                <tr key={idx}>
+                                    <td>{emp.name}</td>
+                                    <td>{emp.id}</td>
+                                    <td>
+                                        <span className={`status-badge status-${emp.status.toLowerCase()}`}>
+                                            {emp.status}
+                                        </span>
+                                    </td>
+                                    <td>{emp.tier}</td>
+                                    <td>{emp.date}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            );
+
+            // ============ RENDER: MEMBER VIEW ============
+
+            const renderMemberView = () => (
+                <div className="member-container">
+                    <div className="phone-frame">
+                        <div className="app-container">
+                            {memberTab === 'dashboard' && renderDashboardTab()}
+                            {memberTab === 'search' && renderSearchTab()}
+                            {memberTab === 'addins' && renderAddInsTab()}
+
+                            <nav className="bottom-nav">
+                                <button
+                                    className={`nav-tab ${memberTab === 'dashboard' ? 'active' : ''}`}
+                                    onClick={() => setMemberTab('dashboard')}
+                                >
+                                    <span>📊</span>
+                                    <span>Dashboard</span>
+                                </button>
+                                <button
+                                    className={`nav-tab ${memberTab === 'search' ? 'active' : ''}`}
+                                    onClick={() => setMemberTab('search')}
+                                >
+                                    <span>🔍</span>
+                                    <span>Find Care</span>
+                                </button>
+                                <button
+                                    className={`nav-tab ${memberTab === 'addins' ? 'active' : ''}`}
+                                    onClick={() => setMemberTab('addins')}
+                                >
+                                    <span>✨</span>
+                                    <span>Add-ins</span>
+                                </button>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            const renderDashboardTab = () => (
+                <div className="content-area">
+                    <div className="welcome-card">
+                        <div className="welcome-title">Welcome Back!</div>
+                        <div className="welcome-subtitle">You're on the {companyInfo.planName}</div>
+                        <div className="plan-badge">Bind-Style Plan • {companyInfo.state}</div>
+                    </div>
+
+                    <div className="oop-tracker">
+                        <div className="oop-title">Out-of-Pocket Spending</div>
+                        <div className="oop-progress">
+                            <div className="progress-bar">
+                                <div className="progress-fill" style={{ '--progress-percent': '34%' }}></div>
+                            </div>
+                            <div className="oop-amount">$2,040</div>
+                        </div>
+                        <div className="oop-detail">$2,040 of ${planLimits.individualOopMax.toLocaleString()} • 34% used</div>
+                    </div>
+
+                    <div className="card">
+                        <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>Quick Actions</h3>
+                        <div style={{ display: 'grid', gap: '0.75rem' }}>
+                            <button className="provider-action" style={{ background: '#ede9fe', color: '#7c3aed' }}>
+                                📅 Schedule a Visit
+                            </button>
+                            <button className="provider-action" style={{ background: '#f0f9ff', color: '#0284c7' }}>
+                                💊 View Prescriptions
+                            </button>
+                            <button className="provider-action" style={{ background: '#dcfce7', color: '#16a34a' }}>
+                                📈 View Health Records
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="footer">
+                        Pillar Health — AI-Native Health Plan Administration
+                    </div>
+                </div>
+            );
+
+            const renderSearchTab = () => (
+                <div className="content-area">
+                    <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>Find Care</h2>
+
+                    <div className="search-container">
+                        <input
+                            type="text"
+                            className="search-input"
+                            placeholder="Search for care (e.g., 'MRI', 'primary care')"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+
+                    {!searchQuery && (
+                        <>
+                            <p style={{ fontSize: '0.875rem', color: '#64748b', marginBottom: '1rem' }}>Browse by category</p>
+                            <div className="category-buttons">
+                                {enabledCategories.map((cat) => (
+                                    <button
+                                        key={cat.key}
+                                        className={`category-btn ${selectedCategory === cat.key ? 'active' : ''}`}
+                                        onClick={() => setSelectedCategory(selectedCategory === cat.key ? null : cat.key)}
+                                    >
+                                        <span>{cat.icon}</span> {cat.name.split(' ')[0]}
+                                    </button>
+                                ))}
+                            </div>
+                        </>
+                    )}
+
+                    {(searchQuery || selectedCategory) && (
+                        <>
+                            <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>
+                                {searchQuery ? `Results for "${searchQuery}"` : selectedCategory ? Object.values(serviceCategories).find(c => c === selectedCategory)?.name : 'Results'}
+                            </h3>
+                            {Object.entries(MOCK_PROVIDERS).slice(0, 3).map(([service, providers]) => (
+                                <div key={service}>
+                                    <h4 style={{ fontSize: '0.875rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem' }}>{service}</h4>
+                                    {providers.map((provider) => (
+                                        <div key={provider.id} className="provider-card">
+                                            <div className="provider-header">
+                                                <div className="provider-name">{provider.name}</div>
+                                                <div className="provider-copay">${provider.copay}</div>
+                                            </div>
+                                            <div className="provider-details">
+                                                {provider.facility} • {provider.distance}
+                                            </div>
+                                            <div className="provider-rating">
+                                                ★★★★★ {provider.rating} • {Math.floor(Math.random() * 200) + 50} reviews
+                                            </div>
+                                            <button className="provider-action">Select & Compare</button>
+                                        </div>
+                                    ))}
+                                </div>
+                            ))}
+                        </>
+                    )}
+
+                    <div className="footer">
+                        Provider data from CMS NPPES Database
+                    </div>
+                </div>
+            );
+
+            const renderAddInsTab = () => (
+                <div className="content-area">
+                    <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>Add-In Procedures</h2>
+
+                    <div style={{ background: '#f0f9ff', border: '1px solid #0369a1', borderRadius: '0.75rem', padding: '1rem', marginBottom: '1.5rem' }}>
+                        <p style={{ fontSize: '0.875rem', color: '#0369a1', margin: 0, lineHeight: 1.6 }}>
+                            <strong>Add-ins cover specialty procedures</strong> through optional payroll deductions. You can enroll, suspend, or change your election anytime.
+                        </p>
+                    </div>
+
+                    <div style={{ display: 'grid', gap: '1rem' }}>
+                        {enabledAddIns.map((addin) => (
+                            <div key={addin.id} className="addin-card">
+                                <div className="addin-header">
+                                    <div className="addin-name">{addin.name}</div>
+                                    <div className="addin-cost">${addin.costPerPaycheck}/pay</div>
+                                </div>
+                                <div className="addin-description">
+                                    Covered for {addin.durationMonths} months with no waiting period.
+                                </div>
+                                <button className="addin-action">Enroll Now</button>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="footer">
+                        Costs deducted from paycheck • Pre-tax benefits available
+                    </div>
+                </div>
+            );
+
+            // ============ MAIN RENDER ============
+
+            return (
+                <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: '#f8fafc' }}>
+                    {renderHeader()}
+                    <div style={{ flex: 1 }}>
+                        {role === 'employer' ? renderEmployerView() : renderMemberView()}
+                    </div>
+                </div>
+            );
+        }
+
+        // ============ MOUNT APP ============
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<PillarHealthDemo />);
+    </script>
+</body>
+</html>
