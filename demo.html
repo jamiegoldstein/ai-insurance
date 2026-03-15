@@ -1166,6 +1166,288 @@
             border-bottom: 1px solid #e2e8f0;
             font-size: 0.8125rem;
         }
+
+        /* Claims Styles */
+        .claims-pipeline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 0.75rem;
+        }
+
+        .pipeline-stage {
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 0.5rem;
+            border: 2px solid #e2e8f0;
+        }
+
+        .pipeline-stage.active {
+            border-color: #7c3aed;
+            background: #f5f3ff;
+        }
+
+        .pipeline-stage-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .pipeline-stage-count {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .claims-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        .claims-table th {
+            background: #f8fafc;
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            color: #64748b;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .claims-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .claims-table tr:hover {
+            background: #f9fafb;
+            cursor: pointer;
+        }
+
+        .claim-status-received {
+            display: inline-block;
+            background: #dbeafe;
+            color: #0369a1;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .claim-status-adjudicating {
+            display: inline-block;
+            background: #fef3c7;
+            color: #92400e;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .claim-status-adjudicated {
+            display: inline-block;
+            background: #dbeafe;
+            color: #0369a1;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .claim-status-paid {
+            display: inline-block;
+            background: #dcfce7;
+            color: #16a34a;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .claim-status-denied {
+            display: inline-block;
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .eob-document {
+            background: white;
+            padding: 2rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        .eob-header {
+            border-bottom: 2px solid #0f172a;
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .eob-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .eob-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .eob-section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+
+        .eob-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .eob-label {
+            font-weight: 500;
+            color: #64748b;
+        }
+
+        .eob-value {
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        .eob-notice {
+            background: #f0f9ff;
+            border: 1px solid #0369a1;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            font-size: 0.75rem;
+            color: #0369a1;
+        }
+
+        .metric-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #7c3aed;
+            margin: 0.5rem 0;
+        }
+
+        .metric-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .timeline-dot {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 9999px;
+            background: #e0e7ff;
+            border: 2px solid #7c3aed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .timeline-dot.completed {
+            background: #dcfce7;
+            border-color: #16a34a;
+            color: #16a34a;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-title {
+            font-weight: 600;
+            color: #0f172a;
+            margin-bottom: 0.25rem;
+        }
+
+        .timeline-date {
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+
+        .adjustment-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .adjustment-label {
+            font-weight: 500;
+            color: #0f172a;
+        }
+
+        .adjustment-value {
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .submit-claim-form {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            max-width: 600px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
     </style>
 </head>
 <body>
@@ -1293,6 +1575,29 @@
             { id: 'EMP015', firstName: 'Lauren', lastName: 'Taylor', dob: '1996-04-05', ssn: '***-**-5016', hireDate: '2025-02-01', status: 'active', tier: 'EE Only', department: 'Finance', salary: 88000, dependents: [], addIns: [], memberId: 'PLR-2025-00008' },
         ];
 
+        const INITIAL_CLAIMS = [
+            { claimId: 'CLM-2026-00001', memberId: 'PLR-2024-00101', memberName: 'Sarah Chen', serviceDate: '2026-02-15', serviceType: 'Primary Care Visit', providerName: 'Harvard Primary Care', facilityType: 'Hospital-Affiliated Practice', billedAmount: 250, allowedAmount: 220, memberCopay: 35, planPaid: 185, status: 'paid', receivedDate: '2026-02-16', adjudicatedDate: '2026-02-17', paidDate: '2026-02-20', diagnosisCode: 'Z00.00', procedureCode: '99213' },
+            { claimId: 'CLM-2026-00002', memberId: 'PLR-2024-00101', memberName: 'Sarah Chen', serviceDate: '2026-02-20', serviceType: 'Knee MRI', providerName: 'Boston Ultrasound Consultants', facilityType: 'Freestanding Imaging Center', billedAmount: 1850, allowedAmount: 1570, memberCopay: 75, planPaid: 1495, status: 'paid', receivedDate: '2026-02-21', adjudicatedDate: '2026-02-24', paidDate: '2026-02-28', diagnosisCode: 'M17.11', procedureCode: '73610' },
+            { claimId: 'CLM-2026-00003', memberId: 'PLR-2024-00102', memberName: 'Michael Rodriguez', serviceDate: '2026-03-01', serviceType: 'Specialist Visit', providerName: 'Orthopedic Associates of Boston', facilityType: 'Independent Practice', billedAmount: 350, allowedAmount: 295, memberCopay: 40, planPaid: 255, status: 'paid', receivedDate: '2026-03-02', adjudicatedDate: '2026-03-03', paidDate: '2026-03-07', diagnosisCode: 'M17.11', procedureCode: '99214' },
+            { claimId: 'CLM-2026-00004', memberId: 'PLR-2023-00089', memberName: 'Jessica Thompson', serviceDate: '2026-02-28', serviceType: 'Physical Therapy', providerName: 'Boston Physical Therapy Center', facilityType: 'Hospital-Affiliated PT', billedAmount: 150, allowedAmount: 125, memberCopay: 45, planPaid: 80, status: 'paid', receivedDate: '2026-03-01', adjudicatedDate: '2026-03-02', paidDate: '2026-03-06', diagnosisCode: 'M17.11', procedureCode: '97161' },
+            { claimId: 'CLM-2026-00005', memberId: 'PLR-2024-00115', memberName: 'David Kim', serviceDate: '2026-03-05', serviceType: 'Lab Work', providerName: 'Quest Diagnostics Boston', facilityType: 'Freestanding Lab', billedAmount: 450, allowedAmount: 380, memberCopay: 0, planPaid: 380, status: 'paid', receivedDate: '2026-03-06', adjudicatedDate: '2026-03-07', paidDate: '2026-03-10', diagnosisCode: 'Z12.81', procedureCode: '80053' },
+            { claimId: 'CLM-2026-00006', memberId: 'PLR-2024-00134', memberName: 'Emily Patel', serviceDate: '2026-03-08', serviceType: 'Urgent Care', providerName: 'FastCare Urgent Care Boston', facilityType: 'Freestanding Urgent Care', billedAmount: 200, allowedAmount: 170, memberCopay: 50, planPaid: 120, status: 'adjudicated', receivedDate: '2026-03-09', adjudicatedDate: '2026-03-10', diagnosisCode: 'J20.9', procedureCode: '99283' },
+            { claimId: 'CLM-2026-00007', memberId: 'PLR-2023-00042', memberName: 'James O\'Brien', serviceDate: '2026-03-10', serviceType: 'Primary Care Visit', providerName: 'Harvard Primary Care', facilityType: 'Hospital-Affiliated Practice', billedAmount: 250, allowedAmount: 220, memberCopay: 35, planPaid: 185, status: 'adjudicating', receivedDate: '2026-03-11', diagnosisCode: 'Z00.00', procedureCode: '99213' },
+            { claimId: 'CLM-2026-00008', memberId: 'PLR-2024-00156', memberName: 'Maria Garcia', serviceDate: '2026-03-12', serviceType: 'Specialist Visit', providerName: 'Cardiology Boston', facilityType: 'Hospital-Affiliated', billedAmount: 400, allowedAmount: 340, memberCopay: 65, planPaid: 275, status: 'received', receivedDate: '2026-03-13', diagnosisCode: 'I10', procedureCode: '99214' },
+            { claimId: 'CLM-2026-00009', memberId: 'PLR-2022-00018', memberName: 'Robert Wilson', serviceDate: '2026-02-10', serviceType: 'CT Scan', providerName: 'Boston Medical Imaging', facilityType: 'Community Hospital Outpatient', billedAmount: 2100, allowedAmount: 1800, memberCopay: 150, planPaid: 1650, status: 'paid', receivedDate: '2026-02-11', adjudicatedDate: '2026-02-14', paidDate: '2026-02-18', diagnosisCode: 'M17.11', procedureCode: '71020' },
+            { claimId: 'CLM-2026-00010', memberId: 'PLR-2025-00003', memberName: 'Amanda Foster', serviceDate: '2026-03-03', serviceType: 'Lab Work', providerName: 'LabCorp Boston', facilityType: 'Hospital Lab', billedAmount: 350, allowedAmount: 295, memberCopay: 15, planPaid: 280, status: 'paid', receivedDate: '2026-03-04', adjudicatedDate: '2026-03-05', paidDate: '2026-03-08', diagnosisCode: 'Z12.81', procedureCode: '80053' },
+            { claimId: 'CLM-2026-00011', memberId: 'PLR-2023-00067', memberName: 'Christopher Nguyen', serviceDate: '2026-02-25', serviceType: 'Sleep Study', providerName: 'Boston Sleep Center', facilityType: 'Independent Practice', billedAmount: 1200, allowedAmount: 1020, memberCopay: 0, planPaid: 1020, status: 'paid', receivedDate: '2026-02-26', adjudicatedDate: '2026-02-28', paidDate: '2026-03-04', diagnosisCode: 'G47.30', procedureCode: '95810' },
+            { claimId: 'CLM-2026-00012', memberId: 'PLR-2024-00108', memberName: 'Rachel Morgan', serviceDate: '2025-11-15', serviceType: 'Preventive Care', providerName: 'Harvard Health', facilityType: 'Hospital-Affiliated Practice', billedAmount: 0, allowedAmount: 0, memberCopay: 0, planPaid: 0, status: 'paid', receivedDate: '2025-11-16', adjudicatedDate: '2025-11-17', paidDate: '2025-11-20', diagnosisCode: 'Z00.00', procedureCode: '99396' },
+            { claimId: 'CLM-2026-00013', memberId: 'PLR-2023-00045', memberName: 'Daniel Brooks', serviceDate: '2026-02-22', serviceType: 'X-Ray', providerName: 'Boston Radiology', facilityType: 'Freestanding Imaging Center', billedAmount: 350, allowedAmount: 290, memberCopay: 75, planPaid: 215, status: 'paid', receivedDate: '2026-02-23', adjudicatedDate: '2026-02-24', paidDate: '2026-02-27', diagnosisCode: 'M17.11', procedureCode: '71045' },
+            { claimId: 'CLM-2026-00014', memberId: 'PLR-2024-00101', memberName: 'Sarah Chen', serviceDate: '2026-01-30', serviceType: 'Emergency Room', providerName: 'Massachusetts General Hospital', facilityType: 'Emergency Room', billedAmount: 3500, allowedAmount: 2800, memberCopay: 250, planPaid: 2550, status: 'paid', receivedDate: '2026-01-31', adjudicatedDate: '2026-02-02', paidDate: '2026-02-05', diagnosisCode: 'R07.9', procedureCode: '99285' },
+            { claimId: 'CLM-2026-00015', memberId: 'PLR-2026-00001', memberName: 'Stephanie Lee', serviceDate: '2026-03-09', serviceType: 'Primary Care Visit', providerName: 'Boston Medical Group', facilityType: 'Community Health Center', billedAmount: 200, allowedAmount: 170, memberCopay: 10, planPaid: 160, status: 'denied', receivedDate: '2026-03-10', adjudicatedDate: '2026-03-11', denialReason: 'Service not covered under plan', diagnosisCode: 'Z00.00', procedureCode: '99213' },
+            { claimId: 'CLM-2026-00016', memberId: 'PLR-2024-00142', memberName: 'Kevin Martinez', serviceDate: '2026-03-04', serviceType: 'Physical Therapy', providerName: 'PT Boston Inc', facilityType: 'Independent PT Practice', billedAmount: 150, allowedAmount: 125, memberCopay: 25, planPaid: 100, status: 'adjudicating', receivedDate: '2026-03-05', diagnosisCode: 'M17.11', procedureCode: '97161' },
+            { claimId: 'CLM-2026-00017', memberId: 'PLR-2025-00008', memberName: 'Lauren Taylor', serviceDate: '2026-03-11', serviceType: 'Mental Health Session', providerName: 'Boston Behavioral Health', facilityType: 'Outpatient Therapy Session', billedAmount: 180, allowedAmount: 150, memberCopay: 20, planPaid: 130, status: 'received', receivedDate: '2026-03-12', diagnosisCode: 'F41.1', procedureCode: '90834' },
+            { claimId: 'CLM-2026-00018', memberId: 'PLR-2024-00115', memberName: 'David Kim', serviceDate: '2026-02-18', serviceType: 'Ultrasound', providerName: 'Boston Imaging Center', facilityType: 'Community Hospital Outpatient', billedAmount: 850, allowedAmount: 720, memberCopay: 150, planPaid: 570, status: 'paid', receivedDate: '2026-02-19', adjudicatedDate: '2026-02-21', paidDate: '2026-02-25', diagnosisCode: 'Z12.4', procedureCode: '76705' },
+            { claimId: 'CLM-2026-00019', memberId: 'PLR-2024-00102', memberName: 'Michael Rodriguez', serviceDate: '2026-03-07', serviceType: 'Lab Work', providerName: 'Quest Diagnostics', facilityType: 'Freestanding Lab', billedAmount: 520, allowedAmount: 440, memberCopay: 0, planPaid: 440, status: 'adjudicated', receivedDate: '2026-03-08', adjudicatedDate: '2026-03-09', diagnosisCode: 'Z12.81', procedureCode: '80053' },
+            { claimId: 'CLM-2026-00020', memberId: 'PLR-2023-00089', memberName: 'Jessica Thompson', serviceDate: '2026-02-05', serviceType: 'Specialist Visit', providerName: 'Rheumatology Associates', facilityType: 'Academic Medical Center', billedAmount: 450, allowedAmount: 380, memberCopay: 85, planPaid: 295, status: 'denied', receivedDate: '2026-02-06', adjudicatedDate: '2026-02-08', denialReason: 'Prior authorization not obtained', diagnosisCode: 'M05.9', procedureCode: '99214' },
+        ];
+
         // Real Boston provider data
         const MOCK_PROVIDERS = {
             'Knee MRI': [
@@ -1367,6 +1672,21 @@
             const [showLifeEventModal, setShowLifeEventModal] = useState(false);
             const [verifyMemberId, setVerifyMemberId] = useState('');
             const [verifyResult, setVerifyResult] = useState(null);
+
+            // Claims Engine state
+            const [claims, setClaims] = useState(INITIAL_CLAIMS);
+            const [claimsView, setClaimsView] = useState('dashboard');
+            const [selectedClaim, setSelectedClaim] = useState(null);
+            const [submitFormData, setSubmitFormData] = useState({
+                memberId: '',
+                serviceType: '',
+                providerName: '',
+                facilityType: '',
+                billedAmount: '',
+                diagnosisCode: '',
+                procedureCode: '',
+                serviceDate: ''
+            });
 
             // ============ EMPLOYER HANDLERS ============
 
@@ -1468,6 +1788,7 @@
                             { id: 'preview', label: 'Plan Preview', icon: '📋' },
                             { id: 'analytics', label: 'Analytics', icon: '📊' },
                             { id: 'enrollment', label: 'Enrollment', icon: '👥' },
+                            { id: 'claims', label: 'Claims', icon: '💰' },
                         ].map(item => (
                             <button
                                 key={item.id}
@@ -1490,6 +1811,7 @@
                         {currentSection === 'preview' && renderPreviewSection()}
                         {currentSection === 'analytics' && renderAnalyticsSection()}
                         {currentSection === 'enrollment' && renderEnrollmentSection()}
+                        {currentSection === 'claims' && renderClaimsSection()}
                     </div>
                 </div>
             );
@@ -2301,6 +2623,468 @@
                 return renderRosterView();
             };
 
+            // ============ CLAIMS SECTION ============
+
+            const renderClaimsSection = () => {
+                if (claimsView === 'detail' && selectedClaim) {
+                    return renderClaimDetail();
+                } else if (claimsView === 'submit') {
+                    return renderSubmitClaimForm();
+                } else if (claimsView === 'eob' && selectedClaim) {
+                    return renderEOBView();
+                }
+                return renderClaimsDashboard();
+            };
+
+            const renderClaimsDashboard = () => {
+                const totalClaims = claims.length;
+                const pendingClaims = claims.filter(c => ['received', 'adjudicating'].includes(c.status)).length;
+                const paidClaims = claims.filter(c => c.status === 'paid').length;
+                const deniedClaims = claims.filter(c => c.status === 'denied').length;
+                const monthlySpend = claims.filter(c => c.serviceDate >= '2026-03-01' && c.serviceDate <= '2026-03-14').reduce((sum, c) => sum + c.planPaid, 0);
+                const avgProcessingDays = 4.2;
+
+                const statusCounts = {
+                    received: claims.filter(c => c.status === 'received').length,
+                    adjudicating: claims.filter(c => c.status === 'adjudicating').length,
+                    adjudicated: claims.filter(c => c.status === 'adjudicated').length,
+                    paid: claims.filter(c => c.status === 'paid').length,
+                };
+
+                return (
+                    <div className="fade-in">
+                        <h2 className="section-header">Claims Adjudication</h2>
+
+                        {/* Metric Cards */}
+                        <div className="metric-grid">
+                            <div className="metric-card">
+                                <div className="metric-label">Total Claims</div>
+                                <div className="metric-value">{totalClaims}</div>
+                            </div>
+                            <div className="metric-card">
+                                <div className="metric-label">Pending</div>
+                                <div className="metric-value">{pendingClaims}</div>
+                            </div>
+                            <div className="metric-card">
+                                <div className="metric-label">Monthly Spend</div>
+                                <div className="metric-value">${monthlySpend.toLocaleString()}</div>
+                            </div>
+                            <div className="metric-card">
+                                <div className="metric-label">Avg Processing</div>
+                                <div className="metric-value">{avgProcessingDays}d</div>
+                            </div>
+                        </div>
+
+                        {/* Pipeline */}
+                        <div className="card" style={{ marginBottom: '2rem' }}>
+                            <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1.5rem' }}>Claims Pipeline</h3>
+                            <div className="claims-pipeline">
+                                <div className={`pipeline-stage ${statusCounts.received > 0 ? 'active' : ''}`}>
+                                    <div className="pipeline-stage-label">Received</div>
+                                    <div className="pipeline-stage-count">{statusCounts.received}</div>
+                                </div>
+                                <div style={{ flex: 0.5, textAlign: 'center', color: '#cbd5e1' }}>→</div>
+                                <div className={`pipeline-stage ${statusCounts.adjudicating > 0 ? 'active' : ''}`}>
+                                    <div className="pipeline-stage-label">Adjudicating</div>
+                                    <div className="pipeline-stage-count">{statusCounts.adjudicating}</div>
+                                </div>
+                                <div style={{ flex: 0.5, textAlign: 'center', color: '#cbd5e1' }}>→</div>
+                                <div className={`pipeline-stage ${statusCounts.adjudicated > 0 ? 'active' : ''}`}>
+                                    <div className="pipeline-stage-label">Adjudicated</div>
+                                    <div className="pipeline-stage-count">{statusCounts.adjudicated}</div>
+                                </div>
+                                <div style={{ flex: 0.5, textAlign: 'center', color: '#cbd5e1' }}>→</div>
+                                <div className={`pipeline-stage ${statusCounts.paid > 0 ? 'active' : ''}`}>
+                                    <div className="pipeline-stage-label">Paid</div>
+                                    <div className="pipeline-stage-count">{statusCounts.paid}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Recent Claims Table */}
+                        <div className="card">
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                                <h3 style={{ fontSize: '1rem', fontWeight: 700, margin: 0 }}>Recent Claims</h3>
+                                <div style={{ display: 'flex', gap: '0.75rem' }}>
+                                    <button onClick={() => setClaimsView('submit')} style={{ background: '#7c3aed', color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: 600 }}>
+                                        📝 Submit Claim
+                                    </button>
+                                    <button style={{ background: '#f1f5f9', color: '#0f172a', border: 'none', padding: '0.5rem 1rem', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: 600 }}>
+                                        📊 Export Report
+                                    </button>
+                                </div>
+                            </div>
+                            <table className="claims-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Member</th>
+                                        <th>Service</th>
+                                        <th>Billed</th>
+                                        <th>Plan Paid</th>
+                                        <th>Copay</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {claims.slice().reverse().map((claim) => (
+                                        <tr key={claim.claimId} onClick={() => { setSelectedClaim(claim); setClaimsView('detail'); }} style={{ cursor: 'pointer' }}>
+                                            <td>{claim.serviceDate}</td>
+                                            <td>{claim.memberName}</td>
+                                            <td>{claim.serviceType}</td>
+                                            <td>${claim.billedAmount.toLocaleString()}</td>
+                                            <td>${claim.planPaid.toLocaleString()}</td>
+                                            <td>${claim.memberCopay}</td>
+                                            <td><span className={`claim-status-${claim.status}`}>{claim.status.charAt(0).toUpperCase() + claim.status.slice(1)}</span></td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                );
+            };
+
+            const renderClaimDetail = () => (
+                <div className="fade-in">
+                    <button onClick={() => setClaimsView('dashboard')} style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '0.875rem', marginBottom: '1rem', padding: 0 }}>
+                        ← Back to Claims
+                    </button>
+
+                    <h2 className="section-header">Claim {selectedClaim.claimId}</h2>
+
+                    {/* Claim Info Card */}
+                    <div className="card" style={{ marginBottom: '1.5rem' }}>
+                        <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem' }}>Claim Details</h3>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
+                            <div>
+                                <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.25rem' }}>Member</div>
+                                <div style={{ fontSize: '1rem', fontWeight: 600 }}>{selectedClaim.memberName}</div>
+                            </div>
+                            <div>
+                                <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.25rem' }}>Member ID</div>
+                                <div style={{ fontSize: '1rem', fontWeight: 600 }}>{selectedClaim.memberId}</div>
+                            </div>
+                            <div>
+                                <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.25rem' }}>Service Type</div>
+                                <div style={{ fontSize: '1rem', fontWeight: 600 }}>{selectedClaim.serviceType}</div>
+                            </div>
+                            <div>
+                                <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.25rem' }}>Service Date</div>
+                                <div style={{ fontSize: '1rem', fontWeight: 600 }}>{selectedClaim.serviceDate}</div>
+                            </div>
+                            <div>
+                                <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.25rem' }}>Provider</div>
+                                <div style={{ fontSize: '1rem', fontWeight: 600 }}>{selectedClaim.providerName}</div>
+                            </div>
+                            <div>
+                                <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.25rem' }}>Facility Type</div>
+                                <div style={{ fontSize: '1rem', fontWeight: 600 }}>{selectedClaim.facilityType}</div>
+                            </div>
+                            <div>
+                                <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.25rem' }}>Diagnosis Code</div>
+                                <div style={{ fontSize: '1rem', fontWeight: 600 }}>{selectedClaim.diagnosisCode}</div>
+                            </div>
+                            <div>
+                                <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.25rem' }}>Procedure Code</div>
+                                <div style={{ fontSize: '1rem', fontWeight: 600 }}>{selectedClaim.procedureCode}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Processing Timeline */}
+                    <div className="card" style={{ marginBottom: '1.5rem' }}>
+                        <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1.5rem' }}>Processing Timeline</h3>
+                        <div className="timeline-item">
+                            <div className="timeline-dot completed">✓</div>
+                            <div className="timeline-content">
+                                <div className="timeline-title">Claim Received</div>
+                                <div className="timeline-date">{selectedClaim.receivedDate}</div>
+                            </div>
+                        </div>
+                        <div className="timeline-item">
+                            <div className={`timeline-dot ${['adjudicating', 'adjudicated', 'paid'].includes(selectedClaim.status) ? 'completed' : ''}`}>
+                                {['adjudicating', 'adjudicated', 'paid'].includes(selectedClaim.status) ? '✓' : '⏳'}
+                            </div>
+                            <div className="timeline-content">
+                                <div className="timeline-title">Adjudicating</div>
+                                {selectedClaim.adjudicatedDate && <div className="timeline-date">{selectedClaim.adjudicatedDate}</div>}
+                            </div>
+                        </div>
+                        <div className="timeline-item">
+                            <div className={`timeline-dot ${['adjudicated', 'paid'].includes(selectedClaim.status) ? 'completed' : ''}`}>
+                                {['adjudicated', 'paid'].includes(selectedClaim.status) ? '✓' : '⏳'}
+                            </div>
+                            <div className="timeline-content">
+                                <div className="timeline-title">Adjudication Complete</div>
+                                {selectedClaim.adjudicatedDate && <div className="timeline-date">{selectedClaim.adjudicatedDate}</div>}
+                            </div>
+                        </div>
+                        <div className="timeline-item">
+                            <div className={`timeline-dot ${selectedClaim.status === 'paid' ? 'completed' : ''}`}>
+                                {selectedClaim.status === 'paid' ? '✓' : '⏳'}
+                            </div>
+                            <div className="timeline-content">
+                                <div className="timeline-title">Paid</div>
+                                {selectedClaim.paidDate && <div className="timeline-date">{selectedClaim.paidDate}</div>}
+                            </div>
+                        </div>
+                        {selectedClaim.status === 'denied' && (
+                            <div style={{ background: '#fee2e2', border: '1px solid #fecaca', borderRadius: '0.5rem', padding: '1rem', marginTop: '1rem' }}>
+                                <div style={{ color: '#991b1b', fontWeight: 600, marginBottom: '0.25rem' }}>Claim Denied</div>
+                                <div style={{ color: '#7f1d1d', fontSize: '0.875rem' }}>{selectedClaim.denialReason}</div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Adjudication Breakdown */}
+                    <div className="card" style={{ marginBottom: '1.5rem' }}>
+                        <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem' }}>Adjudication Breakdown</h3>
+                        <div style={{ background: '#f8fafc', borderRadius: '0.5rem', padding: '1rem' }}>
+                            <div className="adjustment-row">
+                                <div className="adjustment-label">Billed Amount</div>
+                                <div className="adjustment-value">${selectedClaim.billedAmount.toLocaleString()}</div>
+                            </div>
+                            <div className="adjustment-row">
+                                <div className="adjustment-label">Allowed Amount (Contract Rate)</div>
+                                <div className="adjustment-value">${selectedClaim.allowedAmount.toLocaleString()}</div>
+                            </div>
+                            <div className="adjustment-row" style={{ borderColor: '#e0e7ff' }}>
+                                <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.5rem' }}>Provider Adjustment</div>
+                                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>${(selectedClaim.billedAmount - selectedClaim.allowedAmount).toLocaleString()}</div>
+                            </div>
+                            <div style={{ borderTop: '2px solid #e2e8f0', marginTop: '0.75rem', paddingTop: '0.75rem' }}>
+                                <div className="adjustment-row">
+                                    <div className="adjustment-label">Member Copay</div>
+                                    <div style={{ fontWeight: 600, color: '#ea580c' }}>-${selectedClaim.memberCopay}</div>
+                                </div>
+                                <div className="adjustment-row">
+                                    <div className="adjustment-label" style={{ fontWeight: 700, fontSize: '1rem' }}>Plan Responsibility</div>
+                                    <div style={{ fontWeight: 700, fontSize: '1rem', color: '#16a34a' }}>${selectedClaim.planPaid.toLocaleString()}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '0.75rem' }}>
+                        <button onClick={() => { setClaimsView('eob'); }} style={{ background: '#7c3aed', color: 'white', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: 600 }}>
+                            📄 Generate EOB
+                        </button>
+                    </div>
+                </div>
+            );
+
+            const renderSubmitClaimForm = () => (
+                <div className="fade-in">
+                    <button onClick={() => setClaimsView('dashboard')} style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '0.875rem', marginBottom: '1rem', padding: 0 }}>
+                        ← Back to Claims
+                    </button>
+
+                    <h2 className="section-header">Submit New Claim</h2>
+
+                    <div className="submit-claim-form">
+                        <div className="form-row">
+                            <div className="input-group">
+                                <label className="input-label">Member</label>
+                                <select value={submitFormData.memberId} onChange={(e) => setSubmitFormData({...submitFormData, memberId: e.target.value})} style={{ width: '100%', padding: '0.5rem', border: '1px solid #e2e8f0', borderRadius: '0.375rem' }}>
+                                    <option value="">Select Member</option>
+                                    {employees.filter(e => e.status === 'active').map(e => (
+                                        <option key={e.id} value={e.memberId}>{e.firstName} {e.lastName}</option>
+                                    ))}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="form-row">
+                            <div className="input-group">
+                                <label className="input-label">Service Type</label>
+                                <input type="text" value={submitFormData.serviceType} onChange={(e) => setSubmitFormData({...submitFormData, serviceType: e.target.value})} placeholder="e.g., Primary Care Visit" />
+                            </div>
+                            <div className="input-group">
+                                <label className="input-label">Date of Service</label>
+                                <input type="date" value={submitFormData.serviceDate} onChange={(e) => setSubmitFormData({...submitFormData, serviceDate: e.target.value})} />
+                            </div>
+                        </div>
+
+                        <div className="form-row">
+                            <div className="input-group">
+                                <label className="input-label">Provider Name</label>
+                                <input type="text" value={submitFormData.providerName} onChange={(e) => setSubmitFormData({...submitFormData, providerName: e.target.value})} placeholder="e.g., Harvard Primary Care" />
+                            </div>
+                            <div className="input-group">
+                                <label className="input-label">Facility Type</label>
+                                <select value={submitFormData.facilityType} onChange={(e) => setSubmitFormData({...submitFormData, facilityType: e.target.value})} style={{ width: '100%', padding: '0.5rem', border: '1px solid #e2e8f0', borderRadius: '0.375rem' }}>
+                                    <option value="">Select Facility Type</option>
+                                    <option value="Community Health Center">Community Health Center</option>
+                                    <option value="Independent Practice">Independent Practice</option>
+                                    <option value="Hospital-Affiliated Practice">Hospital-Affiliated Practice</option>
+                                    <option value="Freestanding Imaging Center">Freestanding Imaging Center</option>
+                                    <option value="Community Hospital Outpatient">Community Hospital Outpatient</option>
+                                    <option value="Academic Medical Center">Academic Medical Center</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="form-row">
+                            <div className="input-group">
+                                <label className="input-label">Billed Amount</label>
+                                <input type="number" value={submitFormData.billedAmount} onChange={(e) => setSubmitFormData({...submitFormData, billedAmount: e.target.value})} placeholder="0.00" />
+                            </div>
+                        </div>
+
+                        <div className="form-row">
+                            <div className="input-group">
+                                <label className="input-label">Diagnosis Code (ICD-10)</label>
+                                <input type="text" value={submitFormData.diagnosisCode} onChange={(e) => setSubmitFormData({...submitFormData, diagnosisCode: e.target.value})} placeholder="e.g., M17.11" />
+                            </div>
+                            <div className="input-group">
+                                <label className="input-label">Procedure Code (CPT)</label>
+                                <input type="text" value={submitFormData.procedureCode} onChange={(e) => setSubmitFormData({...submitFormData, procedureCode: e.target.value})} placeholder="e.g., 99213" />
+                            </div>
+                        </div>
+
+                        {submitFormData.billedAmount && (
+                            <div style={{ background: '#f0f9ff', border: '1px solid #0369a1', borderRadius: '0.5rem', padding: '1rem', marginBottom: '1.5rem' }}>
+                                <div style={{ fontSize: '0.875rem', color: '#0369a1' }}>
+                                    <div><strong>Estimated Calculations:</strong></div>
+                                    <div>Allowed Amount (85% of billed): ${(parseFloat(submitFormData.billedAmount) * 0.85).toFixed(2)}</div>
+                                    <div>Estimated Member Copay: $35</div>
+                                    <div>Estimated Plan Pays: ${(parseFloat(submitFormData.billedAmount) * 0.85 - 35).toFixed(2)}</div>
+                                </div>
+                            </div>
+                        )}
+
+                        <div style={{ display: 'flex', gap: '0.75rem' }}>
+                            <button onClick={() => {
+                                const newClaim = {
+                                    claimId: `CLM-2026-${String(Math.floor(Math.random() * 100000)).padStart(5, '0')}`,
+                                    memberId: submitFormData.memberId,
+                                    memberName: employees.find(e => e.memberId === submitFormData.memberId)?.firstName + ' ' + employees.find(e => e.memberId === submitFormData.memberId)?.lastName,
+                                    serviceDate: submitFormData.serviceDate,
+                                    serviceType: submitFormData.serviceType,
+                                    providerName: submitFormData.providerName,
+                                    facilityType: submitFormData.facilityType,
+                                    billedAmount: parseFloat(submitFormData.billedAmount),
+                                    allowedAmount: parseFloat(submitFormData.billedAmount) * 0.85,
+                                    memberCopay: 35,
+                                    planPaid: parseFloat(submitFormData.billedAmount) * 0.85 - 35,
+                                    status: 'received',
+                                    receivedDate: new Date().toISOString().split('T')[0],
+                                    diagnosisCode: submitFormData.diagnosisCode,
+                                    procedureCode: submitFormData.procedureCode
+                                };
+                                setClaims([...claims, newClaim]);
+                                setSubmitFormData({memberId: '', serviceType: '', providerName: '', facilityType: '', billedAmount: '', diagnosisCode: '', procedureCode: '', serviceDate: ''});
+                                setClaimsView('dashboard');
+                            }} style={{ background: '#7c3aed', color: 'white', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: 600, flex: 1 }}>
+                                Submit Claim
+                            </button>
+                            <button onClick={() => setClaimsView('dashboard')} style={{ background: '#f1f5f9', color: '#0f172a', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: 600 }}>
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            const renderEOBView = () => (
+                <div className="fade-in">
+                    <button onClick={() => { setClaimsView('detail'); }} style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '0.875rem', marginBottom: '1rem', padding: 0 }}>
+                        ← Back to Claim Detail
+                    </button>
+
+                    <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                        <button onClick={() => window.print()} style={{ background: '#7c3aed', color: 'white', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: 600 }}>
+                            🖨️ Print EOB
+                        </button>
+                    </div>
+
+                    <div className="eob-document">
+                        <div className="eob-header">
+                            <div className="eob-title">Explanation of Benefits (EOB)</div>
+                            <div style={{ fontSize: '0.875rem', color: '#64748b', marginTop: '0.5rem' }}>
+                                <div>{companyInfo.planName}</div>
+                                <div>{companyInfo.name}</div>
+                            </div>
+                        </div>
+
+                        <div className="eob-section">
+                            <div className="eob-section-title">Member Information</div>
+                            <div className="eob-row">
+                                <span className="eob-label">Name</span>
+                                <span className="eob-value">{selectedClaim.memberName}</span>
+                            </div>
+                            <div className="eob-row">
+                                <span className="eob-label">Member ID</span>
+                                <span className="eob-value">{selectedClaim.memberId}</span>
+                            </div>
+                            <div className="eob-row">
+                                <span className="eob-label">Plan Year</span>
+                                <span className="eob-value">01/01/2026 - 12/31/2026</span>
+                            </div>
+                        </div>
+
+                        <div className="eob-section">
+                            <div className="eob-section-title">Service Details</div>
+                            <div className="eob-row">
+                                <span className="eob-label">Service Type</span>
+                                <span className="eob-value">{selectedClaim.serviceType}</span>
+                            </div>
+                            <div className="eob-row">
+                                <span className="eob-label">Date of Service</span>
+                                <span className="eob-value">{selectedClaim.serviceDate}</span>
+                            </div>
+                            <div className="eob-row">
+                                <span className="eob-label">Provider</span>
+                                <span className="eob-value">{selectedClaim.providerName}</span>
+                            </div>
+                            <div className="eob-row">
+                                <span className="eob-label">Facility Type</span>
+                                <span className="eob-value">{selectedClaim.facilityType}</span>
+                            </div>
+                            <div className="eob-row">
+                                <span className="eob-label">Diagnosis Code</span>
+                                <span className="eob-value">{selectedClaim.diagnosisCode}</span>
+                            </div>
+                            <div className="eob-row">
+                                <span className="eob-label">Procedure Code</span>
+                                <span className="eob-value">{selectedClaim.procedureCode}</span>
+                            </div>
+                        </div>
+
+                        <div className="eob-section">
+                            <div className="eob-section-title">Payment Breakdown</div>
+                            <div className="eob-row">
+                                <span className="eob-label">Provider Billed Amount</span>
+                                <span className="eob-value">${selectedClaim.billedAmount.toLocaleString()}</span>
+                            </div>
+                            <div className="eob-row">
+                                <span className="eob-label">Our Allowed Amount</span>
+                                <span className="eob-value">${selectedClaim.allowedAmount.toLocaleString()}</span>
+                            </div>
+                            <div className="eob-row" style={{ borderColor: '#cbd5e1' }}>
+                                <span className="eob-label" style={{ fontSize: '0.75rem', color: '#64748b' }}>Provider Writeoff</span>
+                                <span style={{ fontSize: '0.75rem', color: '#64748b' }}>-${(selectedClaim.billedAmount - selectedClaim.allowedAmount).toLocaleString()}</span>
+                            </div>
+                            <div style={{ borderTop: '2px solid #0f172a', paddingTop: '0.75rem', marginTop: '0.75rem' }}>
+                                <div className="eob-row">
+                                    <span className="eob-label">Your Copay Responsibility</span>
+                                    <span style={{ fontWeight: 700 }}>-${selectedClaim.memberCopay}</span>
+                                </div>
+                                <div className="eob-row">
+                                    <span className="eob-label" style={{ fontWeight: 700, fontSize: '1rem' }}>What {companyInfo.name} Pays</span>
+                                    <span className="eob-value" style={{ fontSize: '1.125rem', color: '#16a34a' }}>${selectedClaim.planPaid.toLocaleString()}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="eob-notice">
+                            <strong>This is not a bill.</strong> This is an explanation of how we processed your healthcare claim. You may still receive a bill from your provider. If you have questions about this EOB, please contact our Member Services team at 1-800-PILLAR-1.
+                        </div>
+                    </div>
+                </div>
+            );
+
             // ============ RENDER: MEMBER VIEW ============
 
             const renderMemberView = () => (
@@ -2310,6 +3094,7 @@
                             {memberTab === 'dashboard' && renderDashboardTab()}
                             {memberTab === 'search' && renderSearchTab()}
                             {memberTab === 'addins' && renderAddInsTab()}
+                            {memberTab === 'claims' && renderMemberClaimsTab()}
 
                             <nav className="bottom-nav">
                                 <button
@@ -2332,6 +3117,13 @@
                                 >
                                     <span>✨</span>
                                     <span>Add-ins</span>
+                                </button>
+                                <button
+                                    className={`nav-tab ${memberTab === 'claims' ? 'active' : ''}`}
+                                    onClick={() => setMemberTab('claims')}
+                                >
+                                    <span>💰</span>
+                                    <span>Claims</span>
                                 </button>
                             </nav>
                         </div>
@@ -2474,6 +3266,46 @@
                     </div>
                 </div>
             );
+
+            const renderMemberClaimsTab = () => {
+                const memberClaims = claims.filter(c => c.memberId === 'PLR-2024-00101');
+
+                return (
+                    <div className="content-area">
+                        <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>My Claims</h2>
+
+                        {memberClaims.length === 0 ? (
+                            <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '0.75rem', padding: '2rem', textAlign: 'center' }}>
+                                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📋</div>
+                                <div style={{ fontSize: '1rem', fontWeight: 600, color: '#0f172a', marginBottom: '0.5rem' }}>No claims yet</div>
+                                <div style={{ fontSize: '0.875rem', color: '#64748b' }}>Your claims will appear here</div>
+                            </div>
+                        ) : (
+                            <div style={{ display: 'grid', gap: '1rem' }}>
+                                {memberClaims.map((claim) => (
+                                    <div key={claim.claimId} className="card" style={{ cursor: 'pointer', transition: 'all 0.2s' }} onClick={() => {}}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '0.75rem' }}>
+                                            <div>
+                                                <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#0f172a' }}>{claim.serviceType}</div>
+                                                <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.25rem' }}>{claim.serviceDate} • {claim.providerName}</div>
+                                            </div>
+                                            <span className={`claim-status-${claim.status}`}>{claim.status.charAt(0).toUpperCase() + claim.status.slice(1)}</span>
+                                        </div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '0.75rem', borderTop: '1px solid #e2e8f0' }}>
+                                            <div style={{ fontSize: '0.875rem', color: '#64748b' }}>Your cost</div>
+                                            <div style={{ fontSize: '1rem', fontWeight: 700, color: '#7c3aed' }}>${claim.memberCopay}</div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        <div className="footer">
+                            Track your claims and view explanations of benefits
+                        </div>
+                    </div>
+                );
+            };
 
             // ============ MAIN RENDER ============
 
