@@ -1667,6 +1667,11 @@
                 procedureCode: '',
                 serviceDate: ''
             });
+            const [reviewNote, setReviewNote] = useState('');
+            const [showMessageModal, setShowMessageModal] = useState(false);
+            const [messageText, setMessageText] = useState('');
+            const [denyReason, setDenyReason] = useState('');
+            const [showDenyModal, setShowDenyModal] = useState(false);
 
             // ============ EMPLOYER HANDLERS ============
 
@@ -1746,7 +1751,10 @@
                         </button>
                     </div>
 
-                    <span className="badge-demo">Demo Mode</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>v0.4</span>
+                        <span className="badge-demo">Demo Mode</span>
+                    </div>
                 </div>
             );
 
@@ -2647,7 +2655,7 @@
                             </div>
                             <div className="metric-card">
                                 <div className="metric-label">Pending</div>
-                                <div className="metric-value">{pendingClaims}</div>
+                                <div className="metric-value">{reviewClaims}</div>
                             </div>
                             <div className="metric-card">
                                 <div className="metric-label">Monthly Spend</div>
@@ -2794,10 +2802,6 @@
                 return flags;
             };
 
-            const [reviewNote, setReviewNote] = useState('');
-            const [showMessageModal, setShowMessageModal] = useState(false);
-            const [messageText, setMessageText] = useState('');
-
             const handlePayClaim = (claim) => {
                 setClaims(prev => prev.map(c => c.claimId === claim.claimId ? {
                     ...c,
@@ -2816,9 +2820,6 @@
                 } : c));
                 setSelectedClaim({ ...claim, status: 'denied', adjudicatedDate: new Date().toISOString().split('T')[0], denialReason: reason || 'Denied during manual review' });
             };
-
-            const [denyReason, setDenyReason] = useState('');
-            const [showDenyModal, setShowDenyModal] = useState(false);
 
             const renderClaimDetail = () => {
                 const isReview = selectedClaim.status === 'review';
