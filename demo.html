@@ -1801,6 +1801,10 @@
             const [drugSearch, setDrugSearch] = useState('');
             const [selectedDrug, setSelectedDrug] = useState(null);
             const [formularySearch, setFormularySearch] = useState('');
+            const [selectedProvider, setSelectedProvider] = useState(null);
+            const [enrolledAddIns, setEnrolledAddIns] = useState(['cataract']);
+            const [memberClaimDetail, setMemberClaimDetail] = useState(null);
+            const [memberRxDetail, setMemberRxDetail] = useState(null);
 
             // ============ EMPLOYER HANDLERS ============
 
@@ -3916,14 +3920,14 @@
                     <div className="card">
                         <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>Quick Actions</h3>
                         <div style={{ display: 'grid', gap: '0.75rem' }}>
-                            <button className="provider-action" style={{ background: '#ede9fe', color: '#7c3aed' }}>
-                                📅 Schedule a Visit
+                            <button className="provider-action" style={{ background: '#ede9fe', color: '#7c3aed' }} onClick={() => setMemberTab('search')}>
+                                🔍 Find Care & Compare Prices
                             </button>
-                            <button className="provider-action" style={{ background: '#f0f9ff', color: '#0284c7' }}>
-                                💊 View Prescriptions
+                            <button className="provider-action" style={{ background: '#f0f9ff', color: '#0284c7' }} onClick={() => setMemberTab('rx')}>
+                                💊 My Prescriptions
                             </button>
-                            <button className="provider-action" style={{ background: '#dcfce7', color: '#16a34a' }}>
-                                📈 View Health Records
+                            <button className="provider-action" style={{ background: '#dcfce7', color: '#16a34a' }} onClick={() => setMemberTab('claims')}>
+                                📋 View My Claims
                             </button>
                         </div>
                     </div>
@@ -3934,62 +3938,155 @@
                 </div>
             );
 
-            const renderSearchTab = () => (
+            // Map service category keys to MOCK_PROVIDERS keys
+            const categoryToProviderMap = {
+                imaging: ['Knee MRI', 'Shoulder X-Ray'],
+                primaryCare: ['Primary Care Visit'],
+                specialistVisits: ['Primary Care Visit'],
+                physicalTherapy: ['Physical Therapy'],
+                urgentCare: ['Urgent Care'],
+                emergency: ['Urgent Care'],
+                lab: ['Primary Care Visit'],
+                mentalHealth: ['Primary Care Visit'],
+                preventive: ['Primary Care Visit'],
+            };
+
+            const renderSearchTab = () => {
+                // Filter providers based on category or search
+                const getFilteredProviders = () => {
+                    if (selectedCategory) {
+                        const providerKeys = categoryToProviderMap[selectedCategory] || [];
+                        const result = {};
+                        providerKeys.forEach(key => {
+                            if (MOCK_PROVIDERS[key]) result[key] = MOCK_PROVIDERS[key];
+                        });
+                        return Object.keys(result).length > 0 ? result : MOCK_PROVIDERS;
+                    }
+                    if (searchQuery) {
+                        const q = searchQuery.toLowerCase();
+                        const result = {};
+                        Object.entries(MOCK_PROVIDERS).forEach(([service, providers]) => {
+                            if (service.toLowerCase().includes(q) || providers.some(p => p.name.toLowerCase().includes(q) || p.facility.toLowerCase().includes(q))) {
+                                result[service] = providers;
+                            }
+                        });
+                        return Object.keys(result).length > 0 ? result : MOCK_PROVIDERS;
+                    }
+                    return MOCK_PROVIDERS;
+                };
+
+                const filteredProviders = getFilteredProviders();
+                const categoryName = selectedCategory ? serviceCategories[selectedCategory]?.name?.split('(')[0]?.trim() : '';
+
+                return (
                 <div className="content-area">
                     <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>Find Care</h2>
 
-                    <div className="search-container">
-                        <input
-                            type="text"
-                            className="search-input"
-                            placeholder="Search for care (e.g., 'MRI', 'primary care')"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                    </div>
-
-                    {!searchQuery && (
-                        <>
-                            <p style={{ fontSize: '0.875rem', color: '#64748b', marginBottom: '1rem' }}>Browse by category</p>
-                            <div className="category-buttons">
-                                {enabledCategories.map((cat) => (
-                                    <button
-                                        key={cat.key}
-                                        className={`category-btn ${selectedCategory === cat.key ? 'active' : ''}`}
-                                        onClick={() => setSelectedCategory(selectedCategory === cat.key ? null : cat.key)}
-                                    >
-                                        <span>{cat.icon}</span> {cat.name.split(' ')[0]}
-                                    </button>
-                                ))}
+                    {/* Selected provider detail */}
+                    {selectedProvider && (
+                        <div style={{ marginBottom: '1.5rem' }}>
+                            <button onClick={() => setSelectedProvider(null)} style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '0.875rem', marginBottom: '1rem', padding: 0 }}>
+                                ← Back to results
+                            </button>
+                            <div style={{ background: 'white', border: '2px solid #7c3aed', borderRadius: '0.75rem', padding: '1.25rem' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1rem' }}>
+                                    <div>
+                                        <div style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a' }}>{selectedProvider.name}</div>
+                                        <div style={{ fontSize: '0.8125rem', color: '#64748b', marginTop: '0.25rem' }}>{selectedProvider.facility} • {selectedProvider.distance}</div>
+                                    </div>
+                                    <div style={{ background: '#7c3aed', color: 'white', padding: '0.5rem 1rem', borderRadius: '0.5rem', fontWeight: 700, fontSize: '1.125rem' }}>
+                                        ${selectedProvider.copay}
+                                    </div>
+                                </div>
+                                <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '0.5rem', padding: '0.75rem', marginBottom: '1rem', fontSize: '0.875rem', color: '#166534' }}>
+                                    Your copay is <strong>${selectedProvider.copay}</strong> — this is your total cost. No deductible, no surprise bills.
+                                </div>
+                                <div style={{ display: 'grid', gap: '0.5rem', fontSize: '0.8125rem' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', borderBottom: '1px solid #f1f5f9' }}>
+                                        <span style={{ color: '#64748b' }}>Facility Type</span>
+                                        <span style={{ fontWeight: 600 }}>{selectedProvider.facility}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', borderBottom: '1px solid #f1f5f9' }}>
+                                        <span style={{ color: '#64748b' }}>Distance</span>
+                                        <span style={{ fontWeight: 600 }}>{selectedProvider.distance}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', borderBottom: '1px solid #f1f5f9' }}>
+                                        <span style={{ color: '#64748b' }}>Rating</span>
+                                        <span style={{ fontWeight: 600, color: '#f59e0b' }}>★ {selectedProvider.rating}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0' }}>
+                                        <span style={{ color: '#64748b' }}>Network</span>
+                                        <span style={{ fontWeight: 600, color: '#16a34a' }}>In-Network ✓</span>
+                                    </div>
+                                </div>
+                                <button style={{ width: '100%', marginTop: '1rem', padding: '0.75rem', background: '#7c3aed', color: 'white', border: 'none', borderRadius: '0.5rem', fontWeight: 700, cursor: 'pointer', fontSize: '0.875rem' }}>
+                                    📅 Book Appointment
+                                </button>
                             </div>
-                        </>
+                        </div>
                     )}
 
-                    {(searchQuery || selectedCategory) && (
+                    {!selectedProvider && (
                         <>
-                            <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>
-                                {searchQuery ? `Results for "${searchQuery}"` : selectedCategory ? Object.values(serviceCategories).find(c => c === selectedCategory)?.name : 'Results'}
-                            </h3>
-                            {Object.entries(MOCK_PROVIDERS).slice(0, 3).map(([service, providers]) => (
-                                <div key={service}>
-                                    <h4 style={{ fontSize: '0.875rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem' }}>{service}</h4>
-                                    {providers.map((provider) => (
-                                        <div key={provider.id} className="provider-card">
-                                            <div className="provider-header">
-                                                <div className="provider-name">{provider.name}</div>
-                                                <div className="provider-copay">${provider.copay}</div>
-                                            </div>
-                                            <div className="provider-details">
-                                                {provider.facility} • {provider.distance}
-                                            </div>
-                                            <div className="provider-rating">
-                                                ★★★★★ {provider.rating} • {Math.floor(Math.random() * 200) + 50} reviews
-                                            </div>
-                                            <button className="provider-action">Select & Compare</button>
+                            <div className="search-container">
+                                <input
+                                    type="text"
+                                    className="search-input"
+                                    placeholder="Search for care (e.g., 'MRI', 'primary care')"
+                                    value={searchQuery}
+                                    onChange={(e) => { setSearchQuery(e.target.value); setSelectedCategory(null); }}
+                                />
+                            </div>
+
+                            {!searchQuery && !selectedCategory && (
+                                <>
+                                    <p style={{ fontSize: '0.875rem', color: '#64748b', marginBottom: '1rem' }}>Browse by category</p>
+                                    <div className="category-buttons">
+                                        {enabledCategories.map((cat) => (
+                                            <button
+                                                key={cat.key}
+                                                className={`category-btn ${selectedCategory === cat.key ? 'active' : ''}`}
+                                                onClick={() => { setSelectedCategory(cat.key); setSearchQuery(''); }}
+                                            >
+                                                <span>{cat.icon}</span> {cat.name.split(' ')[0]}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </>
+                            )}
+
+                            {(searchQuery || selectedCategory) && (
+                                <>
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                                        <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', margin: 0 }}>
+                                            {searchQuery ? `Results for "${searchQuery}"` : categoryName}
+                                        </h3>
+                                        <button onClick={() => { setSelectedCategory(null); setSearchQuery(''); }} style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '0.8125rem', fontWeight: 600 }}>
+                                            Clear
+                                        </button>
+                                    </div>
+                                    {Object.entries(filteredProviders).map(([service, providers]) => (
+                                        <div key={service}>
+                                            <h4 style={{ fontSize: '0.875rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem' }}>{service}</h4>
+                                            {providers.map((provider) => (
+                                                <div key={provider.id} className="provider-card">
+                                                    <div className="provider-header">
+                                                        <div className="provider-name">{provider.name}</div>
+                                                        <div className="provider-copay">${provider.copay}</div>
+                                                    </div>
+                                                    <div className="provider-details">
+                                                        {provider.facility} • {provider.distance}
+                                                    </div>
+                                                    <div className="provider-rating">
+                                                        ★★★★★ {provider.rating}
+                                                    </div>
+                                                    <button className="provider-action" onClick={() => setSelectedProvider(provider)}>View Details & Book</button>
+                                                </div>
+                                            ))}
                                         </div>
                                     ))}
-                                </div>
-                            ))}
+                                </>
+                            )}
                         </>
                     )}
 
@@ -3997,7 +4094,8 @@
                         Provider data from CMS NPPES Database
                     </div>
                 </div>
-            );
+                );
+            };
 
             const renderAddInsTab = () => (
                 <div className="content-area">
@@ -4010,18 +4108,33 @@
                     </div>
 
                     <div style={{ display: 'grid', gap: '1rem' }}>
-                        {enabledAddIns.map((addin) => (
-                            <div key={addin.id} className="addin-card">
-                                <div className="addin-header">
-                                    <div className="addin-name">{addin.name}</div>
-                                    <div className="addin-cost">${addin.costPerPaycheck}/pay</div>
+                        {enabledAddIns.map((addin) => {
+                            const isEnrolled = enrolledAddIns.includes(addin.id);
+                            return (
+                                <div key={addin.id} className="addin-card">
+                                    <div className="addin-header">
+                                        <div className="addin-name">{addin.name}</div>
+                                        <div className="addin-cost">${addin.costPerPaycheck}/pay</div>
+                                    </div>
+                                    <div className="addin-description">
+                                        Covered for {addin.durationMonths} months with no waiting period.
+                                    </div>
+                                    <button
+                                        className="addin-action"
+                                        style={{ background: isEnrolled ? '#16a34a' : '#0284c7' }}
+                                        onClick={() => {
+                                            if (isEnrolled) {
+                                                setEnrolledAddIns(prev => prev.filter(id => id !== addin.id));
+                                            } else {
+                                                setEnrolledAddIns(prev => [...prev, addin.id]);
+                                            }
+                                        }}
+                                    >
+                                        {isEnrolled ? '✓ Enrolled — Tap to Unenroll' : 'Enroll Now'}
+                                    </button>
                                 </div>
-                                <div className="addin-description">
-                                    Covered for {addin.durationMonths} months with no waiting period.
-                                </div>
-                                <button className="addin-action">Enroll Now</button>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
 
                     <div className="footer">
@@ -4032,6 +4145,61 @@
 
             const renderMemberClaimsTab = () => {
                 const memberClaims = claims.filter(c => c.memberId === 'PLR-2024-00101');
+
+                if (memberClaimDetail) {
+                    return (
+                        <div className="content-area">
+                            <button onClick={() => setMemberClaimDetail(null)} style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '0.875rem', marginBottom: '1rem', padding: 0 }}>
+                                ← Back to Claims
+                            </button>
+                            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>Claim Details</h2>
+                            <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: '0.75rem', padding: '1.25rem', marginBottom: '1rem' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1rem' }}>
+                                    <div style={{ fontSize: '1rem', fontWeight: 700 }}>{memberClaimDetail.serviceType}</div>
+                                    <span className={`claim-status-${memberClaimDetail.status}`}>{getStatusDisplayText(memberClaimDetail.status)}</span>
+                                </div>
+                                <div style={{ display: 'grid', gap: '0.5rem', fontSize: '0.8125rem' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', borderBottom: '1px solid #f1f5f9' }}>
+                                        <span style={{ color: '#64748b' }}>Date of Service</span>
+                                        <span style={{ fontWeight: 600 }}>{memberClaimDetail.serviceDate}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', borderBottom: '1px solid #f1f5f9' }}>
+                                        <span style={{ color: '#64748b' }}>Provider</span>
+                                        <span style={{ fontWeight: 600 }}>{memberClaimDetail.providerName}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', borderBottom: '1px solid #f1f5f9' }}>
+                                        <span style={{ color: '#64748b' }}>Facility</span>
+                                        <span style={{ fontWeight: 600 }}>{memberClaimDetail.facilityType}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', borderBottom: '1px solid #f1f5f9' }}>
+                                        <span style={{ color: '#64748b' }}>Claim ID</span>
+                                        <span style={{ fontWeight: 600, fontSize: '0.75rem' }}>{memberClaimDetail.claimId}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '0.75rem', padding: '1.25rem' }}>
+                                <div style={{ fontSize: '0.75rem', color: '#166534', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.75rem' }}>Payment Summary</div>
+                                <div style={{ display: 'grid', gap: '0.5rem', fontSize: '0.875rem' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.375rem 0' }}>
+                                        <span style={{ color: '#166534' }}>Provider Billed</span>
+                                        <span style={{ fontWeight: 600 }}>${memberClaimDetail.billedAmount?.toLocaleString()}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.375rem 0' }}>
+                                        <span style={{ color: '#166534' }}>Plan Paid</span>
+                                        <span style={{ fontWeight: 600 }}>${memberClaimDetail.planPaid?.toLocaleString()}</span>
+                                    </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.75rem 0', borderTop: '2px solid #bbf7d0', marginTop: '0.25rem' }}>
+                                        <span style={{ color: '#166534', fontWeight: 700, fontSize: '1rem' }}>Your Cost</span>
+                                        <span style={{ fontWeight: 700, fontSize: '1.25rem', color: '#166534' }}>${memberClaimDetail.memberCopay}</span>
+                                    </div>
+                                </div>
+                                <div style={{ fontSize: '0.75rem', color: '#166534', marginTop: '0.75rem', opacity: 0.8 }}>
+                                    This is not a bill. Your copay was collected at the time of service.
+                                </div>
+                            </div>
+                        </div>
+                    );
+                }
 
                 return (
                     <div className="content-area">
@@ -4046,7 +4214,7 @@
                         ) : (
                             <div style={{ display: 'grid', gap: '1rem' }}>
                                 {memberClaims.map((claim) => (
-                                    <div key={claim.claimId} className="card" style={{ cursor: 'pointer', transition: 'all 0.2s' }} onClick={() => {}}>
+                                    <div key={claim.claimId} className="card" style={{ cursor: 'pointer', transition: 'all 0.2s' }} onClick={() => setMemberClaimDetail(claim)}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '0.75rem' }}>
                                             <div>
                                                 <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#0f172a' }}>{claim.serviceType}</div>
@@ -4070,8 +4238,91 @@
                 );
             };
 
+            // Generate pharmacy prices for a drug (deterministic based on drug name)
+            const getPharmacyPrices = (drugName) => {
+                const hash = drugName.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+                return PHARMACY_LOCATIONS.map(ph => {
+                    let base = 15 + (hash % 30);
+                    if (ph.type === 'Hospital') base *= 1.8;
+                    if (ph.type === 'Warehouse') base *= 0.7;
+                    if (ph.type === 'Mail Order') base *= 0.6;
+                    if (ph.type === 'Mail Order - Transparent') base *= 0.45;
+                    return { ...ph, price: Math.round(base * 100) / 100 };
+                }).sort((a, b) => a.price - b.price);
+            };
+
             const renderMemberRxTab = () => {
                 const memberRxClaims = rxClaims.filter(c => c.memberId === 'PLR-2024-00101');
+
+                // Show drug detail / price comparison
+                if (memberRxDetail) {
+                    const prices = getPharmacyPrices(memberRxDetail.drugName || memberRxDetail.generic || '');
+                    const drug = FORMULARY.find(d =>
+                        (memberRxDetail.drugName || '').toLowerCase().includes(d.generic.toLowerCase())
+                    );
+
+                    return (
+                        <div className="content-area">
+                            <button onClick={() => setMemberRxDetail(null)} style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '0.875rem', marginBottom: '1rem', padding: 0 }}>
+                                ← Back
+                            </button>
+                            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>
+                                {memberRxDetail.drugName || memberRxDetail.generic}
+                            </h2>
+
+                            {drug && (
+                                <div style={{ background: '#f0f9ff', border: '1px solid #0369a1', borderRadius: '0.75rem', padding: '1rem', marginBottom: '1rem' }}>
+                                    <div style={{ fontSize: '0.75rem', color: '#0369a1', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.5rem' }}>Formulary Info</div>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '0.8125rem' }}>
+                                        <div><span style={{ color: '#64748b' }}>Generic:</span> <strong>{drug.generic}</strong></div>
+                                        <div><span style={{ color: '#64748b' }}>Brand:</span> <strong>{drug.brand}</strong></div>
+                                        <div><span style={{ color: '#64748b' }}>Tier:</span> <strong>{drug.tier}</strong></div>
+                                        <div><span style={{ color: '#64748b' }}>Form:</span> <strong>{drug.form}</strong></div>
+                                    </div>
+                                    <div style={{ display: 'flex', gap: '1rem', marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px solid #bae6fd' }}>
+                                        <div style={{ flex: 1, background: '#dcfce7', padding: '0.75rem', borderRadius: '0.5rem', textAlign: 'center' }}>
+                                            <div style={{ fontSize: '0.75rem', color: '#166534' }}>Generic Copay</div>
+                                            <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#166534' }}>${drug.genericCopay}</div>
+                                        </div>
+                                        <div style={{ flex: 1, background: '#fef3c7', padding: '0.75rem', borderRadius: '0.5rem', textAlign: 'center' }}>
+                                            <div style={{ fontSize: '0.75rem', color: '#92400e' }}>Brand Copay</div>
+                                            <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#92400e' }}>${drug.brandCopay}</div>
+                                        </div>
+                                    </div>
+                                    {drug.genericCopay < drug.brandCopay && (
+                                        <div style={{ fontSize: '0.75rem', color: '#16a34a', fontWeight: 600, marginTop: '0.5rem', textAlign: 'center' }}>
+                                            Save ${drug.brandCopay - drug.genericCopay}/fill by choosing generic
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
+                            <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: '0.75rem', padding: '1rem' }}>
+                                <div style={{ fontSize: '0.875rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem' }}>Compare Pharmacy Prices</div>
+                                <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '1rem' }}>Cash price before insurance. Your copay may be lower.</div>
+                                <div style={{ display: 'grid', gap: '0.5rem' }}>
+                                    {prices.map((ph, idx) => (
+                                        <div key={ph.id} style={{
+                                            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                                            padding: '0.75rem', borderRadius: '0.5rem',
+                                            background: idx === 0 ? '#f0fdf4' : '#f8fafc',
+                                            border: idx === 0 ? '1px solid #bbf7d0' : '1px solid #e2e8f0'
+                                        }}>
+                                            <div>
+                                                <div style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#0f172a' }}>
+                                                    {ph.name}
+                                                    {idx === 0 && <span style={{ marginLeft: '0.5rem', fontSize: '0.6875rem', color: '#16a34a', fontWeight: 700 }}>BEST PRICE</span>}
+                                                </div>
+                                                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{ph.distance} • {ph.type}</div>
+                                            </div>
+                                            <div style={{ fontSize: '1rem', fontWeight: 700, color: idx === 0 ? '#16a34a' : '#0f172a' }}>${ph.price}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    );
+                }
 
                 return (
                     <div className="content-area">
@@ -4092,8 +4343,8 @@
                                                 <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#0f172a' }}>{rx.drugName}</div>
                                                 <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.25rem' }}>{rx.pharmacy}</div>
                                             </div>
-                                            <span style={{ display: 'inline-block', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 600, background: '#dcfce7', color: '#166534' }}>
-                                                {rx.status.charAt(0).toUpperCase() + rx.status.slice(1)}
+                                            <span style={{ display: 'inline-block', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 600, background: rx.status === 'paid' ? '#dcfce7' : '#fef3c7', color: rx.status === 'paid' ? '#166534' : '#92400e' }}>
+                                                {rx.status === 'paid' ? 'Filled' : 'Processing'}
                                             </span>
                                         </div>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.875rem', marginBottom: '0.75rem', color: '#64748b' }}>
@@ -4104,7 +4355,10 @@
                                             <div style={{ fontSize: '0.875rem', color: '#64748b' }}>Your copay</div>
                                             <div style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a' }}>${rx.memberCopay}</div>
                                         </div>
-                                        <button style={{ width: '100%', marginTop: '0.75rem', padding: '0.5rem', background: '#f0f9ff', border: '1px solid #0284c7', borderRadius: '0.375rem', color: '#0284c7', fontWeight: 600, cursor: 'pointer', fontSize: '0.875rem' }}>
+                                        <button
+                                            onClick={() => setMemberRxDetail(rx)}
+                                            style={{ width: '100%', marginTop: '0.75rem', padding: '0.5rem', background: '#f0f9ff', border: '1px solid #0284c7', borderRadius: '0.375rem', color: '#0284c7', fontWeight: 600, cursor: 'pointer', fontSize: '0.875rem' }}
+                                        >
                                             Compare Pharmacy Prices
                                         </button>
                                     </div>
@@ -4119,17 +4373,20 @@
                                     type="text"
                                     placeholder="Search formulary..."
                                     value={drugSearch}
-                                    onChange={(e) => setDrugSearch(e.target.value)}
+                                    onChange={(e) => { setDrugSearch(e.target.value); setSelectedDrug(null); }}
                                     style={{ width: '100%', padding: '0.75rem', border: '1px solid #e2e8f0', borderRadius: '0.5rem', fontSize: '0.875rem', marginBottom: '0.75rem' }}
                                 />
-                                {drugSearch && (
+                                {drugSearch && !selectedDrug && (
                                     <div style={{ display: 'grid', gap: '0.5rem' }}>
                                         {FORMULARY.filter(d => d.generic.toLowerCase().includes(drugSearch.toLowerCase()) || d.brand.toLowerCase().includes(drugSearch.toLowerCase())).slice(0, 5).map(drug => (
-                                            <div key={drug.rxcui} style={{ padding: '0.75rem', background: '#f8fafc', borderRadius: '0.375rem', cursor: 'pointer', fontSize: '0.875rem' }} onClick={() => setSelectedDrug(drug)}>
-                                                <div style={{ fontWeight: 600, color: '#0f172a' }}>{drug.generic}</div>
-                                                <div style={{ color: '#64748b', fontSize: '0.75rem' }}>Generic copay: ${drug.genericCopay} • Brand: ${drug.brandCopay}</div>
+                                            <div key={drug.rxcui} style={{ padding: '0.75rem', background: '#f8fafc', borderRadius: '0.375rem', cursor: 'pointer', fontSize: '0.875rem' }} onClick={() => setMemberRxDetail({ drugName: drug.generic, generic: drug.generic })}>
+                                                <div style={{ fontWeight: 600, color: '#0f172a' }}>{drug.generic} <span style={{ color: '#64748b', fontWeight: 400 }}>({drug.brand})</span></div>
+                                                <div style={{ color: '#64748b', fontSize: '0.75rem' }}>Tier {drug.tier} • Generic copay: ${drug.genericCopay} • {drug.form}</div>
                                             </div>
                                         ))}
+                                        {FORMULARY.filter(d => d.generic.toLowerCase().includes(drugSearch.toLowerCase()) || d.brand.toLowerCase().includes(drugSearch.toLowerCase())).length === 0 && (
+                                            <div style={{ padding: '0.75rem', color: '#64748b', fontSize: '0.875rem' }}>No medications found matching "{drugSearch}"</div>
+                                        )}
                                     </div>
                                 )}
                             </div>
