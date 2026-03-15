@@ -1700,6 +1700,56 @@
             { claimId: 'RX-2026-00010', memberId: 'PLR-2024-00142', memberName: 'Kevin Martinez', fillDate: '2026-03-14', drugName: 'Ozempic 1mg', generic: false, pharmacy: 'CVS Pharmacy - Boylston St', quantity: 4, daysSupply: 30, billedAmount: 950, planPaid: 750, memberCopay: 200, status: 'review', ndc: '00169-4132-12' },
         ];
 
+        const BILLING_DATA = {
+            adminFeePerMember: 45,
+            stopLossSpecific: 125000,
+            stopLossAggregate: 125,
+            stopLossPremiumPEPM: 85,
+            invoices: [
+                {
+                    id: 'INV-2026-003',
+                    period: 'March 2026',
+                    issueDate: '2026-03-01',
+                    dueDate: '2026-03-15',
+                    status: 'current',
+                    enrolledCount: 450,
+                    medicalClaims: 312000,
+                    rxClaims: 47500,
+                    adminFees: 20250,
+                    stopLossPremium: 38250,
+                    totalDue: 418000,
+                },
+                {
+                    id: 'INV-2026-002',
+                    period: 'February 2026',
+                    issueDate: '2026-02-01',
+                    dueDate: '2026-02-15',
+                    status: 'paid',
+                    paidDate: '2026-02-14',
+                    enrolledCount: 445,
+                    medicalClaims: 298000,
+                    rxClaims: 42300,
+                    adminFees: 20025,
+                    stopLossPremium: 37825,
+                    totalDue: 398150,
+                },
+                {
+                    id: 'INV-2026-001',
+                    period: 'January 2026',
+                    issueDate: '2026-01-01',
+                    dueDate: '2026-01-15',
+                    status: 'paid',
+                    paidDate: '2026-01-13',
+                    enrolledCount: 440,
+                    medicalClaims: 285000,
+                    rxClaims: 39800,
+                    adminFees: 19800,
+                    stopLossPremium: 37400,
+                    totalDue: 382000,
+                },
+            ],
+        };
+
         // Real Boston provider data
         const MOCK_PROVIDERS = {
             'Knee MRI': [
@@ -1805,6 +1855,9 @@
             const [enrolledAddIns, setEnrolledAddIns] = useState(['cataract']);
             const [memberClaimDetail, setMemberClaimDetail] = useState(null);
             const [memberRxDetail, setMemberRxDetail] = useState(null);
+            const [cardFlipped, setCardFlipped] = useState(false);
+            const [billingView, setBillingView] = useState('dashboard');
+            const [selectedInvoice, setSelectedInvoice] = useState(null);
 
             // ============ EMPLOYER HANDLERS ============
 
@@ -1885,7 +1938,7 @@
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                        <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>v0.6</span>
+                        <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>v0.7</span>
                         <span className="badge-demo">Demo Mode</span>
                     </div>
                 </div>
@@ -1911,6 +1964,7 @@
                             { id: 'enrollment', label: 'Enrollment', icon: '👥' },
                             { id: 'claims', label: 'Claims', icon: '💰' },
                             { id: 'pharmacy', label: 'Pharmacy', icon: '💊' },
+                            { id: 'billing', label: 'Billing', icon: '🧾' },
                         ].map(item => (
                             <button
                                 key={item.id}
@@ -1935,6 +1989,7 @@
                         {currentSection === 'analytics' && renderAnalyticsSection()}
                         {currentSection === 'enrollment' && renderEnrollmentSection()}
                         {currentSection === 'claims' && renderClaimsSection()}
+                        {currentSection === 'billing' && renderBillingSection()}
                     </div>
                 </div>
             );
@@ -3844,6 +3899,185 @@
                 </div>
             );
 
+            const renderBillingSection = () => {
+                const currentInvoice = BILLING_DATA.invoices[0];
+                const ytdMetrics = BILLING_DATA.invoices.reduce((acc, inv) => ({
+                    totalSpend: acc.totalSpend + inv.totalDue,
+                    adminFees: acc.adminFees + inv.adminFees,
+                }), { totalSpend: 0, adminFees: 0 });
+                const avgMonthlyCost = ytdMetrics.totalSpend / BILLING_DATA.invoices.length;
+
+                if (billingView === 'invoice' && selectedInvoice) {
+                    return (
+                        <div className="content-area">
+                            <button onClick={() => { setBillingView('dashboard'); setSelectedInvoice(null); }} style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '0.875rem', marginBottom: '1.5rem', padding: 0 }}>
+                                ← Back to Billing
+                            </button>
+                            <div style={{ position: 'relative', background: 'white', border: '1px solid #e5e7eb', borderRadius: '0.5rem', padding: '2rem', position: 'relative' }}>
+                                {selectedInvoice.status === 'paid' && (
+                                    <div style={{ position: 'absolute', top: '2rem', right: '2rem', fontSize: '3rem', color: 'rgba(0,0,0,0.08)', fontWeight: 900, transform: 'rotate(-15deg)' }}>PAID</div>
+                                )}
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '2rem', borderBottom: '1px solid #e5e7eb', paddingBottom: '1.5rem' }}>
+                                    <div>
+                                        <div style={{ fontSize: '1.5rem', fontWeight: 700 }}>🏥 Pillar Health</div>
+                                        <div style={{ fontSize: '0.875rem', color: '#64748b' }}>Invoice</div>
+                                    </div>
+                                    <div style={{ textAlign: 'right' }}>
+                                        <div style={{ fontSize: '0.875rem', color: '#64748b' }}>Invoice Number</div>
+                                        <div style={{ fontSize: '1.125rem', fontWeight: 700 }}>{selectedInvoice.id}</div>
+                                    </div>
+                                </div>
+                                <div style={{ marginBottom: '2rem' }}>
+                                    <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#64748b', marginBottom: '0.5rem' }}>BILL TO</div>
+                                    <div style={{ fontSize: '1rem', fontWeight: 600 }}>{companyInfo.companyName}</div>
+                                    <div style={{ fontSize: '0.875rem', color: '#64748b' }}>{companyInfo.state}</div>
+                                </div>
+                                <table style={{ width: '100%', marginBottom: '2rem', borderCollapse: 'collapse' }}>
+                                    <tbody>
+                                        <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
+                                            <td style={{ padding: '0.75rem', fontWeight: 600 }}>Medical Claims</td>
+                                            <td style={{ padding: '0.75rem', textAlign: 'right' }}>${selectedInvoice.medicalClaims.toLocaleString()}</td>
+                                        </tr>
+                                        <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
+                                            <td style={{ padding: '0.75rem', fontWeight: 600 }}>Pharmacy Claims</td>
+                                            <td style={{ padding: '0.75rem', textAlign: 'right' }}>${selectedInvoice.rxClaims.toLocaleString()}</td>
+                                        </tr>
+                                        <tr style={{ borderBottom: '1px solid #e5e7eb' }}>
+                                            <td style={{ padding: '0.75rem', fontWeight: 600 }}>Admin Fees ({selectedInvoice.enrolledCount} × ${BILLING_DATA.adminFeePerMember})</td>
+                                            <td style={{ padding: '0.75rem', textAlign: 'right' }}>${selectedInvoice.adminFees.toLocaleString()}</td>
+                                        </tr>
+                                        <tr style={{ background: '#f9fafb' }}>
+                                            <td style={{ padding: '0.75rem', fontWeight: 600 }}>Stop-Loss Premium ({selectedInvoice.enrolledCount} × ${BILLING_DATA.stopLossPremiumPEPM})</td>
+                                            <td style={{ padding: '0.75rem', textAlign: 'right', fontWeight: 600 }}>${selectedInvoice.stopLossPremium.toLocaleString()}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div style={{ background: '#f0f9ff', border: '1px solid #bfdbfe', borderRadius: '0.5rem', padding: '1rem', marginBottom: '2rem' }}>
+                                    <div style={{ fontSize: '0.875rem', color: '#64748b', marginBottom: '0.5rem' }}>Total Due</div>
+                                    <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0284c7' }}>${selectedInvoice.totalDue.toLocaleString()}</div>
+                                    {selectedInvoice.status === 'current' && (
+                                        <div style={{ fontSize: '0.875rem', color: '#dc2626', marginTop: '0.5rem' }}>Due by {selectedInvoice.dueDate}</div>
+                                    )}
+                                    {selectedInvoice.status === 'paid' && (
+                                        <div style={{ fontSize: '0.875rem', color: '#16a34a', marginTop: '0.5rem' }}>Paid on {selectedInvoice.paidDate}</div>
+                                    )}
+                                </div>
+                                {selectedInvoice.status === 'current' && (
+                                    <button style={{ width: '100%', background: '#2563eb', color: 'white', border: 'none', padding: '0.75rem 1rem', borderRadius: '0.5rem', fontWeight: 600, cursor: 'pointer', fontSize: '1rem' }}>
+                                        Pay Now
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    );
+                }
+
+                return (
+                    <div className="content-area">
+                        <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0f172a', marginBottom: '1.5rem' }}>Billing & Invoicing</h2>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
+                            <div className="card">
+                                <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, color: '#64748b', marginBottom: '0.5rem' }}>Current Balance Due</div>
+                                <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#dc2626' }}>${currentInvoice.totalDue.toLocaleString()}</div>
+                                <div style={{ fontSize: '0.875rem', color: '#64748b', marginTop: '0.5rem' }}>Due {currentInvoice.dueDate}</div>
+                            </div>
+                            <div className="card">
+                                <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, color: '#64748b', marginBottom: '0.5rem' }}>YTD Total Spend</div>
+                                <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#0284c7' }}>${ytdMetrics.totalSpend.toLocaleString()}</div>
+                                <div style={{ fontSize: '0.875rem', color: '#64748b', marginTop: '0.5rem' }}>3 invoices</div>
+                            </div>
+                            <div className="card">
+                                <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, color: '#64748b', marginBottom: '0.5rem' }}>Admin Fees (YTD)</div>
+                                <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#16a34a' }}>${ytdMetrics.adminFees.toLocaleString()}</div>
+                                <div style={{ fontSize: '0.875rem', color: '#64748b', marginTop: '0.5rem' }}>${BILLING_DATA.adminFeePerMember}/member/month</div>
+                            </div>
+                            <div className="card">
+                                <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, color: '#64748b', marginBottom: '0.5rem' }}>Avg Monthly Cost</div>
+                                <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#7c3aed' }}>${avgMonthlyCost.toLocaleString('en-US', { maximumFractionDigits: 0 })}</div>
+                                <div style={{ fontSize: '0.875rem', color: '#64748b', marginTop: '0.5rem' }}></div>
+                            </div>
+                        </div>
+                        <div className="card" style={{ marginBottom: '2rem', border: '2px solid #2563eb', background: '#f0f9ff' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div>
+                                    <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#2563eb' }}>CURRENT INVOICE</div>
+                                    <div style={{ fontSize: '1.125rem', fontWeight: 700, color: '#0f172a' }}>{currentInvoice.period}</div>
+                                    <div style={{ fontSize: '0.875rem', color: '#64748b', marginTop: '0.25rem' }}>Invoice {currentInvoice.id} • Due {currentInvoice.dueDate}</div>
+                                </div>
+                                <button onClick={() => { setBillingView('invoice'); setSelectedInvoice(currentInvoice); }} style={{ background: '#2563eb', color: 'white', border: 'none', padding: '0.5rem 1.25rem', borderRadius: '0.375rem', fontWeight: 600, cursor: 'pointer' }}>
+                                    View
+                                </button>
+                            </div>
+                        </div>
+                        <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>Invoice History</h3>
+                        <table style={{ width: '100%', background: 'white', borderCollapse: 'collapse', border: '1px solid #e5e7eb', borderRadius: '0.5rem', overflow: 'hidden' }}>
+                            <thead>
+                                <tr style={{ background: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
+                                    <th style={{ textAlign: 'left', padding: '0.75rem 1rem', fontSize: '0.875rem', fontWeight: 600, color: '#64748b' }}>Period</th>
+                                    <th style={{ textAlign: 'left', padding: '0.75rem 1rem', fontSize: '0.875rem', fontWeight: 600, color: '#64748b' }}>Invoice #</th>
+                                    <th style={{ textAlign: 'right', padding: '0.75rem 1rem', fontSize: '0.875rem', fontWeight: 600, color: '#64748b' }}>Medical</th>
+                                    <th style={{ textAlign: 'right', padding: '0.75rem 1rem', fontSize: '0.875rem', fontWeight: 600, color: '#64748b' }}>Admin Fee</th>
+                                    <th style={{ textAlign: 'right', padding: '0.75rem 1rem', fontSize: '0.875rem', fontWeight: 600, color: '#64748b' }}>Stop-Loss</th>
+                                    <th style={{ textAlign: 'right', padding: '0.75rem 1rem', fontSize: '0.875rem', fontWeight: 600, color: '#64748b' }}>Total</th>
+                                    <th style={{ textAlign: 'center', padding: '0.75rem 1rem', fontSize: '0.875rem', fontWeight: 600, color: '#64748b' }}>Status</th>
+                                    <th style={{ textAlign: 'center', padding: '0.75rem 1rem', fontSize: '0.875rem', fontWeight: 600, color: '#64748b' }}>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {BILLING_DATA.invoices.map((invoice, idx) => (
+                                    <tr key={idx} style={{ borderBottom: '1px solid #e5e7eb', background: idx % 2 === 0 ? '#fafafa' : 'white' }}>
+                                        <td style={{ padding: '0.75rem 1rem', fontSize: '0.875rem' }}>{invoice.period}</td>
+                                        <td style={{ padding: '0.75rem 1rem', fontSize: '0.875rem', fontWeight: 600 }}>{invoice.id}</td>
+                                        <td style={{ padding: '0.75rem 1rem', fontSize: '0.875rem', textAlign: 'right' }}>${invoice.medicalClaims.toLocaleString()}</td>
+                                        <td style={{ padding: '0.75rem 1rem', fontSize: '0.875rem', textAlign: 'right' }}>${invoice.adminFees.toLocaleString()}</td>
+                                        <td style={{ padding: '0.75rem 1rem', fontSize: '0.875rem', textAlign: 'right' }}>${invoice.stopLossPremium.toLocaleString()}</td>
+                                        <td style={{ padding: '0.75rem 1rem', fontSize: '0.875rem', textAlign: 'right', fontWeight: 600 }}>${invoice.totalDue.toLocaleString()}</td>
+                                        <td style={{ padding: '0.75rem 1rem', fontSize: '0.875rem', textAlign: 'center' }}>
+                                            <span style={{ background: invoice.status === 'paid' ? '#dcfce7' : '#fef3c7', color: invoice.status === 'paid' ? '#16a34a' : '#b45309', padding: '0.25rem 0.75rem', borderRadius: '0.25rem', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase' }}>
+                                                {invoice.status}
+                                            </span>
+                                        </td>
+                                        <td style={{ padding: '0.75rem 1rem', fontSize: '0.875rem', textAlign: 'center' }}>
+                                            <button onClick={() => { setBillingView('invoice'); setSelectedInvoice(invoice); }} style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '0.875rem' }}>
+                                                View
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                        <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem', marginTop: '2rem' }}>Fee Schedule</h3>
+                        <div className="card">
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
+                                <div>
+                                    <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#64748b', marginBottom: '0.5rem' }}>Admin Fee</div>
+                                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#7c3aed' }}>${BILLING_DATA.adminFeePerMember}</div>
+                                    <div style={{ fontSize: '0.75rem', color: '#64748b' }}>PEPM</div>
+                                </div>
+                                <div>
+                                    <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#64748b', marginBottom: '0.5rem' }}>Stop-Loss (Specific)</div>
+                                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#7c3aed' }}>${BILLING_DATA.stopLossSpecific.toLocaleString()}</div>
+                                    <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Attachment Point</div>
+                                </div>
+                                <div>
+                                    <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#64748b', marginBottom: '0.5rem' }}>Stop-Loss (Aggregate)</div>
+                                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#7c3aed' }}>{BILLING_DATA.stopLossAggregate}%</div>
+                                    <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Corridor</div>
+                                </div>
+                                <div>
+                                    <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#64748b', marginBottom: '0.5rem' }}>Stop-Loss Premium</div>
+                                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#7c3aed' }}>${BILLING_DATA.stopLossPremiumPEPM}</div>
+                                    <div style={{ fontSize: '0.75rem', color: '#64748b' }}>PEPM</div>
+                                </div>
+                            </div>
+                            <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #e5e7eb', fontSize: '0.875rem', color: '#64748b' }}>
+                                <strong>Network access</strong> and <strong>claims processing</strong> included. No hidden margins on claims — transparent admin fees only.
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
             // ============ RENDER: MEMBER VIEW ============
 
             const renderMemberView = () => (
@@ -3898,45 +4132,153 @@
                 </div>
             );
 
-            const renderDashboardTab = () => (
-                <div className="content-area">
-                    <div className="welcome-card">
-                        <div className="welcome-title">Welcome Back!</div>
-                        <div className="welcome-subtitle">You're on the {companyInfo.planName}</div>
-                        <div className="plan-badge">Bind-Style Plan • {companyInfo.state}</div>
-                    </div>
+            const renderDashboardTab = () => {
+                const member = INITIAL_EMPLOYEES[0];
+                const groupNumber = 'ACM-2026-001';
+                const companyInitial = companyInfo.companyName.charAt(0);
 
-                    <div className="oop-tracker">
-                        <div className="oop-title">Out-of-Pocket Spending</div>
-                        <div className="oop-progress">
-                            <div className="progress-bar">
-                                <div className="progress-fill" style={{ '--progress-percent': '34%' }}></div>
+                const idCardFront = (
+                    <div onClick={() => setCardFlipped(false)} style={{ cursor: 'pointer', background: 'linear-gradient(135deg, #1e3a5f 0%, #4c1d95 100%)', color: 'white', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 10px 30px rgba(0,0,0,0.2)', minHeight: '320px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div>
+                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1rem', fontSize: '1.5rem', fontWeight: 700 }}>🏥 Pillar Health</div>
+                            <div style={{ fontSize: '0.875rem', opacity: 0.9, marginBottom: '1.5rem' }}>{companyInfo.planName}</div>
+                            <div style={{ marginBottom: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '1rem' }}>
+                                <div style={{ fontSize: '0.75rem', opacity: 0.7, marginBottom: '0.25rem' }}>MEMBER</div>
+                                <div style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem' }}>{member.firstName} {member.lastName}</div>
+                                <div style={{ fontSize: '0.75rem', opacity: 0.7, marginBottom: '0.25rem' }}>MEMBER ID</div>
+                                <div style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem', fontFamily: 'monospace' }}>{member.memberId}</div>
+                                <div style={{ fontSize: '0.75rem', opacity: 0.7, marginBottom: '0.25rem' }}>GROUP</div>
+                                <div style={{ fontSize: '0.875rem', fontWeight: 600, marginBottom: '1rem' }}>{groupNumber}</div>
+                                <div style={{ fontSize: '0.75rem', opacity: 0.7, marginBottom: '0.25rem' }}>EFFECTIVE</div>
+                                <div style={{ fontSize: '0.875rem', fontWeight: 600 }}>01/15/2024</div>
                             </div>
-                            <div className="oop-amount">$2,040</div>
                         </div>
-                        <div className="oop-detail">$2,040 of ${planLimits.individualOopMax.toLocaleString()} • 34% used</div>
-                    </div>
-
-                    <div className="card">
-                        <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>Quick Actions</h3>
-                        <div style={{ display: 'grid', gap: '0.75rem' }}>
-                            <button className="provider-action" style={{ background: '#ede9fe', color: '#7c3aed' }} onClick={() => setMemberTab('search')}>
-                                🔍 Find Care & Compare Prices
-                            </button>
-                            <button className="provider-action" style={{ background: '#f0f9ff', color: '#0284c7' }} onClick={() => setMemberTab('rx')}>
-                                💊 My Prescriptions
-                            </button>
-                            <button className="provider-action" style={{ background: '#dcfce7', color: '#16a34a' }} onClick={() => setMemberTab('claims')}>
-                                📋 View My Claims
-                            </button>
+                        <div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
+                                <div style={{ background: 'rgba(255,255,255,0.1)', padding: '0.75rem', borderRadius: '0.5rem', textAlign: 'center' }}>
+                                    <div style={{ fontSize: '0.625rem', opacity: 0.7 }}>PCP Copay</div>
+                                    <div style={{ fontSize: '0.875rem', fontWeight: 700, marginTop: '0.25rem' }}>${serviceCategories.primaryCare?.tiers?.['office-visit']} Copay</div>
+                                </div>
+                                <div style={{ background: 'rgba(255,255,255,0.1)', padding: '0.75rem', borderRadius: '0.5rem', textAlign: 'center' }}>
+                                    <div style={{ fontSize: '0.625rem', opacity: 0.7 }}>Specialist</div>
+                                    <div style={{ fontSize: '0.875rem', fontWeight: 700, marginTop: '0.25rem' }}>${serviceCategories.specialistVisits?.tiers?.['office-visit']} Copay</div>
+                                </div>
+                                <div style={{ background: 'rgba(255,255,255,0.1)', padding: '0.75rem', borderRadius: '0.5rem', textAlign: 'center' }}>
+                                    <div style={{ fontSize: '0.625rem', opacity: 0.7 }}>Urgent Care</div>
+                                    <div style={{ fontSize: '0.875rem', fontWeight: 700, marginTop: '0.25rem' }}>${serviceCategories.urgentCare?.tiers?.['urgent-care']} Copay</div>
+                                </div>
+                                <div style={{ background: 'rgba(255,255,255,0.1)', padding: '0.75rem', borderRadius: '0.5rem', textAlign: 'center' }}>
+                                    <div style={{ fontSize: '0.625rem', opacity: 0.7 }}>ER Copay</div>
+                                    <div style={{ fontSize: '0.875rem', fontWeight: 700, marginTop: '0.25rem' }}>${serviceCategories.emergency?.tiers?.['emergency-room']} Copay</div>
+                                </div>
+                            </div>
+                            <div style={{ background: 'rgba(255,255,255,0.1)', padding: '0.75rem', borderRadius: '0.5rem', marginBottom: '0.75rem', fontSize: '0.75rem' }}>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                                    <div>
+                                        <div style={{ opacity: 0.7, marginBottom: '0.25rem' }}>RX BIN</div>
+                                        <div style={{ fontWeight: 700 }}>610014</div>
+                                    </div>
+                                    <div>
+                                        <div style={{ opacity: 0.7, marginBottom: '0.25rem' }}>PCN</div>
+                                        <div style={{ fontWeight: 700 }}>SMRX</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style={{ background: 'rgba(255,255,255,0.1)', padding: '0.75rem', borderRadius: '0.5rem', fontSize: '0.75rem' }}>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                                    <div>
+                                        <div style={{ opacity: 0.7, marginBottom: '0.25rem' }}>Deductible</div>
+                                        <div style={{ fontWeight: 700 }}>$0</div>
+                                    </div>
+                                    <div>
+                                        <div style={{ opacity: 0.7, marginBottom: '0.25rem' }}>OOP Max</div>
+                                        <div style={{ fontWeight: 700 }}>${planLimits.individualOopMax?.toLocaleString()}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style={{ fontSize: '0.75rem', opacity: 0.7, marginTop: '0.75rem', textAlign: 'center' }}>Network: {networkSettings.network}</div>
                         </div>
                     </div>
+                );
 
-                    <div className="footer">
-                        Pillar Health — AI-Native Health Plan Administration
+                const idCardBack = (
+                    <div onClick={() => setCardFlipped(true)} style={{ cursor: 'pointer', background: 'linear-gradient(135deg, #1e3a5f 0%, #4c1d95 100%)', color: 'white', borderRadius: '1rem', padding: '1.5rem', boxShadow: '0 10px 30px rgba(0,0,0,0.2)', minHeight: '320px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div>
+                            <div style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.2)', paddingBottom: '1rem' }}>Questions? We're here to help</div>
+                            <div style={{ marginBottom: '1.5rem' }}>
+                                <div style={{ fontSize: '0.75rem', opacity: 0.7, marginBottom: '0.5rem' }}>CUSTOMER SERVICE</div>
+                                <div style={{ fontSize: '1rem', fontWeight: 700 }}>1-800-PILLAR-1</div>
+                                <div style={{ fontSize: '0.75rem', opacity: 0.7, marginTop: '0.5rem' }}>Mon-Fri, 8am-8pm ET</div>
+                            </div>
+                            <div style={{ marginBottom: '1.5rem' }}>
+                                <div style={{ fontSize: '0.75rem', opacity: 0.7, marginBottom: '0.5rem' }}>CLAIMS ADDRESS</div>
+                                <div style={{ fontSize: '0.875rem' }}>Pillar Health Claims Processing<br/>100 Federal Street<br/>Boston, MA 02110</div>
+                            </div>
+                            <div style={{ marginBottom: '1.5rem' }}>
+                                <div style={{ fontSize: '0.75rem', opacity: 0.7, marginBottom: '0.5rem' }}>PLAN ADMINISTRATOR</div>
+                                <div style={{ fontSize: '0.875rem' }}>Pillar Health Inc.</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style={{ background: 'rgba(255,0,0,0.1)', border: '1px solid rgba(255,0,0,0.3)', borderRadius: '0.5rem', padding: '0.75rem', textAlign: 'center', marginBottom: '0.75rem' }}>
+                                <div style={{ fontSize: '0.75rem', opacity: 0.9, fontWeight: 700 }}>🚨 EMERGENCY</div>
+                                <div style={{ fontSize: '1rem', fontWeight: 700, marginTop: '0.25rem' }}>Call 911</div>
+                            </div>
+                            <div style={{ fontSize: '0.75rem', opacity: 0.7, textAlign: 'center' }}>
+                                📱 www.pillarhealth.com<br/>
+                                💬 Available 24/7
+                            </div>
+                        </div>
                     </div>
-                </div>
-            );
+                );
+
+                return (
+                    <div className="content-area">
+                        <div style={{ marginBottom: '1.5rem' }} onClick={() => setCardFlipped(!cardFlipped)}>
+                            {cardFlipped ? idCardBack : idCardFront}
+                            <div style={{ textAlign: 'center', fontSize: '0.75rem', color: '#64748b', marginTop: '0.75rem', cursor: 'pointer' }}>
+                                👆 Tap card to see {cardFlipped ? 'front' : 'back'}
+                            </div>
+                        </div>
+
+                        <div className="welcome-card">
+                            <div className="welcome-title">Welcome Back!</div>
+                            <div className="welcome-subtitle">You're on the {companyInfo.planName}</div>
+                            <div className="plan-badge">Bind-Style Plan • {companyInfo.state}</div>
+                        </div>
+
+                        <div className="oop-tracker">
+                            <div className="oop-title">Out-of-Pocket Spending</div>
+                            <div className="oop-progress">
+                                <div className="progress-bar">
+                                    <div className="progress-fill" style={{ '--progress-percent': '34%' }}></div>
+                                </div>
+                                <div className="oop-amount">$2,040</div>
+                            </div>
+                            <div className="oop-detail">$2,040 of ${planLimits.individualOopMax.toLocaleString()} • 34% used</div>
+                        </div>
+
+                        <div className="card">
+                            <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>Quick Actions</h3>
+                            <div style={{ display: 'grid', gap: '0.75rem' }}>
+                                <button className="provider-action" style={{ background: '#ede9fe', color: '#7c3aed' }} onClick={() => setMemberTab('search')}>
+                                    🔍 Find Care & Compare Prices
+                                </button>
+                                <button className="provider-action" style={{ background: '#f0f9ff', color: '#0284c7' }} onClick={() => setMemberTab('rx')}>
+                                    💊 My Prescriptions
+                                </button>
+                                <button className="provider-action" style={{ background: '#dcfce7', color: '#16a34a' }} onClick={() => setMemberTab('claims')}>
+                                    📋 View My Claims
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="footer">
+                            Pillar Health — AI-Native Health Plan Administration
+                        </div>
+                    </div>
+                );
+            };
 
             // Map service category keys to MOCK_PROVIDERS keys
             const categoryToProviderMap = {
