@@ -1428,6 +1428,81 @@
         .form-row.full {
             grid-template-columns: 1fr;
         }
+
+        /* Pharmacy Styles */
+        .pbm-status-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+        }
+
+        .tier-badge-1 {
+            display: inline-block;
+            background: #dcfce7;
+            color: #166534;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .tier-badge-2 {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .tier-badge-3 {
+            display: inline-block;
+            background: #fef08a;
+            color: #92400e;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .tier-badge-4 {
+            display: inline-block;
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .pharmacy-price-row {
+            background: #f8fafc;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 0.5rem;
+        }
+
+        .rx-claim-row {
+            border-bottom: 1px solid #f1f5f9;
+            background: white;
+        }
+
+        .rx-claim-row:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
     </style>
 </head>
 <body>
@@ -1578,6 +1653,53 @@
             { claimId: 'CLM-2026-00020', memberId: 'PLR-2023-00089', memberName: 'Jessica Thompson', serviceDate: '2026-02-05', serviceType: 'Specialist Visit', providerName: 'Rheumatology Associates', facilityType: 'Academic Medical Center', billedAmount: 450, allowedAmount: 380, memberCopay: 85, planPaid: 295, status: 'denied', receivedDate: '2026-02-06', adjudicatedDate: '2026-02-08', denialReason: 'Prior authorization not obtained', diagnosisCode: 'M05.9', procedureCode: '99214' },
         ];
 
+        // ============ PHARMACY BENEFITS DATA ============
+
+        const FORMULARY = [
+            { rxcui: '235743', generic: 'Metformin', brand: 'Glucophage', category: 'Diabetes', tier: 1, form: 'Tablet', strength: '500mg, 850mg, 1000mg', genericCopay: 5, brandCopay: 30, requiresPriorAuth: false, quantityLimit: 90, daysSupply: 30 },
+            { rxcui: '29046', generic: 'Lisinopril', brand: 'Zestril', category: 'Blood Pressure', tier: 1, form: 'Tablet', strength: '5mg, 10mg, 20mg, 40mg', genericCopay: 5, brandCopay: 35, requiresPriorAuth: false, quantityLimit: 30, daysSupply: 30 },
+            { rxcui: '83367', generic: 'Atorvastatin', brand: 'Lipitor', category: 'Cholesterol', tier: 1, form: 'Tablet', strength: '10mg, 20mg, 40mg, 80mg', genericCopay: 5, brandCopay: 40, requiresPriorAuth: false, quantityLimit: 30, daysSupply: 30 },
+            { rxcui: '133008', generic: 'Amoxicillin', brand: 'Amoxil', category: 'Antibiotic', tier: 1, form: 'Capsule', strength: '250mg, 500mg', genericCopay: 0, brandCopay: 20, requiresPriorAuth: false, quantityLimit: 30, daysSupply: 10 },
+            { rxcui: '283742', generic: 'Omeprazole', brand: 'Prilosec', category: 'Acid Reflux', tier: 1, form: 'Capsule', strength: '20mg, 40mg', genericCopay: 5, brandCopay: 30, requiresPriorAuth: false, quantityLimit: 30, daysSupply: 30 },
+            { rxcui: '10582', generic: 'Levothyroxine', brand: 'Synthroid', category: 'Thyroid', tier: 2, form: 'Tablet', strength: '25mcg, 50mcg, 75mcg, 100mcg, 125mcg', genericCopay: 10, brandCopay: 45, requiresPriorAuth: false, quantityLimit: 30, daysSupply: 30 },
+            { rxcui: '104416', generic: 'Amlodipine', brand: 'Norvasc', category: 'Blood Pressure', tier: 1, form: 'Tablet', strength: '2.5mg, 5mg, 10mg', genericCopay: 5, brandCopay: 35, requiresPriorAuth: false, quantityLimit: 30, daysSupply: 30 },
+            { rxcui: '36437', generic: 'Sertraline', brand: 'Zoloft', category: 'Mental Health', tier: 1, form: 'Tablet', strength: '25mg, 50mg, 100mg', genericCopay: 5, brandCopay: 35, requiresPriorAuth: false, quantityLimit: 30, daysSupply: 30 },
+            { rxcui: '435', generic: 'Albuterol', brand: 'ProAir HFA', category: 'Respiratory', tier: 2, form: 'Inhaler', strength: '90mcg/actuation', genericCopay: 15, brandCopay: 50, requiresPriorAuth: false, quantityLimit: 3, daysSupply: 30 },
+            { rxcui: '25480', generic: 'Gabapentin', brand: 'Neurontin', category: 'Pain/Neuro', tier: 1, form: 'Capsule', strength: '100mg, 300mg, 400mg', genericCopay: 5, brandCopay: 40, requiresPriorAuth: false, quantityLimit: 90, daysSupply: 30 },
+            { rxcui: '52175', generic: 'Losartan', brand: 'Cozaar', category: 'Blood Pressure', tier: 1, form: 'Tablet', strength: '25mg, 50mg, 100mg', genericCopay: 5, brandCopay: 35, requiresPriorAuth: false, quantityLimit: 30, daysSupply: 30 },
+            { rxcui: '40790', generic: 'Pantoprazole', brand: 'Protonix', category: 'Acid Reflux', tier: 2, form: 'Tablet', strength: '20mg, 40mg', genericCopay: 10, brandCopay: 40, requiresPriorAuth: false, quantityLimit: 30, daysSupply: 30 },
+            { rxcui: '321988', generic: 'Escitalopram', brand: 'Lexapro', category: 'Mental Health', tier: 1, form: 'Tablet', strength: '5mg, 10mg, 20mg', genericCopay: 5, brandCopay: 35, requiresPriorAuth: false, quantityLimit: 30, daysSupply: 30 },
+            { rxcui: '187832', generic: 'Montelukast', brand: 'Singulair', category: 'Respiratory', tier: 2, form: 'Tablet', strength: '4mg, 5mg, 10mg', genericCopay: 10, brandCopay: 45, requiresPriorAuth: false, quantityLimit: 30, daysSupply: 30 },
+            { rxcui: '203150', generic: 'Duloxetine', brand: 'Cymbalta', category: 'Mental Health', tier: 2, form: 'Capsule', strength: '20mg, 30mg, 60mg', genericCopay: 15, brandCopay: 55, requiresPriorAuth: false, quantityLimit: 30, daysSupply: 30 },
+            { rxcui: '72625', generic: 'Rosuvastatin', brand: 'Crestor', category: 'Cholesterol', tier: 2, form: 'Tablet', strength: '5mg, 10mg, 20mg, 40mg', genericCopay: 10, brandCopay: 50, requiresPriorAuth: false, quantityLimit: 30, daysSupply: 30 },
+            { rxcui: '1191', generic: 'Aspirin', brand: 'Bayer', category: 'Pain/OTC', tier: 1, form: 'Tablet', strength: '81mg, 325mg', genericCopay: 0, brandCopay: 10, requiresPriorAuth: false, quantityLimit: 90, daysSupply: 30 },
+            { rxcui: '56795', generic: 'Insulin Glargine', brand: 'Lantus', category: 'Diabetes', tier: 3, form: 'Injectable', strength: '100 units/mL', genericCopay: 35, brandCopay: 75, requiresPriorAuth: true, quantityLimit: 5, daysSupply: 30 },
+            { rxcui: '73044', generic: 'Adalimumab', brand: 'Humira', category: 'Specialty', tier: 4, form: 'Injectable', strength: '40mg/0.8mL', genericCopay: 150, brandCopay: 250, requiresPriorAuth: true, quantityLimit: 2, daysSupply: 30 },
+            { rxcui: '352272', generic: 'Liraglutide', brand: 'Ozempic/Wegovy', category: 'Diabetes/Weight', tier: 4, form: 'Injectable', strength: '0.25mg, 0.5mg, 1mg', genericCopay: 100, brandCopay: 200, requiresPriorAuth: true, quantityLimit: 4, daysSupply: 30 },
+        ];
+
+        const PHARMACY_LOCATIONS = [
+            { id: 'ph1', name: 'CVS Pharmacy - Boylston St', address: '587 Boylston St, Boston', distance: '0.3 mi', type: 'Retail', preferred: true },
+            { id: 'ph2', name: 'Walgreens - Tremont St', address: '841 Tremont St, Boston', distance: '0.6 mi', type: 'Retail', preferred: true },
+            { id: 'ph3', name: 'Mass General Hospital Pharmacy', address: '55 Fruit St, Boston', distance: '1.2 mi', type: 'Hospital', preferred: false },
+            { id: 'ph4', name: 'Costco Pharmacy - Everett', address: '11 Mystic View Rd, Everett', distance: '3.4 mi', type: 'Warehouse', preferred: true },
+            { id: 'ph5', name: 'Amazon Pharmacy (Mail Order)', address: 'Free delivery, 2-5 days', distance: 'Mail', type: 'Mail Order', preferred: true },
+            { id: 'ph6', name: 'Cost Plus Drugs (Mail Order)', address: 'Free delivery, 3-7 days', distance: 'Mail', type: 'Mail Order - Transparent', preferred: true },
+        ];
+
+        const INITIAL_RX_CLAIMS = [
+            { claimId: 'RX-2026-00001', memberId: 'PLR-2024-00101', memberName: 'Sarah Chen', fillDate: '2026-03-01', drugName: 'Metformin 500mg', generic: true, pharmacy: 'CVS Pharmacy - Boylston St', quantity: 90, daysSupply: 30, billedAmount: 45, planPaid: 40, memberCopay: 5, status: 'paid', ndc: '00093-7214-01' },
+            { claimId: 'RX-2026-00002', memberId: 'PLR-2024-00102', memberName: 'Michael Rodriguez', fillDate: '2026-03-03', drugName: 'Lisinopril 10mg', generic: true, pharmacy: 'Walgreens - Tremont St', quantity: 30, daysSupply: 30, billedAmount: 38, planPaid: 33, memberCopay: 5, status: 'paid', ndc: '00093-7309-01' },
+            { claimId: 'RX-2026-00003', memberId: 'PLR-2023-00089', memberName: 'Jessica Thompson', fillDate: '2026-03-05', drugName: 'Atorvastatin 20mg', generic: true, pharmacy: 'CVS Pharmacy - Boylston St', quantity: 30, daysSupply: 30, billedAmount: 52, planPaid: 47, memberCopay: 5, status: 'paid', ndc: '00378-3951-05' },
+            { claimId: 'RX-2026-00004', memberId: 'PLR-2024-00115', memberName: 'David Kim', fillDate: '2026-03-07', drugName: 'Sertraline 50mg', generic: true, pharmacy: 'Amazon Pharmacy', quantity: 30, daysSupply: 30, billedAmount: 42, planPaid: 37, memberCopay: 5, status: 'paid', ndc: '00093-7219-01' },
+            { claimId: 'RX-2026-00005', memberId: 'PLR-2023-00042', memberName: 'James O\'Brien', fillDate: '2026-03-08', drugName: 'Lantus 100 units/mL', generic: false, pharmacy: 'CVS Pharmacy - Boylston St', quantity: 5, daysSupply: 30, billedAmount: 385, planPaid: 310, memberCopay: 75, status: 'paid', ndc: '00088-2220-33' },
+            { claimId: 'RX-2026-00006', memberId: 'PLR-2024-00101', memberName: 'Sarah Chen', fillDate: '2026-03-10', drugName: 'Omeprazole 20mg', generic: true, pharmacy: 'CVS Pharmacy - Boylston St', quantity: 30, daysSupply: 30, billedAmount: 35, planPaid: 30, memberCopay: 5, status: 'paid', ndc: '00093-7280-01' },
+            { claimId: 'RX-2026-00007', memberId: 'PLR-2024-00156', memberName: 'Maria Garcia', fillDate: '2026-03-11', drugName: 'Albuterol HFA Inhaler', generic: false, pharmacy: 'Walgreens - Tremont St', quantity: 1, daysSupply: 30, billedAmount: 65, planPaid: 15, memberCopay: 50, status: 'review', ndc: '59310-0579-22' },
+            { claimId: 'RX-2026-00008', memberId: 'PLR-2023-00067', memberName: 'Christopher Nguyen', fillDate: '2026-03-12', drugName: 'Humira 40mg', generic: false, pharmacy: 'Mass General Hospital Pharmacy', quantity: 2, daysSupply: 30, billedAmount: 6800, planPaid: 6550, memberCopay: 250, status: 'review', ndc: '00074-4339-02' },
+            { claimId: 'RX-2026-00009', memberId: 'PLR-2025-00008', memberName: 'Lauren Taylor', fillDate: '2026-03-13', drugName: 'Escitalopram 10mg', generic: true, pharmacy: 'Cost Plus Drugs', quantity: 30, daysSupply: 30, billedAmount: 28, planPaid: 23, memberCopay: 5, status: 'paid', ndc: '00093-5851-01' },
+            { claimId: 'RX-2026-00010', memberId: 'PLR-2024-00142', memberName: 'Kevin Martinez', fillDate: '2026-03-14', drugName: 'Ozempic 1mg', generic: false, pharmacy: 'CVS Pharmacy - Boylston St', quantity: 4, daysSupply: 30, billedAmount: 950, planPaid: 750, memberCopay: 200, status: 'review', ndc: '00169-4132-12' },
+        ];
+
         // Real Boston provider data
         const MOCK_PROVIDERS = {
             'Knee MRI': [
@@ -1673,6 +1795,13 @@
             const [denyReason, setDenyReason] = useState('');
             const [showDenyModal, setShowDenyModal] = useState(false);
 
+            // Pharmacy state
+            const [pharmacyView, setPharmacyView] = useState('dashboard');
+            const [rxClaims, setRxClaims] = useState(INITIAL_RX_CLAIMS);
+            const [drugSearch, setDrugSearch] = useState('');
+            const [selectedDrug, setSelectedDrug] = useState(null);
+            const [formularySearch, setFormularySearch] = useState('');
+
             // ============ EMPLOYER HANDLERS ============
 
             const handleCompanyChange = (field, value) => {
@@ -1752,7 +1881,7 @@
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                        <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>v0.4</span>
+                        <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>v0.5</span>
                         <span className="badge-demo">Demo Mode</span>
                     </div>
                 </div>
@@ -1777,6 +1906,7 @@
                             { id: 'analytics', label: 'Analytics', icon: '📊' },
                             { id: 'enrollment', label: 'Enrollment', icon: '👥' },
                             { id: 'claims', label: 'Claims', icon: '💰' },
+                            { id: 'pharmacy', label: 'Pharmacy', icon: '💊' },
                         ].map(item => (
                             <button
                                 key={item.id}
@@ -1797,6 +1927,7 @@
                         {currentSection === 'limits' && renderLimitsSection()}
                         {currentSection === 'network' && renderNetworkSection()}
                         {currentSection === 'preview' && renderPreviewSection()}
+                        {currentSection === 'pharmacy' && renderPharmacySection()}
                         {currentSection === 'analytics' && renderAnalyticsSection()}
                         {currentSection === 'enrollment' && renderEnrollmentSection()}
                         {currentSection === 'claims' && renderClaimsSection()}
@@ -2730,6 +2861,358 @@
                 );
             };
 
+            // ============ RENDER: PHARMACY SECTION ============
+
+            const renderPharmacySection = () => {
+                if (pharmacyView === 'formulary') {
+                    return renderFormularyView();
+                } else if (pharmacyView === 'lookup') {
+                    return renderDrugLookupView();
+                }
+                return renderPharmacyDashboard();
+            };
+
+            const renderPharmacyDashboard = () => {
+                const totalClaims = rxClaims.length;
+                const monthlySpend = rxClaims.filter(c => c.fillDate >= '2026-03-01' && c.fillDate <= '2026-03-14').reduce((sum, c) => sum + c.planPaid, 0);
+                const genericFillRate = Math.round((rxClaims.filter(c => c.generic).length / totalClaims) * 100);
+                const avgCopay = Math.round(rxClaims.reduce((sum, c) => sum + c.memberCopay, 0) / totalClaims);
+
+                return (
+                    <div className="fade-in">
+                        <h2 className="section-header">Pharmacy Benefits</h2>
+
+                        {/* PBM Integration Banner */}
+                        <div style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: '0.75rem', padding: '1.25rem', marginBottom: '1.5rem' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                                <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', margin: 0 }}>PBM Integration: SmithRx</h3>
+                                <span style={{ display: 'inline-block', background: '#22c55e', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 600 }}>Connected</span>
+                            </div>
+                            <p style={{ color: '#64748b', fontSize: '0.875rem', margin: 0 }}>Real-time claims and formulary data integration with SmithRx</p>
+                        </div>
+
+                        {/* Metric Cards */}
+                        <div className="metric-grid">
+                            <div className="metric-card">
+                                <div className="metric-label">Total Rx Claims</div>
+                                <div className="metric-value">{totalClaims}</div>
+                            </div>
+                            <div className="metric-card">
+                                <div className="metric-label">Monthly Rx Spend</div>
+                                <div className="metric-value">${monthlySpend.toLocaleString()}</div>
+                            </div>
+                            <div className="metric-card">
+                                <div className="metric-label">Generic Fill Rate</div>
+                                <div className="metric-value">{genericFillRate}%</div>
+                            </div>
+                            <div className="metric-card">
+                                <div className="metric-label">Avg Member Copay</div>
+                                <div className="metric-value">${avgCopay}</div>
+                            </div>
+                        </div>
+
+                        {/* Sub-navigation */}
+                        <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                            <button onClick={() => setPharmacyView('dashboard')} style={{ padding: '0.5rem 1.25rem', background: pharmacyView === 'dashboard' ? '#2563eb' : '#f1f5f9', color: pharmacyView === 'dashboard' ? 'white' : '#0f172a', border: 'none', borderRadius: '0.5rem', fontWeight: 600, cursor: 'pointer' }}>Dashboard</button>
+                            <button onClick={() => setPharmacyView('formulary')} style={{ padding: '0.5rem 1.25rem', background: pharmacyView === 'formulary' ? '#2563eb' : '#f1f5f9', color: pharmacyView === 'formulary' ? 'white' : '#0f172a', border: 'none', borderRadius: '0.5rem', fontWeight: 600, cursor: 'pointer' }}>Formulary</button>
+                            <button onClick={() => setPharmacyView('lookup')} style={{ padding: '0.5rem 1.25rem', background: pharmacyView === 'lookup' ? '#2563eb' : '#f1f5f9', color: pharmacyView === 'lookup' ? 'white' : '#0f172a', border: 'none', borderRadius: '0.5rem', fontWeight: 600, cursor: 'pointer' }}>Drug Lookup</button>
+                        </div>
+
+                        {/* PBM Integration Panel */}
+                        <div className="pbm-status-card" style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: '0.75rem', padding: '1.5rem', marginBottom: '1.5rem' }}>
+                            <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', marginTop: 0, marginBottom: '1rem' }}>PBM Integration Status</h3>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
+                                <div>
+                                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#64748b', fontWeight: 600, marginBottom: '0.25rem' }}>Connected PBM</div>
+                                    <div style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a' }}>SmithRx</div>
+                                </div>
+                                <div>
+                                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#64748b', fontWeight: 600, marginBottom: '0.25rem' }}>Data Feed Status</div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                        <span style={{ display: 'inline-block', width: '0.5rem', height: '0.5rem', background: '#22c55e', borderRadius: '50%' }}></span>
+                                        <span style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a' }}>Real-time</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#64748b', fontWeight: 600, marginBottom: '0.25rem' }}>Last Sync</div>
+                                    <div style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a' }}>2 minutes ago</div>
+                                </div>
+                                <div>
+                                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#64748b', fontWeight: 600, marginBottom: '0.25rem' }}>Formulary Version</div>
+                                    <div style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a' }}>2026 Q1 v2.3</div>
+                                </div>
+                                <div>
+                                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#64748b', fontWeight: 600, marginBottom: '0.25rem' }}>Rebate Passthrough</div>
+                                    <div style={{ fontSize: '1rem', fontWeight: 700, color: '#16a34a' }}>100% (Transparent)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Rx Claims Table */}
+                        <div style={{ background: 'white', borderRadius: '0.75rem', border: '1px solid #e2e8f0', overflow: 'hidden' }}>
+                            <div style={{ padding: '1.5rem', borderBottom: '1px solid #e2e8f0' }}>
+                                <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', margin: 0 }}>Recent Rx Claims</h3>
+                            </div>
+                            <table style={{ width: '100%', fontSize: '0.875rem' }}>
+                                <thead style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+                                    <tr>
+                                        <th style={{ padding: '0.75rem 1.5rem', textAlign: 'left', fontWeight: 600, color: '#0f172a' }}>Claim ID</th>
+                                        <th style={{ padding: '0.75rem 1.5rem', textAlign: 'left', fontWeight: 600, color: '#0f172a' }}>Member</th>
+                                        <th style={{ padding: '0.75rem 1.5rem', textAlign: 'left', fontWeight: 600, color: '#0f172a' }}>Drug</th>
+                                        <th style={{ padding: '0.75rem 1.5rem', textAlign: 'left', fontWeight: 600, color: '#0f172a' }}>Fill Date</th>
+                                        <th style={{ padding: '0.75rem 1.5rem', textAlign: 'left', fontWeight: 600, color: '#0f172a' }}>Copay</th>
+                                        <th style={{ padding: '0.75rem 1.5rem', textAlign: 'left', fontWeight: 600, color: '#0f172a' }}>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {rxClaims.map(claim => (
+                                        <tr key={claim.claimId} style={{ borderBottom: '1px solid #f1f5f9', background: claim.status === 'review' ? '#fef3c7' : 'white' }}>
+                                            <td style={{ padding: '0.75rem 1.5rem', color: '#0f172a', fontWeight: 600 }}>{claim.claimId}</td>
+                                            <td style={{ padding: '0.75rem 1.5rem', color: '#0f172a' }}>{claim.memberName}</td>
+                                            <td style={{ padding: '0.75rem 1.5rem', color: '#0f172a' }}>{claim.drugName}</td>
+                                            <td style={{ padding: '0.75rem 1.5rem', color: '#64748b' }}>{claim.fillDate}</td>
+                                            <td style={{ padding: '0.75rem 1.5rem', color: '#0f172a', fontWeight: 600 }}>${claim.memberCopay}</td>
+                                            <td style={{ padding: '0.75rem 1.5rem' }}>
+                                                <span style={{ display: 'inline-block', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 600, background: claim.status === 'paid' ? '#dcfce7' : claim.status === 'review' ? '#fef3c7' : '#fee2e2', color: claim.status === 'paid' ? '#166534' : claim.status === 'review' ? '#92400e' : '#991b1b' }}>
+                                                    {claim.status.charAt(0).toUpperCase() + claim.status.slice(1)}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                );
+            };
+
+            const renderFormularyView = () => {
+                const filteredFormulary = FORMULARY.filter(drug =>
+                    drug.generic.toLowerCase().includes(formularySearch.toLowerCase()) ||
+                    drug.brand.toLowerCase().includes(formularySearch.toLowerCase()) ||
+                    drug.category.toLowerCase().includes(formularySearch.toLowerCase())
+                );
+
+                const tierColors = {
+                    1: { bg: '#dcfce7', text: '#166534', label: 'Tier 1: Preferred Generic' },
+                    2: { bg: '#dbeafe', text: '#1e40af', label: 'Tier 2: Non-preferred Generic' },
+                    3: { bg: '#fef08a', text: '#92400e', label: 'Tier 3: Preferred Brand' },
+                    4: { bg: '#fee2e2', text: '#991b1b', label: 'Tier 4: Specialty' },
+                };
+
+                return (
+                    <div className="fade-in">
+                        <button onClick={() => setPharmacyView('dashboard')} style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '0.875rem', marginBottom: '1rem', padding: 0 }}>
+                            ← Back to Dashboard
+                        </button>
+
+                        <h2 className="section-header">Formulary Management</h2>
+
+                        {/* Tier Legend */}
+                        <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+                            {Object.entries(tierColors).map(([tier, colors]) => (
+                                <div key={tier} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <span style={{ display: 'inline-block', width: '1rem', height: '1rem', background: colors.bg, borderRadius: '0.25rem' }}></span>
+                                    <span style={{ fontSize: '0.875rem', color: '#64748b' }}>{colors.label}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Search */}
+                        <div style={{ marginBottom: '1.5rem' }}>
+                            <input
+                                type="text"
+                                placeholder="Search formulary by drug name or category..."
+                                value={formularySearch}
+                                onChange={(e) => setFormularySearch(e.target.value)}
+                                style={{ width: '100%', padding: '0.75rem', border: '1px solid #e2e8f0', borderRadius: '0.5rem', fontSize: '0.875rem' }}
+                            />
+                        </div>
+
+                        {/* Formulary Table */}
+                        <div style={{ background: 'white', borderRadius: '0.75rem', border: '1px solid #e2e8f0', overflow: 'hidden' }}>
+                            <table style={{ width: '100%', fontSize: '0.875rem' }}>
+                                <thead style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+                                    <tr>
+                                        <th style={{ padding: '0.75rem 1.5rem', textAlign: 'left', fontWeight: 600, color: '#0f172a' }}>Drug (Generic / Brand)</th>
+                                        <th style={{ padding: '0.75rem 1.5rem', textAlign: 'left', fontWeight: 600, color: '#0f172a' }}>Category</th>
+                                        <th style={{ padding: '0.75rem 1.5rem', textAlign: 'left', fontWeight: 600, color: '#0f172a' }}>Tier</th>
+                                        <th style={{ padding: '0.75rem 1.5rem', textAlign: 'left', fontWeight: 600, color: '#0f172a' }}>Generic Copay</th>
+                                        <th style={{ padding: '0.75rem 1.5rem', textAlign: 'left', fontWeight: 600, color: '#0f172a' }}>Brand Copay</th>
+                                        <th style={{ padding: '0.75rem 1.5rem', textAlign: 'left', fontWeight: 600, color: '#0f172a' }}>Prior Auth</th>
+                                        <th style={{ padding: '0.75rem 1.5rem', textAlign: 'left', fontWeight: 600, color: '#0f172a' }}>Form</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {filteredFormulary.map(drug => (
+                                        <tr key={drug.rxcui} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                                            <td style={{ padding: '0.75rem 1.5rem', color: '#0f172a' }}>
+                                                <div style={{ fontWeight: 600 }}>{drug.generic}</div>
+                                                <div style={{ fontSize: '0.8125rem', color: '#64748b' }}>{drug.brand}</div>
+                                            </td>
+                                            <td style={{ padding: '0.75rem 1.5rem', color: '#0f172a' }}>{drug.category}</td>
+                                            <td style={{ padding: '0.75rem 1.5rem' }}>
+                                                <span style={{ display: 'inline-block', padding: '0.25rem 0.75rem', borderRadius: '0.25rem', fontSize: '0.75rem', fontWeight: 600, background: tierColors[drug.tier].bg, color: tierColors[drug.tier].text }}>
+                                                    Tier {drug.tier}
+                                                </span>
+                                            </td>
+                                            <td style={{ padding: '0.75rem 1.5rem', color: '#0f172a' }}>${drug.genericCopay}</td>
+                                            <td style={{ padding: '0.75rem 1.5rem', color: '#0f172a' }}>${drug.brandCopay}</td>
+                                            <td style={{ padding: '0.75rem 1.5rem', color: '#0f172a' }}>{drug.requiresPriorAuth ? 'Yes' : 'No'}</td>
+                                            <td style={{ padding: '0.75rem 1.5rem', color: '#0f172a' }}>{drug.form}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div style={{ marginTop: '1.5rem', padding: '1rem', background: '#f0f9ff', borderRadius: '0.5rem', border: '1px solid #0284c7', fontSize: '0.875rem', color: '#0284c7' }}>
+                            📋 Formulary data synced from SmithRx PBM — RxNorm IDs from NIH National Library of Medicine
+                        </div>
+                    </div>
+                );
+            };
+
+            const renderDrugLookupView = () => {
+                const filteredDrugs = FORMULARY.filter(drug =>
+                    drug.generic.toLowerCase().includes(drugSearch.toLowerCase()) ||
+                    drug.brand.toLowerCase().includes(drugSearch.toLowerCase())
+                );
+
+                return (
+                    <div className="fade-in">
+                        <button onClick={() => setPharmacyView('dashboard')} style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '0.875rem', marginBottom: '1rem', padding: 0 }}>
+                            ← Back to Dashboard
+                        </button>
+
+                        <h2 className="section-header">Drug Lookup</h2>
+
+                        {/* Search */}
+                        <div style={{ marginBottom: '1.5rem' }}>
+                            <input
+                                type="text"
+                                placeholder="Search for a medication (e.g., Metformin, Lisinopril)..."
+                                value={drugSearch}
+                                onChange={(e) => setDrugSearch(e.target.value)}
+                                style={{ width: '100%', padding: '0.75rem', border: '1px solid #e2e8f0', borderRadius: '0.5rem', fontSize: '0.875rem' }}
+                            />
+                        </div>
+
+                        {drugSearch && filteredDrugs.length > 0 && (
+                            <div style={{ display: 'grid', gap: '1.5rem' }}>
+                                {filteredDrugs.map(drug => (
+                                    <div key={drug.rxcui} onClick={() => setSelectedDrug(drug)} style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: '0.75rem', padding: '1.5rem', cursor: 'pointer', transition: 'all 0.2s', boxShadow: selectedDrug?.rxcui === drug.rxcui ? '0 0 0 2px #2563eb' : 'none' }}>
+                                        <div style={{ marginBottom: '1rem' }}>
+                                            <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: '#0f172a', margin: '0 0 0.5rem 0' }}>{drug.generic}</h3>
+                                            <p style={{ color: '#64748b', fontSize: '0.875rem', margin: 0 }}>Brand: <strong>{drug.brand}</strong></p>
+                                        </div>
+
+                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '1rem', fontSize: '0.875rem' }}>
+                                            <div>
+                                                <div style={{ color: '#64748b', marginBottom: '0.25rem', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase' }}>Category</div>
+                                                <div style={{ color: '#0f172a', fontWeight: 600 }}>{drug.category}</div>
+                                            </div>
+                                            <div>
+                                                <div style={{ color: '#64748b', marginBottom: '0.25rem', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase' }}>Form</div>
+                                                <div style={{ color: '#0f172a', fontWeight: 600 }}>{drug.form}</div>
+                                            </div>
+                                            <div>
+                                                <div style={{ color: '#64748b', marginBottom: '0.25rem', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase' }}>Strengths</div>
+                                                <div style={{ color: '#0f172a', fontWeight: 600 }}>{drug.strength}</div>
+                                            </div>
+                                        </div>
+
+                                        {selectedDrug?.rxcui === drug.rxcui && (
+                                            <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #e2e8f0' }}>
+                                                <div style={{ marginBottom: '1rem' }}>
+                                                    <h4 style={{ fontSize: '0.875rem', fontWeight: 700, color: '#0f172a', margin: '0 0 0.5rem 0' }}>Formulary Status</h4>
+                                                    <div style={{ display: 'flex', gap: '1rem' }}>
+                                                        <div style={{ background: '#f0f9ff', border: '1px solid #0284c7', borderRadius: '0.5rem', padding: '0.75rem', flex: 1 }}>
+                                                            <div style={{ fontSize: '0.75rem', color: '#0284c7', fontWeight: 600, marginBottom: '0.25rem' }}>TIER</div>
+                                                            <div style={{ fontSize: '1rem', fontWeight: 700, color: '#0284c7' }}>Tier {drug.tier}</div>
+                                                        </div>
+                                                        <div style={{ background: '#f0f9ff', border: '1px solid #0284c7', borderRadius: '0.5rem', padding: '0.75rem', flex: 1 }}>
+                                                            <div style={{ fontSize: '0.75rem', color: '#0284c7', fontWeight: 600, marginBottom: '0.25rem' }}>PRIOR AUTH</div>
+                                                            <div style={{ fontSize: '1rem', fontWeight: 700, color: '#0284c7' }}>{drug.requiresPriorAuth ? 'Required' : 'Not Required'}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div style={{ marginBottom: '1rem' }}>
+                                                    <h4 style={{ fontSize: '0.875rem', fontWeight: 700, color: '#0f172a', margin: '0 0 0.5rem 0' }}>Copay Comparison</h4>
+                                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                                        <div style={{ background: '#dcfce7', border: '1px solid #16a34a', borderRadius: '0.5rem', padding: '0.75rem' }}>
+                                                            <div style={{ fontSize: '0.75rem', color: '#166534', fontWeight: 600, marginBottom: '0.25rem', textTransform: 'uppercase' }}>Generic</div>
+                                                            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#166534' }}>${drug.genericCopay}</div>
+                                                        </div>
+                                                        <div style={{ background: '#fee2e2', border: '1px solid #991b1b', borderRadius: '0.5rem', padding: '0.75rem' }}>
+                                                            <div style={{ fontSize: '0.75rem', color: '#991b1b', fontWeight: 600, marginBottom: '0.25rem', textTransform: 'uppercase' }}>Brand</div>
+                                                            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#991b1b' }}>${drug.brandCopay}</div>
+                                                        </div>
+                                                    </div>
+                                                    {drug.genericCopay < drug.brandCopay && (
+                                                        <div style={{ marginTop: '0.75rem', padding: '0.75rem', background: '#fef3c7', border: '1px solid #ca8a04', borderRadius: '0.5rem', color: '#92400e', fontSize: '0.875rem' }}>
+                                                            💰 Save ${drug.brandCopay - drug.genericCopay} with generic option
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                <div>
+                                                    <h4 style={{ fontSize: '0.875rem', fontWeight: 700, color: '#0f172a', margin: '0 0 0.5rem 0' }}>Pharmacy Pricing Comparison</h4>
+                                                    <div style={{ display: 'grid', gap: '0.5rem' }}>
+                                                        {PHARMACY_LOCATIONS.map(pharmacy => {
+                                                            const basePrice = 45 + Math.random() * 30;
+                                                            const priceMultiplier = {
+                                                                'Retail': 1.0,
+                                                                'Warehouse': 0.75,
+                                                                'Hospital': 1.35,
+                                                                'Mail Order': 0.7,
+                                                                'Mail Order - Transparent': 0.65,
+                                                            };
+                                                            const price = (basePrice * (priceMultiplier[pharmacy.type] || 1)).toFixed(2);
+                                                            return (
+                                                                <div key={pharmacy.id} className="pharmacy-price-row" style={{ background: '#f8fafc', padding: '0.75rem', borderRadius: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid #e2e8f0' }}>
+                                                                    <div>
+                                                                        <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#0f172a' }}>{pharmacy.name}</div>
+                                                                        <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{pharmacy.address}</div>
+                                                                    </div>
+                                                                    <div style={{ textAlign: 'right' }}>
+                                                                        <div style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a' }}>${price}</div>
+                                                                        <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{pharmacy.distance}</div>
+                                                                    </div>
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        {drugSearch && filteredDrugs.length === 0 && (
+                            <div style={{ textAlign: 'center', padding: '3rem 1.5rem', color: '#64748b' }}>
+                                <p style={{ fontSize: '0.875rem' }}>No medications found. Try a different search term.</p>
+                            </div>
+                        )}
+
+                        {!drugSearch && (
+                            <div style={{ textAlign: 'center', padding: '3rem 1.5rem', color: '#64748b' }}>
+                                <p style={{ fontSize: '0.875rem' }}>Search for a medication above to see formulary status and pricing.</p>
+                            </div>
+                        )}
+
+                        {selectedDrug && (
+                            <div style={{ marginTop: '1.5rem', padding: '1rem', background: '#f0f9ff', borderRadius: '0.5rem', border: '1px solid #0284c7', fontSize: '0.875rem', color: '#0284c7' }}>
+                                📋 Live data from RxNorm (NIH) and OpenFDA
+                            </div>
+                        )}
+                    </div>
+                );
+            };
+
             // Helper: find matching plan provision for a claim
             const getMatchingPlanProvision = (claim) => {
                 const serviceMap = {
@@ -3367,6 +3850,7 @@
                             {memberTab === 'search' && renderSearchTab()}
                             {memberTab === 'addins' && renderAddInsTab()}
                             {memberTab === 'claims' && renderMemberClaimsTab()}
+                            {memberTab === 'rx' && renderMemberRxTab()}
 
                             <nav className="bottom-nav">
                                 <button
@@ -3396,6 +3880,13 @@
                                 >
                                     <span>💰</span>
                                     <span>Claims</span>
+                                </button>
+                                <button
+                                    className={`nav-tab ${memberTab === 'rx' ? 'active' : ''}`}
+                                    onClick={() => setMemberTab('rx')}
+                                >
+                                    <span>💊</span>
+                                    <span>Rx</span>
                                 </button>
                             </nav>
                         </div>
@@ -3574,6 +4065,78 @@
 
                         <div className="footer">
                             Track your claims and view explanations of benefits
+                        </div>
+                    </div>
+                );
+            };
+
+            const renderMemberRxTab = () => {
+                const memberRxClaims = rxClaims.filter(c => c.memberId === 'PLR-2024-00101');
+
+                return (
+                    <div className="content-area">
+                        <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>My Prescriptions</h2>
+
+                        {memberRxClaims.length === 0 ? (
+                            <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '0.75rem', padding: '2rem', textAlign: 'center' }}>
+                                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>💊</div>
+                                <div style={{ fontSize: '1rem', fontWeight: 600, color: '#0f172a', marginBottom: '0.5rem' }}>No prescriptions</div>
+                                <div style={{ fontSize: '0.875rem', color: '#64748b' }}>Your prescriptions will appear here</div>
+                            </div>
+                        ) : (
+                            <div style={{ display: 'grid', gap: '1rem' }}>
+                                {memberRxClaims.map((rx) => (
+                                    <div key={rx.claimId} className="card" style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: '0.75rem', padding: '1rem' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '0.75rem' }}>
+                                            <div>
+                                                <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#0f172a' }}>{rx.drugName}</div>
+                                                <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.25rem' }}>{rx.pharmacy}</div>
+                                            </div>
+                                            <span style={{ display: 'inline-block', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 600, background: '#dcfce7', color: '#166534' }}>
+                                                {rx.status.charAt(0).toUpperCase() + rx.status.slice(1)}
+                                            </span>
+                                        </div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.875rem', marginBottom: '0.75rem', color: '#64748b' }}>
+                                            <span>Last filled: {rx.fillDate}</span>
+                                            <span>{rx.daysSupply} days supply</span>
+                                        </div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '0.75rem', borderTop: '1px solid #e2e8f0' }}>
+                                            <div style={{ fontSize: '0.875rem', color: '#64748b' }}>Your copay</div>
+                                            <div style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a' }}>${rx.memberCopay}</div>
+                                        </div>
+                                        <button style={{ width: '100%', marginTop: '0.75rem', padding: '0.5rem', background: '#f0f9ff', border: '1px solid #0284c7', borderRadius: '0.375rem', color: '#0284c7', fontWeight: 600, cursor: 'pointer', fontSize: '0.875rem' }}>
+                                            Compare Pharmacy Prices
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+
+                        <div style={{ marginTop: '1.5rem' }}>
+                            <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>Find a Medication</h3>
+                            <div style={{ background: 'white', border: '1px solid #e2e8f0', borderRadius: '0.75rem', padding: '1rem' }}>
+                                <input
+                                    type="text"
+                                    placeholder="Search formulary..."
+                                    value={drugSearch}
+                                    onChange={(e) => setDrugSearch(e.target.value)}
+                                    style={{ width: '100%', padding: '0.75rem', border: '1px solid #e2e8f0', borderRadius: '0.5rem', fontSize: '0.875rem', marginBottom: '0.75rem' }}
+                                />
+                                {drugSearch && (
+                                    <div style={{ display: 'grid', gap: '0.5rem' }}>
+                                        {FORMULARY.filter(d => d.generic.toLowerCase().includes(drugSearch.toLowerCase()) || d.brand.toLowerCase().includes(drugSearch.toLowerCase())).slice(0, 5).map(drug => (
+                                            <div key={drug.rxcui} style={{ padding: '0.75rem', background: '#f8fafc', borderRadius: '0.375rem', cursor: 'pointer', fontSize: '0.875rem' }} onClick={() => setSelectedDrug(drug)}>
+                                                <div style={{ fontWeight: 600, color: '#0f172a' }}>{drug.generic}</div>
+                                                <div style={{ color: '#64748b', fontSize: '0.75rem' }}>Generic copay: ${drug.genericCopay} • Brand: ${drug.brandCopay}</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="footer">
+                            Pharmacy Benefits through SmithRx PBM
                         </div>
                     </div>
                 );
