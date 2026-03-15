@@ -1750,6 +1750,46 @@
             ],
         };
 
+        const CLAIMS_FUNDING = {
+            trustType: '501(c)(9) VEBA Trust',
+            trustee: 'National Benefits Trust Co.',
+            bankingPartner: 'Silicon Valley Bank',
+            accountNumber: '****7842',
+            currentBalance: 1245000,
+            monthlyFundingTarget: 420000,
+            ytdDeposits: 1340000,
+            ytdClaimsPaid: 895300,
+            ytdAdminFees: 60075,
+            runRate: 398433,
+            monthsOfRunway: 3.1,
+            stopLoss: {
+                specificAttachment: 125000,
+                aggregateAttachment: 125,
+                ytdLargeClaimants: 1,
+                highestClaimant: 87000,
+                aggregateYTDPaid: 895300,
+                aggregateExpected: 4800000,
+                aggregateThreshold: 6000000,
+            },
+            transactions: [
+                { date: '2026-03-12', type: 'deposit', description: 'Weekly employer funding', amount: 105000, balance: 1245000 },
+                { date: '2026-03-10', type: 'claim', description: 'Claims batch #2026-037', amount: -42300, balance: 1140000 },
+                { date: '2026-03-07', type: 'claim', description: 'Claims batch #2026-036', amount: -38750, balance: 1182300 },
+                { date: '2026-03-05', type: 'deposit', description: 'Weekly employer funding', amount: 105000, balance: 1221050 },
+                { date: '2026-03-03', type: 'claim', description: 'Claims batch #2026-035', amount: -51200, balance: 1116050 },
+                { date: '2026-03-01', type: 'admin', description: 'March admin fees + stop-loss', amount: -58500, balance: 1167250 },
+                { date: '2026-02-26', type: 'deposit', description: 'Weekly employer funding', amount: 105000, balance: 1225750 },
+                { date: '2026-02-24', type: 'claim', description: 'Claims batch #2026-034', amount: -35800, balance: 1120750 },
+                { date: '2026-02-19', type: 'deposit', description: 'Weekly employer funding', amount: 105000, balance: 1156550 },
+                { date: '2026-02-17', type: 'claim', description: 'Claims batch #2026-033', amount: -44100, balance: 1051550 },
+            ],
+            monthlyHistory: [
+                { month: 'Jan', deposited: 420000, claimsPaid: 324800, adminFees: 19800, ending: 1075400 },
+                { month: 'Feb', deposited: 420000, claimsPaid: 340300, adminFees: 20025, ending: 1135075 },
+                { month: 'Mar', deposited: 420000, claimsPaid: 230200, adminFees: 20250, ending: 1245000, projected: true },
+            ],
+        };
+
         // Real Boston provider data
         const MOCK_PROVIDERS = {
             'Knee MRI': [
@@ -1858,6 +1898,7 @@
             const [cardFlipped, setCardFlipped] = useState(false);
             const [billingView, setBillingView] = useState('dashboard');
             const [selectedInvoice, setSelectedInvoice] = useState(null);
+            const [fundingTab, setFundingTab] = useState('overview');
 
             // ============ EMPLOYER HANDLERS ============
 
@@ -1938,7 +1979,7 @@
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                        <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>v0.7</span>
+                        <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 600 }}>v0.8</span>
                         <span className="badge-demo">Demo Mode</span>
                     </div>
                 </div>
@@ -3907,6 +3948,189 @@
                 }), { totalSpend: 0, adminFees: 0 });
                 const avgMonthlyCost = ytdMetrics.totalSpend / BILLING_DATA.invoices.length;
 
+                const billingTabs = [
+                    { id: 'dashboard', label: 'Invoicing' },
+                    { id: 'funding', label: 'Claims Funding' },
+                ];
+
+                const renderBillingTabs = () => (
+                    <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', borderBottom: '2px solid #e5e7eb', paddingBottom: '0' }}>
+                        {billingTabs.map(tab => (
+                            <button key={tab.id} onClick={() => { setBillingView(tab.id); setSelectedInvoice(null); }}
+                                style={{ padding: '0.5rem 1.25rem', border: 'none', background: 'none', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 600,
+                                    color: (billingView === tab.id || (billingView === 'invoice' && tab.id === 'dashboard')) ? '#2563eb' : '#64748b',
+                                    borderBottom: (billingView === tab.id || (billingView === 'invoice' && tab.id === 'dashboard')) ? '2px solid #2563eb' : '2px solid transparent',
+                                    marginBottom: '-2px' }}>
+                                {tab.label}
+                            </button>
+                        ))}
+                    </div>
+                );
+
+                if (billingView === 'funding') {
+                    const fundingPct = (CLAIMS_FUNDING.currentBalance / CLAIMS_FUNDING.monthlyFundingTarget) * 100;
+                    const specificPct = (CLAIMS_FUNDING.stopLoss.highestClaimant / CLAIMS_FUNDING.stopLoss.specificAttachment) * 100;
+                    const aggPct = (CLAIMS_FUNDING.stopLoss.aggregateYTDPaid / CLAIMS_FUNDING.stopLoss.aggregateThreshold) * 100;
+                    const maxBarHeight = 120;
+
+                    return (
+                        <div className="content-area">
+                            <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.5rem' }}>Billing & Invoicing</h2>
+                            {renderBillingTabs()}
+
+                            {/* Trust Account Header */}
+                            <div className="card" style={{ marginBottom: '1.5rem', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', color: 'white' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
+                                    <div>
+                                        <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, color: '#94a3b8', marginBottom: '0.25rem' }}>Claims Trust Account</div>
+                                        <div style={{ fontSize: '2rem', fontWeight: 700 }}>${CLAIMS_FUNDING.currentBalance.toLocaleString()}</div>
+                                        <div style={{ fontSize: '0.875rem', color: '#94a3b8', marginTop: '0.25rem' }}>{CLAIMS_FUNDING.monthsOfRunway} months of runway at current run rate</div>
+                                    </div>
+                                    <div style={{ textAlign: 'right' }}>
+                                        <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>{CLAIMS_FUNDING.trustType}</div>
+                                        <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Trustee: {CLAIMS_FUNDING.trustee}</div>
+                                        <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Bank: {CLAIMS_FUNDING.bankingPartner}</div>
+                                        <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.25rem' }}>Acct: {CLAIMS_FUNDING.accountNumber}</div>
+                                    </div>
+                                </div>
+                                <div style={{ marginTop: '1rem', background: 'rgba(255,255,255,0.1)', borderRadius: '0.5rem', height: '8px', overflow: 'hidden' }}>
+                                    <div style={{ width: Math.min(fundingPct, 100) + '%', height: '100%', background: fundingPct >= 100 ? '#22c55e' : fundingPct >= 60 ? '#eab308' : '#ef4444', borderRadius: '0.5rem', transition: 'width 0.5s' }}></div>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.25rem' }}>
+                                    <span>Balance vs monthly target</span>
+                                    <span>{Math.round(fundingPct)}% funded</span>
+                                </div>
+                            </div>
+
+                            {/* YTD Funding Metrics */}
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+                                <div className="card">
+                                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, color: '#64748b', marginBottom: '0.5rem' }}>YTD Deposits</div>
+                                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#16a34a' }}>${CLAIMS_FUNDING.ytdDeposits.toLocaleString()}</div>
+                                    <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.25rem' }}>Employer funding</div>
+                                </div>
+                                <div className="card">
+                                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, color: '#64748b', marginBottom: '0.5rem' }}>YTD Claims Paid</div>
+                                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#dc2626' }}>${CLAIMS_FUNDING.ytdClaimsPaid.toLocaleString()}</div>
+                                    <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.25rem' }}>Medical + Rx</div>
+                                </div>
+                                <div className="card">
+                                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, color: '#64748b', marginBottom: '0.5rem' }}>Monthly Run Rate</div>
+                                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#0284c7' }}>${CLAIMS_FUNDING.runRate.toLocaleString()}</div>
+                                    <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.25rem' }}>Avg claims/month</div>
+                                </div>
+                                <div className="card">
+                                    <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, color: '#64748b', marginBottom: '0.5rem' }}>Monthly Target</div>
+                                    <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#7c3aed' }}>${CLAIMS_FUNDING.monthlyFundingTarget.toLocaleString()}</div>
+                                    <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.25rem' }}>Weekly: ${(CLAIMS_FUNDING.monthlyFundingTarget / 4).toLocaleString()}</div>
+                                </div>
+                            </div>
+
+                            {/* Money In vs Money Out Waterfall */}
+                            <div className="card" style={{ marginBottom: '1.5rem' }}>
+                                <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', marginBottom: '1.25rem' }}>Monthly Cash Flow</h3>
+                                <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-end', justifyContent: 'center', padding: '1rem 0' }}>
+                                    {CLAIMS_FUNDING.monthlyHistory.map((m, i) => {
+                                        const maxVal = Math.max(...CLAIMS_FUNDING.monthlyHistory.map(h => Math.max(h.deposited, h.claimsPaid + h.adminFees)));
+                                        const depH = (m.deposited / maxVal) * maxBarHeight;
+                                        const claimH = ((m.claimsPaid + m.adminFees) / maxVal) * maxBarHeight;
+                                        return (
+                                            <div key={i} style={{ textAlign: 'center', flex: 1 }}>
+                                                <div style={{ display: 'flex', gap: '4px', justifyContent: 'center', alignItems: 'flex-end', height: maxBarHeight + 'px' }}>
+                                                    <div style={{ width: '28px', height: depH + 'px', background: '#22c55e', borderRadius: '4px 4px 0 0', position: 'relative' }}>
+                                                        <div style={{ position: 'absolute', top: '-18px', left: '50%', transform: 'translateX(-50%)', fontSize: '0.6rem', fontWeight: 600, color: '#16a34a', whiteSpace: 'nowrap' }}>${(m.deposited / 1000).toFixed(0)}k</div>
+                                                    </div>
+                                                    <div style={{ width: '28px', height: claimH + 'px', background: '#ef4444', borderRadius: '4px 4px 0 0', position: 'relative' }}>
+                                                        <div style={{ position: 'absolute', top: '-18px', left: '50%', transform: 'translateX(-50%)', fontSize: '0.6rem', fontWeight: 600, color: '#dc2626', whiteSpace: 'nowrap' }}>${((m.claimsPaid + m.adminFees) / 1000).toFixed(0)}k</div>
+                                                    </div>
+                                                </div>
+                                                <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#64748b', marginTop: '0.5rem' }}>{m.month}{m.projected ? '*' : ''}</div>
+                                                <div style={{ fontSize: '0.625rem', color: '#94a3b8' }}>Bal: ${(m.ending / 1000).toFixed(0)}k</div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', marginTop: '1rem', fontSize: '0.75rem' }}>
+                                    <span><span style={{ display: 'inline-block', width: '10px', height: '10px', background: '#22c55e', borderRadius: '2px', marginRight: '4px' }}></span>Deposits</span>
+                                    <span><span style={{ display: 'inline-block', width: '10px', height: '10px', background: '#ef4444', borderRadius: '2px', marginRight: '4px' }}></span>Claims + Fees</span>
+                                </div>
+                                <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '0.75rem', fontStyle: 'italic' }}>* March figures projected based on MTD activity</div>
+                            </div>
+
+                            {/* Stop-Loss Tracking */}
+                            <div className="card" style={{ marginBottom: '1.5rem' }}>
+                                <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', marginBottom: '1.25rem' }}>Stop-Loss Tracking</h3>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                                    <div>
+                                        <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#64748b', marginBottom: '0.75rem' }}>Specific Stop-Loss</div>
+                                        <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.5rem' }}>Highest individual claimant: ${CLAIMS_FUNDING.stopLoss.highestClaimant.toLocaleString()} / ${CLAIMS_FUNDING.stopLoss.specificAttachment.toLocaleString()}</div>
+                                        <div style={{ background: '#f1f5f9', borderRadius: '0.5rem', height: '12px', overflow: 'hidden', marginBottom: '0.25rem' }}>
+                                            <div style={{ width: Math.min(specificPct, 100) + '%', height: '100%', background: specificPct >= 90 ? '#ef4444' : specificPct >= 70 ? '#eab308' : '#22c55e', borderRadius: '0.5rem' }}></div>
+                                        </div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: '#94a3b8' }}>
+                                            <span>{Math.round(specificPct)}% of attachment</span>
+                                            <span>{CLAIMS_FUNDING.stopLoss.ytdLargeClaimants} claimant(s) above 50%</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#64748b', marginBottom: '0.75rem' }}>Aggregate Stop-Loss</div>
+                                        <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.5rem' }}>YTD claims: ${CLAIMS_FUNDING.stopLoss.aggregateYTDPaid.toLocaleString()} / ${CLAIMS_FUNDING.stopLoss.aggregateThreshold.toLocaleString()} threshold</div>
+                                        <div style={{ background: '#f1f5f9', borderRadius: '0.5rem', height: '12px', overflow: 'hidden', marginBottom: '0.25rem' }}>
+                                            <div style={{ width: Math.min(aggPct, 100) + '%', height: '100%', background: aggPct >= 90 ? '#ef4444' : aggPct >= 70 ? '#eab308' : '#22c55e', borderRadius: '0.5rem' }}></div>
+                                        </div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: '#94a3b8' }}>
+                                            <span>{Math.round(aggPct)}% of corridor</span>
+                                            <span>{CLAIMS_FUNDING.stopLoss.aggregateAttachment}% attachment corridor</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Recent Transactions */}
+                            <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#0f172a', marginBottom: '1rem' }}>Recent Transactions</h3>
+                            <table style={{ width: '100%', background: 'white', borderCollapse: 'collapse', border: '1px solid #e5e7eb', borderRadius: '0.5rem', overflow: 'hidden' }}>
+                                <thead>
+                                    <tr style={{ background: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
+                                        <th style={{ textAlign: 'left', padding: '0.75rem 1rem', fontSize: '0.875rem', fontWeight: 600, color: '#64748b' }}>Date</th>
+                                        <th style={{ textAlign: 'left', padding: '0.75rem 1rem', fontSize: '0.875rem', fontWeight: 600, color: '#64748b' }}>Description</th>
+                                        <th style={{ textAlign: 'right', padding: '0.75rem 1rem', fontSize: '0.875rem', fontWeight: 600, color: '#64748b' }}>Amount</th>
+                                        <th style={{ textAlign: 'right', padding: '0.75rem 1rem', fontSize: '0.875rem', fontWeight: 600, color: '#64748b' }}>Balance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {CLAIMS_FUNDING.transactions.map((txn, idx) => (
+                                        <tr key={idx} style={{ borderBottom: '1px solid #e5e7eb', background: idx % 2 === 0 ? '#fafafa' : 'white' }}>
+                                            <td style={{ padding: '0.75rem 1rem', fontSize: '0.875rem', color: '#64748b' }}>{txn.date}</td>
+                                            <td style={{ padding: '0.75rem 1rem', fontSize: '0.875rem' }}>
+                                                <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', marginRight: '0.5rem',
+                                                    background: txn.type === 'deposit' ? '#22c55e' : txn.type === 'claim' ? '#ef4444' : '#eab308' }}></span>
+                                                {txn.description}
+                                            </td>
+                                            <td style={{ padding: '0.75rem 1rem', fontSize: '0.875rem', textAlign: 'right', fontWeight: 600,
+                                                color: txn.amount > 0 ? '#16a34a' : '#dc2626' }}>
+                                                {txn.amount > 0 ? '+' : ''}{txn.amount < 0 ? '-' : ''}${Math.abs(txn.amount).toLocaleString()}
+                                            </td>
+                                            <td style={{ padding: '0.75rem 1rem', fontSize: '0.875rem', textAlign: 'right', fontWeight: 600 }}>${txn.balance.toLocaleString()}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+
+                            {/* Trust Account Info */}
+                            <div className="card" style={{ marginTop: '1.5rem', background: '#f8fafc', border: '1px solid #e2e8f0' }}>
+                                <h3 style={{ fontSize: '0.875rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.75rem' }}>ERISA Trust Structure</h3>
+                                <div style={{ fontSize: '0.875rem', color: '#475569', lineHeight: 1.6 }}>
+                                    Under ERISA, self-insured plan assets must be held in trust for the exclusive benefit of plan participants.
+                                    This plan uses a <strong>{CLAIMS_FUNDING.trustType}</strong> (Voluntary Employees' Beneficiary Association),
+                                    which provides tax-exempt status for the trust while the employer retains full control over plan design.
+                                    The employer pre-funds claims weekly, and Pillar Health has draw authority to pay claims as adjudicated.
+                                    Stop-loss insurance protects against catastrophic individual claims (specific) and overall plan over-performance (aggregate).
+                                </div>
+                            </div>
+                        </div>
+                    );
+                }
+
                 if (billingView === 'invoice' && selectedInvoice) {
                     return (
                         <div className="content-area">
@@ -3974,7 +4198,8 @@
 
                 return (
                     <div className="content-area">
-                        <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0f172a', marginBottom: '1.5rem' }}>Billing & Invoicing</h2>
+                        <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0f172a', marginBottom: '0.5rem' }}>Billing & Invoicing</h2>
+                        {renderBillingTabs()}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
                             <div className="card">
                                 <div style={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 600, color: '#64748b', marginBottom: '0.5rem' }}>Current Balance Due</div>
