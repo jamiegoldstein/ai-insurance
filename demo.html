@@ -1231,30 +1231,10 @@
             cursor: pointer;
         }
 
-        .claim-status-received {
-            display: inline-block;
-            background: #dbeafe;
-            color: #0369a1;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .claim-status-adjudicating {
+        .claim-status-review {
             display: inline-block;
             background: #fef3c7;
             color: #92400e;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .claim-status-adjudicated {
-            display: inline-block;
-            background: #dbeafe;
-            color: #0369a1;
             padding: 0.25rem 0.75rem;
             border-radius: 9999px;
             font-size: 0.75rem;
@@ -1581,9 +1561,9 @@
             { claimId: 'CLM-2026-00003', memberId: 'PLR-2024-00102', memberName: 'Michael Rodriguez', serviceDate: '2026-03-01', serviceType: 'Specialist Visit', providerName: 'Orthopedic Associates of Boston', facilityType: 'Independent Practice', billedAmount: 350, allowedAmount: 295, memberCopay: 40, planPaid: 255, status: 'paid', receivedDate: '2026-03-02', adjudicatedDate: '2026-03-03', paidDate: '2026-03-07', diagnosisCode: 'M17.11', procedureCode: '99214' },
             { claimId: 'CLM-2026-00004', memberId: 'PLR-2023-00089', memberName: 'Jessica Thompson', serviceDate: '2026-02-28', serviceType: 'Physical Therapy', providerName: 'Boston Physical Therapy Center', facilityType: 'Hospital-Affiliated PT', billedAmount: 150, allowedAmount: 125, memberCopay: 45, planPaid: 80, status: 'paid', receivedDate: '2026-03-01', adjudicatedDate: '2026-03-02', paidDate: '2026-03-06', diagnosisCode: 'M17.11', procedureCode: '97161' },
             { claimId: 'CLM-2026-00005', memberId: 'PLR-2024-00115', memberName: 'David Kim', serviceDate: '2026-03-05', serviceType: 'Lab Work', providerName: 'Quest Diagnostics Boston', facilityType: 'Freestanding Lab', billedAmount: 450, allowedAmount: 380, memberCopay: 0, planPaid: 380, status: 'paid', receivedDate: '2026-03-06', adjudicatedDate: '2026-03-07', paidDate: '2026-03-10', diagnosisCode: 'Z12.81', procedureCode: '80053' },
-            { claimId: 'CLM-2026-00006', memberId: 'PLR-2024-00134', memberName: 'Emily Patel', serviceDate: '2026-03-08', serviceType: 'Urgent Care', providerName: 'FastCare Urgent Care Boston', facilityType: 'Freestanding Urgent Care', billedAmount: 200, allowedAmount: 170, memberCopay: 50, planPaid: 120, status: 'adjudicated', receivedDate: '2026-03-09', adjudicatedDate: '2026-03-10', diagnosisCode: 'J20.9', procedureCode: '99283' },
-            { claimId: 'CLM-2026-00007', memberId: 'PLR-2023-00042', memberName: 'James O\'Brien', serviceDate: '2026-03-10', serviceType: 'Primary Care Visit', providerName: 'Harvard Primary Care', facilityType: 'Hospital-Affiliated Practice', billedAmount: 250, allowedAmount: 220, memberCopay: 35, planPaid: 185, status: 'adjudicating', receivedDate: '2026-03-11', diagnosisCode: 'Z00.00', procedureCode: '99213' },
-            { claimId: 'CLM-2026-00008', memberId: 'PLR-2024-00156', memberName: 'Maria Garcia', serviceDate: '2026-03-12', serviceType: 'Specialist Visit', providerName: 'Cardiology Boston', facilityType: 'Hospital-Affiliated', billedAmount: 400, allowedAmount: 340, memberCopay: 65, planPaid: 275, status: 'received', receivedDate: '2026-03-13', diagnosisCode: 'I10', procedureCode: '99214' },
+            { claimId: 'CLM-2026-00006', memberId: 'PLR-2024-00134', memberName: 'Emily Patel', serviceDate: '2026-03-08', serviceType: 'Urgent Care', providerName: 'FastCare Urgent Care Boston', facilityType: 'Freestanding Urgent Care', billedAmount: 200, allowedAmount: 170, memberCopay: 50, planPaid: 120, status: 'paid', receivedDate: '2026-03-09', adjudicatedDate: '2026-03-10', paidDate: '2026-03-12', diagnosisCode: 'J20.9', procedureCode: '99283' },
+            { claimId: 'CLM-2026-00007', memberId: 'PLR-2023-00042', memberName: 'James O\'Brien', serviceDate: '2026-03-10', serviceType: 'Primary Care Visit', providerName: 'Harvard Primary Care', facilityType: 'Hospital-Affiliated Practice', billedAmount: 250, allowedAmount: 220, memberCopay: 35, planPaid: 185, status: 'review', receivedDate: '2026-03-11', diagnosisCode: 'Z00.00', procedureCode: '99213' },
+            { claimId: 'CLM-2026-00008', memberId: 'PLR-2024-00156', memberName: 'Maria Garcia', serviceDate: '2026-03-12', serviceType: 'Specialist Visit', providerName: 'Cardiology Boston', facilityType: 'Hospital-Affiliated', billedAmount: 400, allowedAmount: 340, memberCopay: 65, planPaid: 275, status: 'review', receivedDate: '2026-03-13', diagnosisCode: 'I10', procedureCode: '99214' },
             { claimId: 'CLM-2026-00009', memberId: 'PLR-2022-00018', memberName: 'Robert Wilson', serviceDate: '2026-02-10', serviceType: 'CT Scan', providerName: 'Boston Medical Imaging', facilityType: 'Community Hospital Outpatient', billedAmount: 2100, allowedAmount: 1800, memberCopay: 150, planPaid: 1650, status: 'paid', receivedDate: '2026-02-11', adjudicatedDate: '2026-02-14', paidDate: '2026-02-18', diagnosisCode: 'M17.11', procedureCode: '71020' },
             { claimId: 'CLM-2026-00010', memberId: 'PLR-2025-00003', memberName: 'Amanda Foster', serviceDate: '2026-03-03', serviceType: 'Lab Work', providerName: 'LabCorp Boston', facilityType: 'Hospital Lab', billedAmount: 350, allowedAmount: 295, memberCopay: 15, planPaid: 280, status: 'paid', receivedDate: '2026-03-04', adjudicatedDate: '2026-03-05', paidDate: '2026-03-08', diagnosisCode: 'Z12.81', procedureCode: '80053' },
             { claimId: 'CLM-2026-00011', memberId: 'PLR-2023-00067', memberName: 'Christopher Nguyen', serviceDate: '2026-02-25', serviceType: 'Sleep Study', providerName: 'Boston Sleep Center', facilityType: 'Independent Practice', billedAmount: 1200, allowedAmount: 1020, memberCopay: 0, planPaid: 1020, status: 'paid', receivedDate: '2026-02-26', adjudicatedDate: '2026-02-28', paidDate: '2026-03-04', diagnosisCode: 'G47.30', procedureCode: '95810' },
@@ -1591,10 +1571,10 @@
             { claimId: 'CLM-2026-00013', memberId: 'PLR-2023-00045', memberName: 'Daniel Brooks', serviceDate: '2026-02-22', serviceType: 'X-Ray', providerName: 'Boston Radiology', facilityType: 'Freestanding Imaging Center', billedAmount: 350, allowedAmount: 290, memberCopay: 75, planPaid: 215, status: 'paid', receivedDate: '2026-02-23', adjudicatedDate: '2026-02-24', paidDate: '2026-02-27', diagnosisCode: 'M17.11', procedureCode: '71045' },
             { claimId: 'CLM-2026-00014', memberId: 'PLR-2024-00101', memberName: 'Sarah Chen', serviceDate: '2026-01-30', serviceType: 'Emergency Room', providerName: 'Massachusetts General Hospital', facilityType: 'Emergency Room', billedAmount: 3500, allowedAmount: 2800, memberCopay: 250, planPaid: 2550, status: 'paid', receivedDate: '2026-01-31', adjudicatedDate: '2026-02-02', paidDate: '2026-02-05', diagnosisCode: 'R07.9', procedureCode: '99285' },
             { claimId: 'CLM-2026-00015', memberId: 'PLR-2026-00001', memberName: 'Stephanie Lee', serviceDate: '2026-03-09', serviceType: 'Primary Care Visit', providerName: 'Boston Medical Group', facilityType: 'Community Health Center', billedAmount: 200, allowedAmount: 170, memberCopay: 10, planPaid: 160, status: 'denied', receivedDate: '2026-03-10', adjudicatedDate: '2026-03-11', denialReason: 'Service not covered under plan', diagnosisCode: 'Z00.00', procedureCode: '99213' },
-            { claimId: 'CLM-2026-00016', memberId: 'PLR-2024-00142', memberName: 'Kevin Martinez', serviceDate: '2026-03-04', serviceType: 'Physical Therapy', providerName: 'PT Boston Inc', facilityType: 'Independent PT Practice', billedAmount: 150, allowedAmount: 125, memberCopay: 25, planPaid: 100, status: 'adjudicating', receivedDate: '2026-03-05', diagnosisCode: 'M17.11', procedureCode: '97161' },
-            { claimId: 'CLM-2026-00017', memberId: 'PLR-2025-00008', memberName: 'Lauren Taylor', serviceDate: '2026-03-11', serviceType: 'Mental Health Session', providerName: 'Boston Behavioral Health', facilityType: 'Outpatient Therapy Session', billedAmount: 180, allowedAmount: 150, memberCopay: 20, planPaid: 130, status: 'received', receivedDate: '2026-03-12', diagnosisCode: 'F41.1', procedureCode: '90834' },
+            { claimId: 'CLM-2026-00016', memberId: 'PLR-2024-00142', memberName: 'Kevin Martinez', serviceDate: '2026-03-04', serviceType: 'Physical Therapy', providerName: 'PT Boston Inc', facilityType: 'Independent PT Practice', billedAmount: 150, allowedAmount: 125, memberCopay: 25, planPaid: 100, status: 'review', receivedDate: '2026-03-05', diagnosisCode: 'M17.11', procedureCode: '97161' },
+            { claimId: 'CLM-2026-00017', memberId: 'PLR-2025-00008', memberName: 'Lauren Taylor', serviceDate: '2026-03-11', serviceType: 'Mental Health Session', providerName: 'Boston Behavioral Health', facilityType: 'Outpatient Therapy Session', billedAmount: 180, allowedAmount: 150, memberCopay: 20, planPaid: 130, status: 'review', receivedDate: '2026-03-12', diagnosisCode: 'F41.1', procedureCode: '90834' },
             { claimId: 'CLM-2026-00018', memberId: 'PLR-2024-00115', memberName: 'David Kim', serviceDate: '2026-02-18', serviceType: 'Ultrasound', providerName: 'Boston Imaging Center', facilityType: 'Community Hospital Outpatient', billedAmount: 850, allowedAmount: 720, memberCopay: 150, planPaid: 570, status: 'paid', receivedDate: '2026-02-19', adjudicatedDate: '2026-02-21', paidDate: '2026-02-25', diagnosisCode: 'Z12.4', procedureCode: '76705' },
-            { claimId: 'CLM-2026-00019', memberId: 'PLR-2024-00102', memberName: 'Michael Rodriguez', serviceDate: '2026-03-07', serviceType: 'Lab Work', providerName: 'Quest Diagnostics', facilityType: 'Freestanding Lab', billedAmount: 520, allowedAmount: 440, memberCopay: 0, planPaid: 440, status: 'adjudicated', receivedDate: '2026-03-08', adjudicatedDate: '2026-03-09', diagnosisCode: 'Z12.81', procedureCode: '80053' },
+            { claimId: 'CLM-2026-00019', memberId: 'PLR-2024-00102', memberName: 'Michael Rodriguez', serviceDate: '2026-03-07', serviceType: 'Lab Work', providerName: 'Quest Diagnostics', facilityType: 'Freestanding Lab', billedAmount: 520, allowedAmount: 440, memberCopay: 0, planPaid: 440, status: 'paid', receivedDate: '2026-03-08', adjudicatedDate: '2026-03-09', paidDate: '2026-03-11', diagnosisCode: 'Z12.81', procedureCode: '80053' },
             { claimId: 'CLM-2026-00020', memberId: 'PLR-2023-00089', memberName: 'Jessica Thompson', serviceDate: '2026-02-05', serviceType: 'Specialist Visit', providerName: 'Rheumatology Associates', facilityType: 'Academic Medical Center', billedAmount: 450, allowedAmount: 380, memberCopay: 85, planPaid: 295, status: 'denied', receivedDate: '2026-02-06', adjudicatedDate: '2026-02-08', denialReason: 'Prior authorization not obtained', diagnosisCode: 'M05.9', procedureCode: '99214' },
         ];
 
@@ -2625,6 +2605,11 @@
 
             // ============ CLAIMS SECTION ============
 
+            const getStatusDisplayText = (status) => {
+                if (status === 'review') return 'Needs Review';
+                return status.charAt(0).toUpperCase() + status.slice(1);
+            };
+
             const renderClaimsSection = () => {
                 if (claimsView === 'detail' && selectedClaim) {
                     return renderClaimDetail();
@@ -2638,17 +2623,16 @@
 
             const renderClaimsDashboard = () => {
                 const totalClaims = claims.length;
-                const pendingClaims = claims.filter(c => ['received', 'adjudicating'].includes(c.status)).length;
+                const reviewClaims = claims.filter(c => c.status === 'review').length;
                 const paidClaims = claims.filter(c => c.status === 'paid').length;
                 const deniedClaims = claims.filter(c => c.status === 'denied').length;
                 const monthlySpend = claims.filter(c => c.serviceDate >= '2026-03-01' && c.serviceDate <= '2026-03-14').reduce((sum, c) => sum + c.planPaid, 0);
                 const avgProcessingDays = 4.2;
 
                 const statusCounts = {
-                    received: claims.filter(c => c.status === 'received').length,
-                    adjudicating: claims.filter(c => c.status === 'adjudicating').length,
-                    adjudicated: claims.filter(c => c.status === 'adjudicated').length,
+                    review: claims.filter(c => c.status === 'review').length,
                     paid: claims.filter(c => c.status === 'paid').length,
+                    denied: claims.filter(c => c.status === 'denied').length,
                 };
 
                 return (
@@ -2675,28 +2659,21 @@
                             </div>
                         </div>
 
-                        {/* Pipeline */}
+                        {/* Claims Summary */}
                         <div className="card" style={{ marginBottom: '2rem' }}>
-                            <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1.5rem' }}>Claims Pipeline</h3>
-                            <div className="claims-pipeline">
-                                <div className={`pipeline-stage ${statusCounts.received > 0 ? 'active' : ''}`}>
-                                    <div className="pipeline-stage-label">Received</div>
-                                    <div className="pipeline-stage-count">{statusCounts.received}</div>
+                            <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1.5rem' }}>Claims Summary</h3>
+                            <div className="metric-grid">
+                                <div className="metric-card">
+                                    <div className="metric-label">Needs Review</div>
+                                    <div className="metric-value" style={{ color: '#92400e' }}>{statusCounts.review}</div>
                                 </div>
-                                <div style={{ flex: 0.5, textAlign: 'center', color: '#cbd5e1' }}>→</div>
-                                <div className={`pipeline-stage ${statusCounts.adjudicating > 0 ? 'active' : ''}`}>
-                                    <div className="pipeline-stage-label">Adjudicating</div>
-                                    <div className="pipeline-stage-count">{statusCounts.adjudicating}</div>
+                                <div className="metric-card">
+                                    <div className="metric-label">Paid</div>
+                                    <div className="metric-value" style={{ color: '#16a34a' }}>{statusCounts.paid}</div>
                                 </div>
-                                <div style={{ flex: 0.5, textAlign: 'center', color: '#cbd5e1' }}>→</div>
-                                <div className={`pipeline-stage ${statusCounts.adjudicated > 0 ? 'active' : ''}`}>
-                                    <div className="pipeline-stage-label">Adjudicated</div>
-                                    <div className="pipeline-stage-count">{statusCounts.adjudicated}</div>
-                                </div>
-                                <div style={{ flex: 0.5, textAlign: 'center', color: '#cbd5e1' }}>→</div>
-                                <div className={`pipeline-stage ${statusCounts.paid > 0 ? 'active' : ''}`}>
-                                    <div className="pipeline-stage-label">Paid</div>
-                                    <div className="pipeline-stage-count">{statusCounts.paid}</div>
+                                <div className="metric-card">
+                                    <div className="metric-label">Denied</div>
+                                    <div className="metric-value" style={{ color: '#991b1b' }}>{statusCounts.denied}</div>
                                 </div>
                             </div>
                         </div>
@@ -2735,7 +2712,7 @@
                                             <td>${claim.billedAmount.toLocaleString()}</td>
                                             <td>${claim.planPaid.toLocaleString()}</td>
                                             <td>${claim.memberCopay}</td>
-                                            <td><span className={`claim-status-${claim.status}`}>{claim.status.charAt(0).toUpperCase() + claim.status.slice(1)}</span></td>
+                                            <td><span className={`claim-status-${claim.status}`}>{getStatusDisplayText(claim.status)}</span></td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -2745,17 +2722,170 @@
                 );
             };
 
-            const renderClaimDetail = () => (
+            // Helper: find matching plan provision for a claim
+            const getMatchingPlanProvision = (claim) => {
+                const serviceMap = {
+                    'Primary Care Visit': 'primaryCare',
+                    'Specialist Visit': 'specialistVisits',
+                    'Knee MRI': 'imaging',
+                    'MRI': 'imaging',
+                    'CT Scan': 'imaging',
+                    'Physical Therapy': 'physicalTherapy',
+                    'Urgent Care': 'urgentCare',
+                    'Emergency Room': 'emergency',
+                    'Lab Work': 'lab',
+                    'Mental Health Session': 'mentalHealth',
+                    'Preventive Care': 'preventive',
+                };
+                const categoryKey = serviceMap[claim.serviceType] || null;
+                const category = categoryKey ? serviceCategories[categoryKey] : null;
+                return { categoryKey, category };
+            };
+
+            // Helper: generate review flags for a claim
+            const getReviewFlags = (claim) => {
+                const flags = [];
+                const { category } = getMatchingPlanProvision(claim);
+                const member = employees.find(e => e.memberId === claim.memberId);
+
+                // Check if member is eligible
+                if (!member) {
+                    flags.push({ severity: 'error', text: 'Member not found in enrollment roster' });
+                } else if (member.status === 'terminated') {
+                    flags.push({ severity: 'error', text: `Member was terminated on ${member.terminationDate}. Verify service date is within coverage period.` });
+                } else if (member.status === 'cobra') {
+                    flags.push({ severity: 'warning', text: `Member is on COBRA continuation (expires ${member.cobraEndDate}). Verify COBRA premiums are current.` });
+                } else if (member.status === 'pending') {
+                    flags.push({ severity: 'error', text: 'Member enrollment is still pending. Coverage has not started.' });
+                }
+
+                // Check if service category is enabled
+                if (category && !category.enabled) {
+                    flags.push({ severity: 'error', text: `${category.name} is disabled in current plan configuration.` });
+                }
+
+                // Check facility type match
+                if (category) {
+                    const tierNames = Object.keys(category.tiers);
+                    const facilityMatch = tierNames.find(t => claim.facilityType.toLowerCase().includes(t.toLowerCase()) || t.toLowerCase().includes(claim.facilityType.toLowerCase()));
+                    if (!facilityMatch) {
+                        flags.push({ severity: 'warning', text: `Facility type "${claim.facilityType}" does not exactly match any configured tier. Closest tier may need manual mapping.` });
+                    }
+                }
+
+                // Check billed vs allowed ratio
+                const ratio = claim.allowedAmount / claim.billedAmount;
+                if (ratio < 0.6) {
+                    flags.push({ severity: 'warning', text: `Allowed amount is only ${(ratio * 100).toFixed(0)}% of billed — larger than typical provider adjustment. Verify contract rate.` });
+                }
+
+                // Check if billed amount is unusually high for service type
+                if (claim.serviceType === 'Primary Care Visit' && claim.billedAmount > 400) {
+                    flags.push({ severity: 'warning', text: 'Billed amount is unusually high for a primary care visit. Verify procedure codes.' });
+                }
+                if (claim.serviceType === 'Physical Therapy' && claim.billedAmount > 300) {
+                    flags.push({ severity: 'warning', text: 'Billed amount exceeds typical range for PT session. May include multiple units.' });
+                }
+
+                if (flags.length === 0) {
+                    flags.push({ severity: 'ok', text: 'No issues detected. Claim appears routine — could be auto-adjudicated.' });
+                }
+
+                return flags;
+            };
+
+            const [reviewNote, setReviewNote] = useState('');
+            const [showMessageModal, setShowMessageModal] = useState(false);
+            const [messageText, setMessageText] = useState('');
+
+            const handlePayClaim = (claim) => {
+                setClaims(prev => prev.map(c => c.claimId === claim.claimId ? {
+                    ...c,
+                    status: 'paid',
+                    paidDate: new Date().toISOString().split('T')[0]
+                } : c));
+                setSelectedClaim({ ...claim, status: 'paid', paidDate: new Date().toISOString().split('T')[0] });
+            };
+
+            const handleDenyClaim = (claim, reason) => {
+                setClaims(prev => prev.map(c => c.claimId === claim.claimId ? {
+                    ...c,
+                    status: 'denied',
+                    adjudicatedDate: new Date().toISOString().split('T')[0],
+                    denialReason: reason || 'Denied during manual review'
+                } : c));
+                setSelectedClaim({ ...claim, status: 'denied', adjudicatedDate: new Date().toISOString().split('T')[0], denialReason: reason || 'Denied during manual review' });
+            };
+
+            const [denyReason, setDenyReason] = useState('');
+            const [showDenyModal, setShowDenyModal] = useState(false);
+
+            const renderClaimDetail = () => {
+                const isReview = selectedClaim.status === 'review';
+                const { category, categoryKey } = getMatchingPlanProvision(selectedClaim);
+                const flags = isReview ? getReviewFlags(selectedClaim) : [];
+                const member = employees.find(e => e.memberId === selectedClaim.memberId);
+
+                return (
                 <div className="fade-in">
                     <button onClick={() => setClaimsView('dashboard')} style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '0.875rem', marginBottom: '1rem', padding: 0 }}>
                         ← Back to Claims
                     </button>
 
-                    <h2 className="section-header">Claim {selectedClaim.claimId}</h2>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                        <h2 className="section-header" style={{ marginBottom: 0 }}>Claim {selectedClaim.claimId}</h2>
+                        <span className={`claim-status-${selectedClaim.status}`} style={{ fontSize: '0.875rem', padding: '0.5rem 1rem' }}>
+                            {getStatusDisplayText(selectedClaim.status)}
+                        </span>
+                    </div>
 
-                    {/* Claim Info Card */}
+                    {/* === REVIEW MODE: Action bar at top === */}
+                    {isReview && (
+                        <div style={{ background: '#fffbeb', border: '2px solid #f59e0b', borderRadius: '0.75rem', padding: '1.25rem', marginBottom: '1.5rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                                <span style={{ fontSize: '1.25rem' }}>⚠️</span>
+                                <span style={{ fontWeight: 700, color: '#92400e', fontSize: '1rem' }}>This claim requires your review</span>
+                            </div>
+                            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                                <button onClick={() => handlePayClaim(selectedClaim)} style={{ background: '#16a34a', color: 'white', border: 'none', padding: '0.75rem 1.75rem', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: 700, fontSize: '0.9375rem' }}>
+                                    ✓ Pay Claim
+                                </button>
+                                <button onClick={() => setShowDenyModal(true)} style={{ background: '#dc2626', color: 'white', border: 'none', padding: '0.75rem 1.75rem', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: 700, fontSize: '0.9375rem' }}>
+                                    ✕ Deny Claim
+                                </button>
+                                <button onClick={() => setShowMessageModal(true)} style={{ background: 'white', color: '#0f172a', border: '2px solid #e2e8f0', padding: '0.75rem 1.75rem', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: 700, fontSize: '0.9375rem' }}>
+                                    💬 Message Member
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* === REVIEW FLAGS === */}
+                    {isReview && flags.length > 0 && (
+                        <div className="card" style={{ marginBottom: '1.5rem' }}>
+                            <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem' }}>Review Flags</h3>
+                            <div style={{ display: 'grid', gap: '0.75rem' }}>
+                                {flags.map((flag, idx) => (
+                                    <div key={idx} style={{
+                                        display: 'flex', gap: '0.75rem', alignItems: 'flex-start', padding: '0.75rem 1rem', borderRadius: '0.5rem',
+                                        background: flag.severity === 'error' ? '#fef2f2' : flag.severity === 'warning' ? '#fffbeb' : '#f0fdf4',
+                                        border: `1px solid ${flag.severity === 'error' ? '#fecaca' : flag.severity === 'warning' ? '#fde68a' : '#bbf7d0'}`
+                                    }}>
+                                        <span style={{ fontSize: '1rem', flexShrink: 0, marginTop: '0.125rem' }}>
+                                            {flag.severity === 'error' ? '🔴' : flag.severity === 'warning' ? '🟡' : '🟢'}
+                                        </span>
+                                        <span style={{ fontSize: '0.875rem', color: flag.severity === 'error' ? '#991b1b' : flag.severity === 'warning' ? '#92400e' : '#166534' }}>
+                                            {flag.text}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* === CLAIM FACTS === */}
                     <div className="card" style={{ marginBottom: '1.5rem' }}>
-                        <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem' }}>Claim Details</h3>
+                        <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem' }}>Claim Facts</h3>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
                             <div>
                                 <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.25rem' }}>Member</div>
@@ -2764,6 +2894,18 @@
                             <div>
                                 <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.25rem' }}>Member ID</div>
                                 <div style={{ fontSize: '1rem', fontWeight: 600 }}>{selectedClaim.memberId}</div>
+                            </div>
+                            <div>
+                                <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.25rem' }}>Eligibility Status</div>
+                                <div style={{ fontSize: '1rem', fontWeight: 600 }}>
+                                    {member ? (
+                                        <span className={`status-badge status-${member.status}`}>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</span>
+                                    ) : <span style={{ color: '#dc2626' }}>Not Found</span>}
+                                </div>
+                            </div>
+                            <div>
+                                <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.25rem' }}>Coverage Tier</div>
+                                <div style={{ fontSize: '1rem', fontWeight: 600 }}>{member?.tier || 'N/A'}</div>
                             </div>
                             <div>
                                 <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.25rem' }}>Service Type</div>
@@ -2782,64 +2924,63 @@
                                 <div style={{ fontSize: '1rem', fontWeight: 600 }}>{selectedClaim.facilityType}</div>
                             </div>
                             <div>
-                                <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.25rem' }}>Diagnosis Code</div>
+                                <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.25rem' }}>Diagnosis (ICD-10)</div>
                                 <div style={{ fontSize: '1rem', fontWeight: 600 }}>{selectedClaim.diagnosisCode}</div>
                             </div>
                             <div>
-                                <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.25rem' }}>Procedure Code</div>
+                                <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600, textTransform: 'uppercase', marginBottom: '0.25rem' }}>Procedure (CPT)</div>
                                 <div style={{ fontSize: '1rem', fontWeight: 600 }}>{selectedClaim.procedureCode}</div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Processing Timeline */}
-                    <div className="card" style={{ marginBottom: '1.5rem' }}>
-                        <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1.5rem' }}>Processing Timeline</h3>
-                        <div className="timeline-item">
-                            <div className="timeline-dot completed">✓</div>
-                            <div className="timeline-content">
-                                <div className="timeline-title">Claim Received</div>
-                                <div className="timeline-date">{selectedClaim.receivedDate}</div>
-                            </div>
+                    {/* === RELEVANT PLAN PROVISIONS === */}
+                    {category && (
+                        <div className="card" style={{ marginBottom: '1.5rem', border: '2px solid #e0e7ff' }}>
+                            <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '0.5rem', color: '#3730a3' }}>
+                                📋 Relevant Plan Provision: {category.name}
+                            </h3>
+                            <p style={{ fontSize: '0.8125rem', color: '#64748b', marginBottom: '1rem', marginTop: 0 }}>
+                                From the {companyInfo.planName} — these are the copay tiers that apply to this service category.
+                            </p>
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead>
+                                    <tr>
+                                        <th style={{ textAlign: 'left', padding: '0.625rem 0.75rem', background: '#eef2ff', fontSize: '0.8125rem', fontWeight: 600, color: '#3730a3', borderBottom: '1px solid #c7d2fe' }}>Care Setting / Tier</th>
+                                        <th style={{ textAlign: 'right', padding: '0.625rem 0.75rem', background: '#eef2ff', fontSize: '0.8125rem', fontWeight: 600, color: '#3730a3', borderBottom: '1px solid #c7d2fe' }}>Member Copay</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {Object.entries(category.tiers).map(([tierName, copay]) => {
+                                        const isMatch = selectedClaim.facilityType.toLowerCase().includes(tierName.toLowerCase()) || tierName.toLowerCase().includes(selectedClaim.facilityType.toLowerCase());
+                                        return (
+                                            <tr key={tierName} style={{ background: isMatch ? '#dbeafe' : 'transparent' }}>
+                                                <td style={{ padding: '0.625rem 0.75rem', fontSize: '0.875rem', borderBottom: '1px solid #e2e8f0' }}>
+                                                    {tierName}
+                                                    {isMatch && <span style={{ marginLeft: '0.5rem', fontSize: '0.75rem', color: '#2563eb', fontWeight: 700 }}>← THIS CLAIM</span>}
+                                                </td>
+                                                <td style={{ padding: '0.625rem 0.75rem', fontSize: '0.875rem', fontWeight: 600, textAlign: 'right', borderBottom: '1px solid #e2e8f0' }}>${copay}</td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                            {category.visitLimit && (
+                                <p style={{ fontSize: '0.8125rem', color: '#64748b', marginTop: '0.75rem', marginBottom: 0 }}>
+                                    Visit limit: {category.visitLimit} visits per plan year
+                                </p>
+                            )}
+                            {category.waivedIfAdmitted && (
+                                <p style={{ fontSize: '0.8125rem', color: '#64748b', marginTop: '0.75rem', marginBottom: 0 }}>
+                                    Note: Copay waived if member is admitted
+                                </p>
+                            )}
                         </div>
-                        <div className="timeline-item">
-                            <div className={`timeline-dot ${['adjudicating', 'adjudicated', 'paid'].includes(selectedClaim.status) ? 'completed' : ''}`}>
-                                {['adjudicating', 'adjudicated', 'paid'].includes(selectedClaim.status) ? '✓' : '⏳'}
-                            </div>
-                            <div className="timeline-content">
-                                <div className="timeline-title">Adjudicating</div>
-                                {selectedClaim.adjudicatedDate && <div className="timeline-date">{selectedClaim.adjudicatedDate}</div>}
-                            </div>
-                        </div>
-                        <div className="timeline-item">
-                            <div className={`timeline-dot ${['adjudicated', 'paid'].includes(selectedClaim.status) ? 'completed' : ''}`}>
-                                {['adjudicated', 'paid'].includes(selectedClaim.status) ? '✓' : '⏳'}
-                            </div>
-                            <div className="timeline-content">
-                                <div className="timeline-title">Adjudication Complete</div>
-                                {selectedClaim.adjudicatedDate && <div className="timeline-date">{selectedClaim.adjudicatedDate}</div>}
-                            </div>
-                        </div>
-                        <div className="timeline-item">
-                            <div className={`timeline-dot ${selectedClaim.status === 'paid' ? 'completed' : ''}`}>
-                                {selectedClaim.status === 'paid' ? '✓' : '⏳'}
-                            </div>
-                            <div className="timeline-content">
-                                <div className="timeline-title">Paid</div>
-                                {selectedClaim.paidDate && <div className="timeline-date">{selectedClaim.paidDate}</div>}
-                            </div>
-                        </div>
-                        {selectedClaim.status === 'denied' && (
-                            <div style={{ background: '#fee2e2', border: '1px solid #fecaca', borderRadius: '0.5rem', padding: '1rem', marginTop: '1rem' }}>
-                                <div style={{ color: '#991b1b', fontWeight: 600, marginBottom: '0.25rem' }}>Claim Denied</div>
-                                <div style={{ color: '#7f1d1d', fontSize: '0.875rem' }}>{selectedClaim.denialReason}</div>
-                            </div>
-                        )}
-                    </div>
+                    )}
 
-                    {/* Adjudication Breakdown */}
+                    {/* === FINANCIAL BREAKDOWN === */}
                     <div className="card" style={{ marginBottom: '1.5rem' }}>
-                        <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem' }}>Adjudication Breakdown</h3>
+                        <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem' }}>Financial Breakdown</h3>
                         <div style={{ background: '#f8fafc', borderRadius: '0.5rem', padding: '1rem' }}>
                             <div className="adjustment-row">
                                 <div className="adjustment-label">Billed Amount</div>
@@ -2851,7 +2992,7 @@
                             </div>
                             <div className="adjustment-row" style={{ borderColor: '#e0e7ff' }}>
                                 <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '0.5rem' }}>Provider Adjustment</div>
-                                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>${(selectedClaim.billedAmount - selectedClaim.allowedAmount).toLocaleString()}</div>
+                                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>-${(selectedClaim.billedAmount - selectedClaim.allowedAmount).toLocaleString()}</div>
                             </div>
                             <div style={{ borderTop: '2px solid #e2e8f0', marginTop: '0.75rem', paddingTop: '0.75rem' }}>
                                 <div className="adjustment-row">
@@ -2866,13 +3007,143 @@
                         </div>
                     </div>
 
+                    {/* === TIMELINE (for resolved claims) === */}
+                    {selectedClaim.status !== 'review' && (
+                        <div className="card" style={{ marginBottom: '1.5rem' }}>
+                            <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '1rem' }}>Resolution</h3>
+                            {selectedClaim.status === 'paid' && (
+                                <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '0.5rem', padding: '1rem' }}>
+                                    <div style={{ color: '#166534', fontWeight: 700, fontSize: '1rem', marginBottom: '0.25rem' }}>✓ Claim Paid</div>
+                                    <div style={{ color: '#166534', fontSize: '0.875rem' }}>
+                                        Paid on {selectedClaim.paidDate || 'N/A'} — ${selectedClaim.planPaid.toLocaleString()} to provider, ${selectedClaim.memberCopay} member copay
+                                    </div>
+                                </div>
+                            )}
+                            {selectedClaim.status === 'denied' && (
+                                <div style={{ background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '0.5rem', padding: '1rem' }}>
+                                    <div style={{ color: '#991b1b', fontWeight: 700, fontSize: '1rem', marginBottom: '0.25rem' }}>✕ Claim Denied</div>
+                                    <div style={{ color: '#7f1d1d', fontSize: '0.875rem' }}>
+                                        Denied on {selectedClaim.adjudicatedDate || 'N/A'} — {selectedClaim.denialReason}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* === BOTTOM ACTIONS === */}
                     <div style={{ display: 'flex', gap: '0.75rem' }}>
-                        <button onClick={() => { setClaimsView('eob'); }} style={{ background: '#7c3aed', color: 'white', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: 600 }}>
-                            📄 Generate EOB
-                        </button>
+                        {selectedClaim.status === 'paid' && (
+                            <button onClick={() => { setClaimsView('eob'); }} style={{ background: '#7c3aed', color: 'white', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: 600 }}>
+                                📄 Generate EOB
+                            </button>
+                        )}
                     </div>
+
+                    {/* === DENY MODAL === */}
+                    {showDenyModal && (
+                        <div className="modal-overlay" onClick={() => setShowDenyModal(false)}>
+                            <div className="modal-content" onClick={e => e.stopPropagation()}>
+                                <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1rem', color: '#dc2626' }}>Deny Claim</h3>
+                                <p style={{ color: '#64748b', fontSize: '0.875rem', marginBottom: '1rem' }}>
+                                    Denying claim {selectedClaim.claimId} for {selectedClaim.memberName}. Please provide a reason:
+                                </p>
+                                <div className="input-group" style={{ marginBottom: '1rem' }}>
+                                    <label className="input-label">Denial Reason</label>
+                                    <select value={denyReason} onChange={(e) => setDenyReason(e.target.value)} style={{ width: '100%', marginBottom: '0.75rem' }}>
+                                        <option value="">Select a reason...</option>
+                                        <option value="Service not covered under plan">Service not covered under plan</option>
+                                        <option value="Prior authorization not obtained">Prior authorization not obtained</option>
+                                        <option value="Member not eligible on date of service">Member not eligible on date of service</option>
+                                        <option value="Out-of-network provider, no OON benefits">Out-of-network provider, no OON benefits</option>
+                                        <option value="Duplicate claim submission">Duplicate claim submission</option>
+                                        <option value="Incomplete or invalid coding">Incomplete or invalid coding</option>
+                                        <option value="Exceeds visit limit for service category">Exceeds visit limit for service category</option>
+                                    </select>
+                                    <textarea
+                                        placeholder="Add additional notes (optional)..."
+                                        value={reviewNote}
+                                        onChange={(e) => setReviewNote(e.target.value)}
+                                        rows={3}
+                                        style={{ width: '100%', resize: 'vertical' }}
+                                    />
+                                </div>
+                                <div style={{ display: 'flex', gap: '0.75rem' }}>
+                                    <button
+                                        onClick={() => {
+                                            const reason = denyReason + (reviewNote ? ` — ${reviewNote}` : '');
+                                            handleDenyClaim(selectedClaim, reason);
+                                            setShowDenyModal(false);
+                                            setDenyReason('');
+                                            setReviewNote('');
+                                        }}
+                                        disabled={!denyReason}
+                                        style={{ background: denyReason ? '#dc2626' : '#d1d5db', color: 'white', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '0.5rem', cursor: denyReason ? 'pointer' : 'not-allowed', fontWeight: 600, flex: 1 }}
+                                    >
+                                        Confirm Denial
+                                    </button>
+                                    <button onClick={() => { setShowDenyModal(false); setDenyReason(''); setReviewNote(''); }} style={{ background: '#f1f5f9', color: '#0f172a', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: 600 }}>
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* === MESSAGE MODAL === */}
+                    {showMessageModal && (
+                        <div className="modal-overlay" onClick={() => setShowMessageModal(false)}>
+                            <div className="modal-content" onClick={e => e.stopPropagation()}>
+                                <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '1rem' }}>Message Member</h3>
+                                <p style={{ color: '#64748b', fontSize: '0.875rem', marginBottom: '0.5rem' }}>
+                                    Send a message to <strong>{selectedClaim.memberName}</strong> about claim {selectedClaim.claimId}
+                                </p>
+                                <div style={{ background: '#f8fafc', padding: '0.75rem', borderRadius: '0.375rem', marginBottom: '1rem', fontSize: '0.8125rem', color: '#64748b' }}>
+                                    Re: {selectedClaim.serviceType} on {selectedClaim.serviceDate} at {selectedClaim.providerName}
+                                </div>
+                                <div className="input-group" style={{ marginBottom: '1rem' }}>
+                                    <label className="input-label">Quick Templates</label>
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                                        {[
+                                            'Can you confirm the date of this visit?',
+                                            'Was this service related to an accident or injury?',
+                                            'Do you have a referral or prior authorization for this visit?',
+                                            'Please confirm the provider and facility details.',
+                                        ].map((tmpl, idx) => (
+                                            <button key={idx} onClick={() => setMessageText(tmpl)} style={{ background: '#f1f5f9', border: '1px solid #e2e8f0', padding: '0.375rem 0.75rem', borderRadius: '0.375rem', cursor: 'pointer', fontSize: '0.75rem', color: '#475569' }}>
+                                                {tmpl.substring(0, 40)}...
+                                            </button>
+                                        ))}
+                                    </div>
+                                    <textarea
+                                        placeholder="Type your message..."
+                                        value={messageText}
+                                        onChange={(e) => setMessageText(e.target.value)}
+                                        rows={4}
+                                        style={{ width: '100%', resize: 'vertical' }}
+                                    />
+                                </div>
+                                <div style={{ display: 'flex', gap: '0.75rem' }}>
+                                    <button
+                                        onClick={() => {
+                                            alert(`Message sent to ${selectedClaim.memberName}:\n\n"${messageText}"`);
+                                            setShowMessageModal(false);
+                                            setMessageText('');
+                                        }}
+                                        disabled={!messageText}
+                                        style={{ background: messageText ? '#2563eb' : '#d1d5db', color: 'white', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '0.5rem', cursor: messageText ? 'pointer' : 'not-allowed', fontWeight: 600, flex: 1 }}
+                                    >
+                                        Send Message
+                                    </button>
+                                    <button onClick={() => { setShowMessageModal(false); setMessageText(''); }} style={{ background: '#f1f5f9', color: '#0f172a', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: 600 }}>
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
-            );
+                );
+            };
 
             const renderSubmitClaimForm = () => (
                 <div className="fade-in">
@@ -2968,7 +3239,7 @@
                                     allowedAmount: parseFloat(submitFormData.billedAmount) * 0.85,
                                     memberCopay: 35,
                                     planPaid: parseFloat(submitFormData.billedAmount) * 0.85 - 35,
-                                    status: 'received',
+                                    status: 'review',
                                     receivedDate: new Date().toISOString().split('T')[0],
                                     diagnosisCode: submitFormData.diagnosisCode,
                                     procedureCode: submitFormData.procedureCode
@@ -3289,7 +3560,7 @@
                                                 <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#0f172a' }}>{claim.serviceType}</div>
                                                 <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.25rem' }}>{claim.serviceDate} • {claim.providerName}</div>
                                             </div>
-                                            <span className={`claim-status-${claim.status}`}>{claim.status.charAt(0).toUpperCase() + claim.status.slice(1)}</span>
+                                            <span className={`claim-status-${claim.status}`}>{getStatusDisplayText(claim.status)}</span>
                                         </div>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '0.75rem', borderTop: '1px solid #e2e8f0' }}>
                                             <div style={{ fontSize: '0.875rem', color: '#64748b' }}>Your cost</div>
